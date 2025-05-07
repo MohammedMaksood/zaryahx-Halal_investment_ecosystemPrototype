@@ -47,8 +47,8 @@ const Analysis = () => {
                  searchQuery.toUpperCase().includes('MSFT') ? 'MSFT' : 
                  searchQuery.toUpperCase().includes('GOOGL') ? 'GOOGL' : 
                  searchQuery.toUpperCase().slice(0, 4),
-          price: (Math.random() * 500 + 50).toFixed(2),
-          change: (Math.random() * 5 - 2.5).toFixed(2),
+          price: Number((Math.random() * 500 + 50).toFixed(2)),
+          change: Number((Math.random() * 5 - 2.5).toFixed(2)),
           sector: ['Technology', 'Finance', 'Healthcare', 'Consumer Goods', 'Energy'][Math.floor(Math.random() * 5)],
           description: 'This is a description of the company and its operations. The analysis shows compliance with Islamic principles based on financial metrics and business activities.'
         }
@@ -322,3 +322,4 @@ const Analysis = () => {
 };
 
 export default Analysis;
+
