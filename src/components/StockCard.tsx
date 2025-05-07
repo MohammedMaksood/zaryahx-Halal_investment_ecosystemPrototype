@@ -5,6 +5,7 @@ import { ArrowUp, ArrowDown, Share } from 'lucide-react';
 import HalalBadge from './HalalBadge';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
+import { useNavigate } from 'react-router-dom';
 
 interface StockCardProps {
   name: string;
@@ -26,12 +27,16 @@ const StockCard: React.FC<StockCardProps> = ({
   className,
 }) => {
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleInvest = () => {
     toast({
       title: "Investment Started",
       description: `You started the investment process for ${name} (${symbol})`,
     });
+    
+    // Navigate to wallet page with the stock information
+    navigate(`/wallet?action=buy&symbol=${symbol}&price=${price}`);
   };
 
   const handleShare = (e: React.MouseEvent) => {
@@ -41,11 +46,16 @@ const StockCard: React.FC<StockCardProps> = ({
       description: `Share link for ${symbol} has been copied to clipboard`,
     });
   };
+  
+  const handleCardClick = () => {
+    navigate(`/stocks/${symbol}`);
+  };
 
   return (
     <div 
+      onClick={handleCardClick}
       className={cn(
-        'rounded-xl p-5 transition-all duration-300 hover:shadow-xl border',
+        'rounded-xl p-5 transition-all duration-300 hover:shadow-xl border cursor-pointer',
         'bg-gradient-to-br from-secondary/40 to-secondary/10 border-white/10',
         'hover:border-lavender/30',
         className
@@ -91,7 +101,10 @@ const StockCard: React.FC<StockCardProps> = ({
       </div>
       
       <Button 
-        onClick={handleInvest}
+        onClick={(e) => {
+          e.stopPropagation();
+          handleInvest();
+        }}
         className="w-full bg-lavender hover:bg-lavender-dark"
         disabled={status === 'haram'}
       >
