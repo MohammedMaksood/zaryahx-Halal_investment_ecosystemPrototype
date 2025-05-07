@@ -18,36 +18,41 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Account from "./pages/Account";
 import PaymentMethods from "./pages/PaymentMethods";
+import React from "react"; // Add this import
 
-const queryClient = new QueryClient();
-
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <AuthProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <BrowserRouter>
-          <Routes>
-            <Route path="/" element={<Index />} />
-            <Route path="/stocks" element={<Stocks />} />
-            <Route path="/stocks/:symbol" element={<StockDetails />} />
-            <Route path="/analysis" element={<Analysis />} />
-            <Route path="/academics" element={<Academics />} />
-            <Route path="/groceries" element={<Groceries />} />
-            <Route path="/wallet" element={<Wallet />} />
-            <Route path="/orders" element={<Orders />} />
-            <Route path="/signin" element={<SignIn />} />
-            <Route path="/signup" element={<SignUp />} />
-            <Route path="/account" element={<Account />} />
-            <Route path="/payment-methods" element={<PaymentMethods />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </BrowserRouter>
-      </TooltipProvider>
-    </AuthProvider>
-  </QueryClientProvider>
-);
+// Create a new QueryClient instance inside the component to ensure proper React context
+const App = () => {
+  // Initialize the QueryClient inside the component
+  const queryClient = new QueryClient();
+  
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Index />} />
+              <Route path="/stocks" element={<Stocks />} />
+              <Route path="/stocks/:symbol" element={<StockDetails />} />
+              <Route path="/analysis" element={<Analysis />} />
+              <Route path="/academics" element={<Academics />} />
+              <Route path="/groceries" element={<Groceries />} />
+              <Route path="/wallet" element={<Wallet />} />
+              <Route path="/orders" element={<Orders />} />
+              <Route path="/signin" element={<SignIn />} />
+              <Route path="/signup" element={<SignUp />} />
+              <Route path="/account" element={<Account />} />
+              <Route path="/payment-methods" element={<PaymentMethods />} />
+              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+              <Route path="*" element={<NotFound />} />
+            </Routes>
+          </BrowserRouter>
+        </TooltipProvider>
+      </AuthProvider>
+    </QueryClientProvider>
+  );
+};
 
 export default App;
