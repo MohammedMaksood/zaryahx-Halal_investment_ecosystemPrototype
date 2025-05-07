@@ -1,13 +1,26 @@
+
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, Link } from 'react-router-dom';
+import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Wallet as WalletIcon, ShoppingBag, ArrowUp, ArrowDown } from "lucide-react";
+import { 
+  Wallet as WalletIcon, 
+  ShoppingBag, 
+  ArrowUp, 
+  ArrowDown, 
+  CreditCard, 
+  Bitcoin, 
+  DollarSign,
+  Plus 
+} from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useToast } from '@/hooks/use-toast';
 import LoadingAnimation from "@/components/LoadingAnimation";
+import { useAuth } from '@/contexts/AuthContext';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface WalletTransaction {
   id: string;
@@ -18,6 +31,7 @@ interface WalletTransaction {
   shares?: number;
   price?: number;
   status: 'completed' | 'pending' | 'failed';
+  method?: string;
 }
 
 interface Portfolio {
@@ -31,75 +45,108 @@ interface Portfolio {
 const Wallet = () => {
   const { toast } = useToast();
   const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+  const { user, isAuthenticated, isLoading } = useAuth();
   const [balance, setBalance] = useState(5000);
   const [depositAmount, setDepositAmount] = useState('');
   const [withdrawAmount, setWithdrawAmount] = useState('');
+  const [selectedDepositMethod, setSelectedDepositMethod] = useState('card');
+  const [selectedWithdrawMethod, setSelectedWithdrawMethod] = useState('bank');
   const [transactions, setTransactions] = useState<WalletTransaction[]>([]);
   const [portfolio, setPortfolio] = useState<Portfolio[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showDepositModal, setShowDepositModal] = useState(false);
+  const [showWithdrawModal, setShowWithdrawModal] = useState(false);
   
   // Check if we're coming from a stock buy action
   const buyAction = searchParams.get('action') === 'buy';
   const symbol = searchParams.get('symbol');
   const price = searchParams.get('price') ? parseFloat(searchParams.get('price')!) : null;
   
+  // Redirect to sign in if not authenticated
   useEffect(() => {
-    // Simulate fetching user wallet data
-    setTimeout(() => {
-      // Mock initial transactions
-      const mockTransactions: WalletTransaction[] = [
-        {
-          id: '1',
-          type: 'deposit',
-          amount: 2000,
-          date: '2025-04-30',
-          status: 'completed'
-        },
-        {
-          id: '2',
-          type: 'purchase',
-          amount: 894.5,
-          date: '2025-05-01',
-          symbol: 'RJHI.SR',
-          shares: 10,
-          price: 89.45,
-          status: 'completed'
-        },
-        {
-          id: '3',
-          type: 'purchase',
-          amount: 674.5,
-          date: '2025-05-03',
-          symbol: 'MSFT',
-          shares: 2,
-          price: 337.25,
-          status: 'completed'
-        }
-      ];
-      
-      // Mock portfolio
-      const mockPortfolio: Portfolio[] = [
-        {
-          symbol: 'RJHI.SR',
-          name: 'Al Rajhi Bank',
-          shares: 10,
-          averagePrice: 89.45,
-          currentPrice: 89.25
-        },
-        {
-          symbol: 'MSFT',
-          name: 'Microsoft Corp.',
-          shares: 2,
-          averagePrice: 337.25,
-          currentPrice: 337.18
-        }
-      ];
-      
-      setTransactions(mockTransactions);
-      setPortfolio(mockPortfolio);
-      setLoading(false);
-    }, 1200);
-  }, []);
+    if (!isLoading && !isAuthenticated) {
+      navigate('/signin?redirect=/wallet');
+    }
+  }, [isLoading, isAuthenticated, navigate]);
+  
+  useEffect(() => {
+    // Only load data if authenticated
+    if (isAuthenticated) {
+      // Simulate fetching user wallet data
+      setTimeout(() => {
+        // Mock initial transactions
+        const mockTransactions: WalletTransaction[] = [
+          {
+            id: '1',
+            type: 'deposit',
+            amount: 2000,
+            date: '2025-04-30',
+            status: 'completed',
+            method: 'Credit Card'
+          },
+          {
+            id: '2',
+            type: 'purchase',
+            amount: 894.5,
+            date: '2025-05-01',
+            symbol: 'RJHI.SR',
+            shares: 10,
+            price: 89.45,
+            status: 'completed'
+          },
+          {
+            id: '3',
+            type: 'purchase',
+            amount: 674.5,
+            date: '2025-05-03',
+            symbol: 'MSFT',
+            shares: 2,
+            price: 337.25,
+            status: 'completed'
+          },
+          {
+            id: '4',
+            type: 'deposit',
+            amount: 1000,
+            date: '2025-05-04',
+            status: 'completed',
+            method: 'UPI'
+          },
+          {
+            id: '5',
+            type: 'withdrawal',
+            amount: 500,
+            date: '2025-05-05',
+            status: 'completed',
+            method: 'Bank Transfer'
+          }
+        ];
+        
+        // Mock portfolio
+        const mockPortfolio: Portfolio[] = [
+          {
+            symbol: 'RJHI.SR',
+            name: 'Al Rajhi Bank',
+            shares: 10,
+            averagePrice: 89.45,
+            currentPrice: 89.25
+          },
+          {
+            symbol: 'MSFT',
+            name: 'Microsoft Corp.',
+            shares: 2,
+            averagePrice: 337.25,
+            currentPrice: 337.18
+          }
+        ];
+        
+        setTransactions(mockTransactions);
+        setPortfolio(mockPortfolio);
+        setLoading(false);
+      }, 1200);
+    }
+  }, [isAuthenticated]);
   
   // Handle stock purchase if coming from stock detail page
   useEffect(() => {
@@ -124,8 +171,7 @@ const Wallet = () => {
     }
   }, [buyAction, symbol, price, toast]);
 
-  const handleDeposit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleDeposit = () => {
     const amount = parseFloat(depositAmount);
     
     if (!amount || amount <= 0) {
@@ -136,18 +182,25 @@ const Wallet = () => {
       return;
     }
     
+    // Get method name for the transaction
+    let methodName = "Credit Card";
+    if (selectedDepositMethod === 'upi') methodName = "UPI";
+    if (selectedDepositMethod === 'crypto') methodName = "Cryptocurrency";
+    
     // Simulate deposit transaction
     const newTransaction: WalletTransaction = {
       id: Math.random().toString(36).substring(2, 9),
       type: 'deposit',
       amount,
       date: new Date().toISOString().split('T')[0],
-      status: 'completed'
+      status: 'completed',
+      method: methodName
     };
     
     setBalance(prevBalance => prevBalance + amount);
     setTransactions(prev => [newTransaction, ...prev]);
     setDepositAmount('');
+    setShowDepositModal(false);
     
     toast({
       title: "Deposit Successful",
@@ -155,8 +208,7 @@ const Wallet = () => {
     });
   };
 
-  const handleWithdraw = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleWithdraw = () => {
     const amount = parseFloat(withdrawAmount);
     
     if (!amount || amount <= 0) {
@@ -175,18 +227,25 @@ const Wallet = () => {
       return;
     }
     
+    // Get method name for the transaction
+    let methodName = "Bank Transfer";
+    if (selectedWithdrawMethod === 'upi') methodName = "UPI";
+    if (selectedWithdrawMethod === 'crypto') methodName = "Cryptocurrency";
+    
     // Simulate withdrawal transaction
     const newTransaction: WalletTransaction = {
       id: Math.random().toString(36).substring(2, 9),
       type: 'withdrawal',
       amount,
       date: new Date().toISOString().split('T')[0],
-      status: 'completed'
+      status: 'completed',
+      method: methodName
     };
     
     setBalance(prevBalance => prevBalance - amount);
     setTransactions(prev => [newTransaction, ...prev]);
     setWithdrawAmount('');
+    setShowWithdrawModal(false);
     
     toast({
       title: "Withdrawal Successful",
@@ -214,6 +273,22 @@ const Wallet = () => {
   const getItemGrowth = (item: Portfolio) => {
     return ((item.currentPrice - item.averagePrice) / item.averagePrice) * 100;
   };
+  
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex flex-col bg-background">
+        <Navbar />
+        <main className="flex-grow flex justify-center items-center">
+          <LoadingAnimation type="spinner" size="lg" text="Loading your wallet..." />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+  
+  if (!isAuthenticated) {
+    return null; // Will redirect in useEffect
+  }
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -242,20 +317,304 @@ const Wallet = () => {
                   <div className="text-3xl font-bold mb-1">${balance.toFixed(2)}</div>
                 </CardContent>
                 <CardFooter className="flex justify-between">
-                  <Button 
-                    variant="outline" 
-                    className="border-lavender text-lavender hover:bg-lavender/20"
-                    onClick={() => document.getElementById('deposit-form')?.scrollIntoView({ behavior: 'smooth' })}
-                  >
-                    <ArrowDown className="mr-2 h-4 w-4" /> Deposit
-                  </Button>
-                  <Button 
-                    variant="outline"
-                    className="border-lavender text-lavender hover:bg-lavender/20"
-                    onClick={() => document.getElementById('withdraw-form')?.scrollIntoView({ behavior: 'smooth' })}
-                  >
-                    <ArrowUp className="mr-2 h-4 w-4" /> Withdraw
-                  </Button>
+                  <Dialog open={showDepositModal} onOpenChange={setShowDepositModal}>
+                    <DialogTrigger asChild>
+                      <Button 
+                        variant="outline" 
+                        className="border-lavender text-lavender hover:bg-lavender/20"
+                      >
+                        <ArrowDown className="mr-2 h-4 w-4" /> Deposit
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="bg-secondary/30 border-white/10">
+                      <DialogHeader>
+                        <DialogTitle>Deposit Funds</DialogTitle>
+                        <DialogDescription>
+                          Add money to your investment wallet
+                        </DialogDescription>
+                      </DialogHeader>
+                      <Tabs defaultValue="card" onValueChange={(value) => setSelectedDepositMethod(value)}>
+                        <TabsList className="grid grid-cols-3 mb-4">
+                          <TabsTrigger value="card">Card</TabsTrigger>
+                          <TabsTrigger value="upi">UPI</TabsTrigger>
+                          <TabsTrigger value="crypto">Crypto</TabsTrigger>
+                        </TabsList>
+                        
+                        <TabsContent value="card" className="space-y-4">
+                          <div className="p-4 border border-white/10 rounded-lg bg-lavender/5">
+                            <div className="flex items-center mb-4">
+                              <CreditCard className="h-5 w-5 text-lavender mr-2" />
+                              <div className="font-medium">Credit/Debit Card</div>
+                            </div>
+                            <p className="text-sm text-white/60 mb-2">Your saved cards:</p>
+                            <div className="px-3 py-2 border border-white/10 rounded-md bg-secondary/30 flex justify-between items-center mb-2">
+                              <span>Visa ending in 4242</span>
+                              <input type="radio" name="card" defaultChecked className="h-4 w-4 accent-lavender" />
+                            </div>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="w-full mt-2 border-lavender text-lavender hover:bg-lavender/20"
+                              onClick={() => navigate('/payment-methods')}
+                            >
+                              <Plus className="h-3.5 w-3.5 mr-1" /> Add New Card
+                            </Button>
+                          </div>
+                          <div className="space-y-4">
+                            <div className="space-y-2">
+                              <label className="text-sm font-medium">Amount to Deposit</label>
+                              <div className="relative">
+                                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                  <span className="text-gray-500">$</span>
+                                </div>
+                                <Input
+                                  type="number"
+                                  placeholder="Amount"
+                                  className="pl-8 bg-secondary/50 border-white/10 focus-visible:ring-lavender"
+                                  value={depositAmount}
+                                  onChange={(e) => setDepositAmount(e.target.value)}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </TabsContent>
+                        
+                        <TabsContent value="upi" className="space-y-4">
+                          <div className="p-4 border border-white/10 rounded-lg bg-lavender/5">
+                            <div className="flex items-center mb-4">
+                              <DollarSign className="h-5 w-5 text-green-400 mr-2" />
+                              <div className="font-medium">UPI Transfer</div>
+                            </div>
+                            <p className="text-sm text-white/60 mb-2">Your saved UPI IDs:</p>
+                            <div className="px-3 py-2 border border-white/10 rounded-md bg-secondary/30 flex justify-between items-center mb-2">
+                              <span>user@ybl</span>
+                              <input type="radio" name="upi" defaultChecked className="h-4 w-4 accent-lavender" />
+                            </div>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="w-full mt-2 border-lavender text-lavender hover:bg-lavender/20"
+                              onClick={() => navigate('/payment-methods')}
+                            >
+                              <Plus className="h-3.5 w-3.5 mr-1" /> Add New UPI ID
+                            </Button>
+                          </div>
+                          <div className="space-y-4">
+                            <div className="space-y-2">
+                              <label className="text-sm font-medium">Amount to Deposit</label>
+                              <div className="relative">
+                                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                  <span className="text-gray-500">$</span>
+                                </div>
+                                <Input
+                                  type="number"
+                                  placeholder="Amount"
+                                  className="pl-8 bg-secondary/50 border-white/10 focus-visible:ring-lavender"
+                                  value={depositAmount}
+                                  onChange={(e) => setDepositAmount(e.target.value)}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </TabsContent>
+                        
+                        <TabsContent value="crypto" className="space-y-4">
+                          <div className="p-4 border border-white/10 rounded-lg bg-lavender/5">
+                            <div className="flex items-center mb-4">
+                              <Bitcoin className="h-5 w-5 text-yellow-400 mr-2" />
+                              <div className="font-medium">Cryptocurrency</div>
+                            </div>
+                            <p className="text-sm text-white/60 mb-2">Select cryptocurrency:</p>
+                            <select className="w-full bg-secondary/50 border border-white/10 rounded-md px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lavender">
+                              <option>Bitcoin (BTC)</option>
+                              <option>Ethereum (ETH)</option>
+                              <option>Tether (USDT)</option>
+                            </select>
+                            <p className="text-xs text-white/60 mt-4 mb-1">
+                              Our current rate: 1 BTC = $65,847.23
+                            </p>
+                          </div>
+                          <div className="space-y-4">
+                            <div className="space-y-2">
+                              <label className="text-sm font-medium">Amount to Deposit (USD)</label>
+                              <div className="relative">
+                                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                  <span className="text-gray-500">$</span>
+                                </div>
+                                <Input
+                                  type="number"
+                                  placeholder="Amount"
+                                  className="pl-8 bg-secondary/50 border-white/10 focus-visible:ring-lavender"
+                                  value={depositAmount}
+                                  onChange={(e) => setDepositAmount(e.target.value)}
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </TabsContent>
+                      </Tabs>
+                      <DialogFooter>
+                        <Button type="submit" onClick={handleDeposit} className="bg-lavender hover:bg-lavender-dark">
+                          Confirm Deposit
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                  
+                  <Dialog open={showWithdrawModal} onOpenChange={setShowWithdrawModal}>
+                    <DialogTrigger asChild>
+                      <Button 
+                        variant="outline"
+                        className="border-lavender text-lavender hover:bg-lavender/20"
+                      >
+                        <ArrowUp className="mr-2 h-4 w-4" /> Withdraw
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent className="bg-secondary/30 border-white/10">
+                      <DialogHeader>
+                        <DialogTitle>Withdraw Funds</DialogTitle>
+                        <DialogDescription>
+                          Transfer money from your investment wallet
+                        </DialogDescription>
+                      </DialogHeader>
+                      <Tabs defaultValue="bank" onValueChange={(value) => setSelectedWithdrawMethod(value)}>
+                        <TabsList className="grid grid-cols-3 mb-4">
+                          <TabsTrigger value="bank">Bank</TabsTrigger>
+                          <TabsTrigger value="upi">UPI</TabsTrigger>
+                          <TabsTrigger value="crypto">Crypto</TabsTrigger>
+                        </TabsList>
+                        
+                        <TabsContent value="bank" className="space-y-4">
+                          <div className="p-4 border border-white/10 rounded-lg bg-lavender/5">
+                            <div className="flex items-center mb-4">
+                              <CreditCard className="h-5 w-5 text-lavender mr-2" />
+                              <div className="font-medium">Bank Transfer</div>
+                            </div>
+                            <p className="text-sm text-white/60 mb-2">Your saved bank accounts:</p>
+                            <div className="px-3 py-2 border border-white/10 rounded-md bg-secondary/30 flex justify-between items-center mb-2">
+                              <span>Bank Account ending in 9876</span>
+                              <input type="radio" name="bank" defaultChecked className="h-4 w-4 accent-lavender" />
+                            </div>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              className="w-full mt-2 border-lavender text-lavender hover:bg-lavender/20"
+                              onClick={() => navigate('/payment-methods')}
+                            >
+                              <Plus className="h-3.5 w-3.5 mr-1" /> Add New Account
+                            </Button>
+                          </div>
+                          <div className="space-y-4">
+                            <div className="space-y-2">
+                              <label className="text-sm font-medium">Amount to Withdraw</label>
+                              <div className="relative">
+                                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                  <span className="text-gray-500">$</span>
+                                </div>
+                                <Input
+                                  type="number"
+                                  placeholder="Amount"
+                                  className="pl-8 bg-secondary/50 border-white/10 focus-visible:ring-lavender"
+                                  value={withdrawAmount}
+                                  onChange={(e) => setWithdrawAmount(e.target.value)}
+                                  max={balance}
+                                />
+                              </div>
+                              <p className="text-xs text-white/60">
+                                Available balance: ${balance.toFixed(2)}
+                              </p>
+                            </div>
+                          </div>
+                        </TabsContent>
+                        
+                        <TabsContent value="upi" className="space-y-4">
+                          {/* UPI withdrawal content */}
+                          <div className="p-4 border border-white/10 rounded-lg bg-lavender/5">
+                            <div className="flex items-center mb-4">
+                              <DollarSign className="h-5 w-5 text-green-400 mr-2" />
+                              <div className="font-medium">UPI Transfer</div>
+                            </div>
+                            <p className="text-sm text-white/60 mb-2">Your saved UPI IDs:</p>
+                            <div className="px-3 py-2 border border-white/10 rounded-md bg-secondary/30 flex justify-between items-center mb-2">
+                              <span>user@ybl</span>
+                              <input type="radio" name="upi-withdraw" defaultChecked className="h-4 w-4 accent-lavender" />
+                            </div>
+                          </div>
+                          <div className="space-y-4">
+                            <div className="space-y-2">
+                              <label className="text-sm font-medium">Amount to Withdraw</label>
+                              <div className="relative">
+                                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                  <span className="text-gray-500">$</span>
+                                </div>
+                                <Input
+                                  type="number"
+                                  placeholder="Amount"
+                                  className="pl-8 bg-secondary/50 border-white/10 focus-visible:ring-lavender"
+                                  value={withdrawAmount}
+                                  onChange={(e) => setWithdrawAmount(e.target.value)}
+                                  max={balance}
+                                />
+                              </div>
+                              <p className="text-xs text-white/60">
+                                Available balance: ${balance.toFixed(2)}
+                              </p>
+                            </div>
+                          </div>
+                        </TabsContent>
+                        
+                        <TabsContent value="crypto" className="space-y-4">
+                          {/* Crypto withdrawal content */}
+                          <div className="p-4 border border-white/10 rounded-lg bg-lavender/5">
+                            <div className="flex items-center mb-4">
+                              <Bitcoin className="h-5 w-5 text-yellow-400 mr-2" />
+                              <div className="font-medium">Cryptocurrency</div>
+                            </div>
+                            <p className="text-sm text-white/60 mb-2">Select cryptocurrency:</p>
+                            <select className="w-full bg-secondary/50 border border-white/10 rounded-md px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-lavender">
+                              <option>Bitcoin (BTC)</option>
+                              <option>Ethereum (ETH)</option>
+                              <option>Tether (USDT)</option>
+                            </select>
+                            <p className="text-sm text-white/60 mt-4 mb-2">Wallet Address:</p>
+                            <Input
+                              placeholder="Your crypto wallet address"
+                              className="bg-secondary/50 border-white/10 focus-visible:ring-lavender text-sm"
+                            />
+                            <p className="text-xs text-white/60 mt-4 mb-1">
+                              Our current rate: 1 BTC = $65,847.23
+                            </p>
+                          </div>
+                          <div className="space-y-4">
+                            <div className="space-y-2">
+                              <label className="text-sm font-medium">Amount to Withdraw (USD)</label>
+                              <div className="relative">
+                                <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                                  <span className="text-gray-500">$</span>
+                                </div>
+                                <Input
+                                  type="number"
+                                  placeholder="Amount"
+                                  className="pl-8 bg-secondary/50 border-white/10 focus-visible:ring-lavender"
+                                  value={withdrawAmount}
+                                  onChange={(e) => setWithdrawAmount(e.target.value)}
+                                  max={balance}
+                                />
+                              </div>
+                              <p className="text-xs text-white/60">
+                                Available balance: ${balance.toFixed(2)}
+                              </p>
+                            </div>
+                          </div>
+                        </TabsContent>
+                      </Tabs>
+                      <DialogFooter>
+                        <Button type="submit" onClick={handleWithdraw} className="bg-lavender hover:bg-lavender-dark">
+                          Confirm Withdrawal
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
                 </CardFooter>
               </Card>
               
@@ -292,6 +651,11 @@ const Wallet = () => {
                   <div className="space-y-3">
                     <Link to="/stocks">
                       <Button className="w-full mb-2 bg-lavender hover:bg-lavender-dark">Buy New Stocks</Button>
+                    </Link>
+                    <Link to="/payment-methods">
+                      <Button variant="outline" className="w-full mb-2 border-lavender text-lavender hover:bg-lavender/20">
+                        <CreditCard className="mr-2 h-4 w-4" /> Payment Methods
+                      </Button>
                     </Link>
                     <Link to="/analysis">
                       <Button variant="outline" className="w-full border-lavender text-lavender hover:bg-lavender/20">
@@ -429,7 +793,7 @@ const Wallet = () => {
             <div>
               <h2 className="text-xl font-semibold mb-4">Recent Transactions</h2>
               
-              <Card className="bg-secondary/20 border-white/10">
+              <Card className="bg-secondary/30 border-white/10">
                 {transactions.length > 0 ? (
                   <div className="divide-y divide-white/5">
                     {transactions.map((transaction) => (
@@ -452,6 +816,7 @@ const Wallet = () => {
                             {transaction.type === 'withdrawal' && 'Withdrawal'}
                             {transaction.type === 'purchase' && `Purchased ${transaction.symbol}`}
                             {transaction.type === 'sale' && `Sold ${transaction.symbol}`}
+                            {transaction.method && ` via ${transaction.method}`}
                           </div>
                           <div className="text-xs text-white/60">
                             {transaction.date}

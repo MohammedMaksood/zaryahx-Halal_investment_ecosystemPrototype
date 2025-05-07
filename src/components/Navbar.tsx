@@ -1,16 +1,28 @@
 
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
-import { Bell, Menu, Search, User, X } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Bell, Menu, Search, User, X, LogIn, Wallet as WalletIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const { toast } = useToast();
+  const navigate = useNavigate();
+  const { user, isAuthenticated, logout } = useAuth();
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,6 +42,20 @@ export const Navbar = () => {
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+    toggleMobileMenu(); // Close mobile menu if open
+  };
+
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(part => part[0])
+      .join('')
+      .toUpperCase();
   };
 
   return (
@@ -72,43 +98,71 @@ export const Navbar = () => {
               <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
             </form>
 
-            <Button 
-              variant="ghost" 
-              size="icon"
-              onClick={handleNotification}
-              className="hover:bg-lavender/20"
-            >
-              <Bell className="h-5 w-5" />
-            </Button>
-
-            <Dialog>
-              <DialogTrigger asChild>
-                <Button variant="ghost" size="icon" className="hover:bg-lavender/20">
-                  <User className="h-5 w-5" />
+            {isAuthenticated ? (
+              <>
+                <Button 
+                  variant="ghost" 
+                  size="icon"
+                  onClick={handleNotification}
+                  className="hover:bg-lavender/20"
+                >
+                  <Bell className="h-5 w-5" />
                 </Button>
-              </DialogTrigger>
-              <DialogContent className="sm:max-w-md glassy-card">
-                <DialogHeader>
-                  <DialogTitle className="text-gradient">Account</DialogTitle>
-                  <DialogDescription>
-                    Sign in to access your ZaryahX account
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  <Button 
-                    variant="outline" 
-                    className="w-full border-lavender text-white hover:bg-lavender/20"
-                  >
+
+                <Link to="/wallet">
+                  <Button variant="ghost" size="icon" className="hover:bg-lavender/20">
+                    <WalletIcon className="h-5 w-5" />
+                  </Button>
+                </Link>
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="hover:bg-lavender/20 rounded-full h-8 w-8 p-0">
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage src={user?.profileImage} alt={user?.name || 'User'} />
+                        <AvatarFallback className="bg-lavender text-white text-xs">
+                          {user?.name ? getInitials(user.name) : 'U'}
+                        </AvatarFallback>
+                      </Avatar>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56 bg-background/95 backdrop-blur-md border-white/10">
+                    <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={() => navigate('/account')}>
+                      <User className="mr-2 h-4 w-4" />
+                      <span>Profile</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/wallet')}>
+                      <WalletIcon className="mr-2 h-4 w-4" />
+                      <span>Wallet</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/payment-methods')}>
+                      <Bell className="mr-2 h-4 w-4" />
+                      <span>Payment Methods</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleLogout} className="text-red-400 focus:text-red-400">
+                      <LogIn className="mr-2 h-4 w-4 rotate-180" />
+                      <span>Log out</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </>
+            ) : (
+              <div className="flex items-center space-x-2">
+                <Link to="/signin">
+                  <Button variant="ghost" className="hover:bg-lavender/20">
                     Sign In
                   </Button>
-                  <Button 
-                    className="w-full bg-lavender hover:bg-lavender-dark text-white"
-                  >
-                    Create Account
+                </Link>
+                <Link to="/signup">
+                  <Button className="bg-lavender hover:bg-lavender-dark">
+                    Sign Up
                   </Button>
-                </div>
-              </DialogContent>
-            </Dialog>
+                </Link>
+              </div>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -155,53 +209,72 @@ export const Navbar = () => {
             
             <div className="pt-4 pb-2">
               <div className="flex items-center space-x-4">
-                <Button 
-                  onClick={handleNotification} 
-                  variant="outline" 
-                  size="sm" 
-                  className="flex items-center w-full justify-center space-x-2 border-lavender hover:bg-lavender/20"
-                >
-                  <Bell className="h-4 w-4" />
-                  <span>Notifications</span>
-                </Button>
-              </div>
-            </div>
-            
-            <div className="pt-2 pb-3">
-              <div className="flex items-center space-x-4">
-                <Dialog>
-                  <DialogTrigger asChild>
-                    <Button 
-                      variant="outline" 
-                      size="sm" 
-                      className="flex items-center w-full justify-center space-x-2 border-lavender hover:bg-lavender/20"
+                {isAuthenticated ? (
+                  <>
+                    <div className="flex items-center space-x-3 px-3 py-2">
+                      <Avatar className="h-10 w-10">
+                        <AvatarImage src={user?.profileImage} alt={user?.name || 'User'} />
+                        <AvatarFallback className="bg-lavender text-white">
+                          {user?.name ? getInitials(user.name) : 'U'}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <div className="font-medium">{user?.name}</div>
+                        <div className="text-xs text-white/60">{user?.email}</div>
+                      </div>
+                    </div>
+                    <div className="border-t border-white/10 my-2"></div>
+                    <Link 
+                      to="/account" 
+                      className="block rounded-md px-3 py-2 text-base font-medium hover:bg-lavender/20"
+                      onClick={toggleMobileMenu}
                     >
-                      <User className="h-4 w-4" />
-                      <span>Account</span>
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent className="sm:max-w-md glassy-card">
-                    <DialogHeader>
-                      <DialogTitle className="text-gradient">Account</DialogTitle>
-                      <DialogDescription>
-                        Sign in to access your ZaryahX account
-                      </DialogDescription>
-                    </DialogHeader>
-                    <div className="grid gap-4 py-4">
+                      My Account
+                    </Link>
+                    <Link 
+                      to="/wallet" 
+                      className="block rounded-md px-3 py-2 text-base font-medium hover:bg-lavender/20"
+                      onClick={toggleMobileMenu}
+                    >
+                      Wallet
+                    </Link>
+                    <Link 
+                      to="/payment-methods" 
+                      className="block rounded-md px-3 py-2 text-base font-medium hover:bg-lavender/20"
+                      onClick={toggleMobileMenu}
+                    >
+                      Payment Methods
+                    </Link>
+                    <button 
+                      className="w-full text-left block rounded-md px-3 py-2 text-base font-medium text-red-400 hover:bg-red-500/10"
+                      onClick={handleLogout}
+                    >
+                      Log Out
+                    </button>
+                  </>
+                ) : (
+                  <div className="w-full grid grid-cols-2 gap-2">
+                    <Link to="/signin" className="w-full" onClick={toggleMobileMenu}>
                       <Button 
                         variant="outline" 
-                        className="w-full border-lavender text-white hover:bg-lavender/20"
+                        size="sm" 
+                        className="flex items-center w-full justify-center space-x-2 border-lavender hover:bg-lavender/20"
                       >
-                        Sign In
+                        <LogIn className="h-4 w-4" />
+                        <span>Sign In</span>
                       </Button>
+                    </Link>
+                    <Link to="/signup" className="w-full" onClick={toggleMobileMenu}>
                       <Button 
-                        className="w-full bg-lavender hover:bg-lavender-dark text-white"
+                        size="sm" 
+                        className="flex items-center w-full justify-center space-x-2 bg-lavender hover:bg-lavender-dark"
                       >
-                        Create Account
+                        <User className="h-4 w-4" />
+                        <span>Sign Up</span>
                       </Button>
-                    </div>
-                  </DialogContent>
-                </Dialog>
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
 
