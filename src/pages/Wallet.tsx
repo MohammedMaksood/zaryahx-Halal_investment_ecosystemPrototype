@@ -1,10 +1,9 @@
-
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Wallet, ShoppingBag, ArrowUp, ArrowDown } from "lucide-react";
+import { Wallet as WalletIcon, ShoppingBag, ArrowUp, ArrowDown } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import { useToast } from '@/hooks/use-toast';
@@ -234,7 +233,7 @@ const Wallet = () => {
               <Card className="bg-gradient-to-br from-lavender/30 to-lavender/5 border-white/10">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
-                    <Wallet className="h-5 w-5" />
+                    <WalletIcon className="h-5 w-5" />
                     Balance
                   </CardTitle>
                   <CardDescription className="text-white/60">Available funds</CardDescription>
