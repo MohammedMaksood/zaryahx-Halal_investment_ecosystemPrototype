@@ -9,7 +9,7 @@ import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { CreditCard, Wallet as WalletIcon, DollarSign, PlusCircle, Bitcoin, User, Trash2, Check } from 'lucide-react';
+import { CreditCard, Wallet, DollarSign, PlusCircle, Bitcoin, User, Trash2, Check } from 'lucide-react';
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
@@ -17,11 +17,38 @@ import * as z from 'zod';
 import LoadingAnimation from '@/components/LoadingAnimation';
 import { useToast } from '@/hooks/use-toast';
 
+// Define a union type for all payment method types
+interface BasePaymentMethod {
+  id: string;
+  type: string;
+  name: string;
+  isDefault: boolean;
+}
+
+interface CardPaymentMethod extends BasePaymentMethod {
+  type: 'card';
+  lastDigits: string;
+  expiryDate: string;
+}
+
+interface UpiPaymentMethod extends BasePaymentMethod {
+  type: 'upi';
+  upiId: string;
+}
+
+interface CryptoPaymentMethod extends BasePaymentMethod {
+  type: 'crypto';
+  walletAddress: string;
+  cryptoType: string;
+}
+
+type PaymentMethod = CardPaymentMethod | UpiPaymentMethod | CryptoPaymentMethod;
+
 const PaymentMethods = () => {
   const { user, isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [activeMethods, setActiveMethods] = useState([
+  const [activeMethods, setActiveMethods] = useState<PaymentMethod[]>([
     {
       id: '1',
       type: 'card',
@@ -128,7 +155,7 @@ const PaymentMethods = () => {
 
   // Form submission handlers
   const onCardSubmit = (data: z.infer<typeof cardFormSchema>) => {
-    const newMethod = {
+    const newMethod: CardPaymentMethod = {
       id: Math.random().toString(36).substring(2, 11),
       type: 'card',
       name: `Card ending in ${data.cardNumber.slice(-4)}`,
@@ -148,7 +175,7 @@ const PaymentMethods = () => {
   };
   
   const onUpiSubmit = (data: z.infer<typeof upiFormSchema>) => {
-    const newMethod = {
+    const newMethod: UpiPaymentMethod = {
       id: Math.random().toString(36).substring(2, 11),
       type: 'upi',
       name: `UPI ID: ${data.upiId}`,
@@ -167,7 +194,7 @@ const PaymentMethods = () => {
   };
   
   const onCryptoSubmit = (data: z.infer<typeof cryptoFormSchema>) => {
-    const newMethod = {
+    const newMethod: CryptoPaymentMethod = {
       id: Math.random().toString(36).substring(2, 11),
       type: 'crypto',
       name: `${data.cryptoType} Wallet`,
