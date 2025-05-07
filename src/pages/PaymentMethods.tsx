@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
@@ -519,7 +518,7 @@ const PaymentMethods = () => {
               <CardContent className="space-y-4">
                 <Link to="/wallet">
                   <Button variant="outline" className="w-full border-lavender text-lavender hover:bg-lavender/20">
-                    <WalletIcon className="mr-2 h-4 w-4" /> Go to Wallet
+                    <Wallet className="mr-2 h-4 w-4" /> Go to Wallet
                   </Button>
                 </Link>
                 <Link to="/account">
