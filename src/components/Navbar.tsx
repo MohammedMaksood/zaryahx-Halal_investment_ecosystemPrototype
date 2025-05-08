@@ -1,10 +1,8 @@
 
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Bell, Menu, Search, User, X, LogIn, Wallet as WalletIcon } from 'lucide-react';
+import { Bell, Menu, User, X, LogIn, Wallet } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import {
@@ -19,19 +17,9 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 export const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const { toast } = useToast();
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuth();
-
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    toast({
-      title: "Search initiated",
-      description: `Searching for: ${searchQuery}`,
-    });
-    setSearchQuery('');
-  };
 
   const handleNotification = () => {
     toast({
@@ -86,18 +74,8 @@ export const Navbar = () => {
             </Link>
           </nav>
 
-          {/* Desktop Right Actions */}
+          {/* Desktop Right Actions - Search bar removed */}
           <div className="hidden md:flex items-center space-x-4">
-            <form onSubmit={handleSearch} className="relative w-auto">
-              <Input
-                placeholder="Search..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-[180px] bg-secondary/50 border-white/10 focus-visible:ring-lavender"
-              />
-              <Search className="absolute right-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-            </form>
-
             {isAuthenticated ? (
               <>
                 <Button 
@@ -111,7 +89,7 @@ export const Navbar = () => {
 
                 <Link to="/wallet">
                   <Button variant="ghost" size="icon" className="hover:bg-lavender/20">
-                    <WalletIcon className="h-5 w-5" />
+                    <Wallet className="h-5 w-5" />
                   </Button>
                 </Link>
 
@@ -134,7 +112,7 @@ export const Navbar = () => {
                       <span>Profile</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate('/wallet')}>
-                      <WalletIcon className="mr-2 h-4 w-4" />
+                      <Wallet className="mr-2 h-4 w-4" />
                       <span>Wallet</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate('/payment-methods')}>
@@ -277,25 +255,6 @@ export const Navbar = () => {
                 )}
               </div>
             </div>
-
-            <form onSubmit={handleSearch} className="pt-2 pb-3">
-              <div className="relative">
-                <Input
-                  placeholder="Search..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full bg-secondary/50 border-white/10 focus-visible:ring-lavender"
-                />
-                <Button 
-                  type="submit" 
-                  variant="ghost" 
-                  size="icon" 
-                  className="absolute right-0 top-0"
-                >
-                  <Search className="h-4 w-4" />
-                </Button>
-              </div>
-            </form>
           </div>
         </div>
       )}

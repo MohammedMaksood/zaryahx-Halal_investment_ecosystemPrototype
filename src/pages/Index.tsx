@@ -1,14 +1,17 @@
-
 import React from 'react';
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FeaturedCard from "@/components/FeaturedCard";
 import StockCard from "@/components/StockCard";
 import GroceryCard from "@/components/GroceryCard";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Index = () => {
+  const { isAuthenticated } = useAuth();
+  
   // Mock data
   const featuredStocks = [
     {
@@ -70,12 +73,25 @@ const Index = () => {
               ZaryahX provides a comprehensive ecosystem for halal investments, Islamic education, and halal groceries - all guided by Shariah principles.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                size="lg"
-                className="bg-lavender hover:bg-lavender-dark text-white font-medium" 
-              >
-                Create Account
-              </Button>
+              {isAuthenticated ? (
+                <Link to="/account">
+                  <Button 
+                    size="lg"
+                    className="bg-lavender hover:bg-lavender-dark text-white font-medium" 
+                  >
+                    My Account
+                  </Button>
+                </Link>
+              ) : (
+                <Link to="/signup">
+                  <Button 
+                    size="lg"
+                    className="bg-lavender hover:bg-lavender-dark text-white font-medium" 
+                  >
+                    Create Account
+                  </Button>
+                </Link>
+              )}
               <Button 
                 size="lg"
                 variant="outline" 
@@ -117,7 +133,7 @@ const Index = () => {
               title="Stock Analysis"
               description="Search for any stock to analyze its Shariah compliance through our advanced AI-powered screening technology."
               icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6 text-lavender">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 11-4 0 2 2 0 014 0z" />
               </svg>}
               linkTo="/analysis"
             />
@@ -190,7 +206,7 @@ const Index = () => {
                   </div>
                   <div className="ml-4">
                     <h3 className="font-semibold text-lg mb-1">Shariah Compliance</h3>
-                    <p className="text-white/70">All investments are rigorously screened for adherence to Islamic principles, avoiding interest (riba), gambling (maysir), and uncertainty (gharar).</p>
+                    <p className="text-white/70">All investments are rigorously screened for adherence to Islamic principles, avoiding interest (riba), gambling (maysir), and other haram activities.</p>
                   </div>
                 </div>
                 <div className="flex items-start">
@@ -306,12 +322,25 @@ const Index = () => {
               Start your halal investment journey today and align your finances with your faith.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button 
-                size="lg"
-                className="bg-lavender hover:bg-lavender-dark text-white font-medium" 
-              >
-                Create Account
-              </Button>
+              {isAuthenticated ? (
+                <Link to="/account">
+                  <Button 
+                    size="lg"
+                    className="bg-lavender hover:bg-lavender-dark text-white font-medium" 
+                  >
+                    My Account
+                  </Button>
+                </Link>
+              ) : (
+                <Link to="/signup">
+                  <Button 
+                    size="lg"
+                    className="bg-lavender hover:bg-lavender-dark text-white font-medium" 
+                  >
+                    Create Account
+                  </Button>
+                </Link>
+              )}
               <Button 
                 size="lg"
                 variant="outline" 

@@ -22,6 +22,12 @@ const Analysis = () => {
     description: string;
   } | null>(null);
 
+  // List of terms that should always be classified as haram
+  const haramTerms = [
+    'pork', 'alcohol', 'beer', 'wine', 'liquor', 'gambling', 'casino', 'tobacco', 'cigarette',
+    'interest', 'riba', 'usury', 'bank', 'conventional banking', 'adult', 'entertainment', 'pig'
+  ];
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     
@@ -35,22 +41,31 @@ const Analysis = () => {
     
     // Simulate API call
     setTimeout(() => {
+      const searchLower = searchQuery.toLowerCase();
+      
+      // Check if any of the haram terms are in the search query
+      const containsHaramTerm = haramTerms.some(term => searchLower.includes(term));
+      
       const mockResponse = {
-        // Random result for demonstration
-        result: Math.random() > 0.3 ? 'halal' : 'haram',
+        // If it contains haram term, always return haram, otherwise use randomization (with higher chance of halal)
+        result: containsHaramTerm ? 'haram' : (Math.random() > 0.3 ? 'halal' : 'haram'),
         stockInfo: {
           name: searchQuery.toUpperCase().includes('APPLE') ? 'Apple Inc.' : 
                 searchQuery.toUpperCase().includes('MSFT') ? 'Microsoft Corporation' : 
                 searchQuery.toUpperCase().includes('GOOGL') ? 'Alphabet Inc.' : 
-                `${searchQuery.charAt(0).toUpperCase() + searchQuery.slice(1)} Corporation`,
+                `${searchQuery.charAt(0).toUpperCase() + searchQuery.slice(1)}`,
           symbol: searchQuery.toUpperCase().includes('APPLE') ? 'AAPL' : 
                  searchQuery.toUpperCase().includes('MSFT') ? 'MSFT' : 
                  searchQuery.toUpperCase().includes('GOOGL') ? 'GOOGL' : 
                  searchQuery.toUpperCase().slice(0, 4),
           price: Number((Math.random() * 500 + 50).toFixed(2)),
           change: Number((Math.random() * 5 - 2.5).toFixed(2)),
-          sector: ['Technology', 'Finance', 'Healthcare', 'Consumer Goods', 'Energy'][Math.floor(Math.random() * 5)],
-          description: 'This is a description of the company and its operations. The analysis shows compliance with Islamic principles based on financial metrics and business activities.'
+          sector: containsHaramTerm ? 
+                 'Non-Compliant Industry' : 
+                 ['Technology', 'Finance', 'Healthcare', 'Consumer Goods', 'Energy'][Math.floor(Math.random() * 5)],
+          description: containsHaramTerm ? 
+                      'This company is involved in activities that are not Shariah-compliant. Investment in this company is not recommended for those following Islamic principles.' :
+                      'This is a description of the company and its operations. The analysis shows compliance with Islamic principles based on financial metrics and business activities.'
         }
       };
       
@@ -322,4 +337,3 @@ const Analysis = () => {
 };
 
 export default Analysis;
-

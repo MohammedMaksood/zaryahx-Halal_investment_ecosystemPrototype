@@ -2,79 +2,157 @@
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, Map } from "lucide-react";
+import { Search, Map, X } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import AcademicCard from "@/components/AcademicCard";
 import LoadingAnimation from "@/components/LoadingAnimation";
+import { 
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter
+} from "@/components/ui/dialog";
 
 const Academics = () => {
   const [searchQuery, setSearchQuery] = useState("");
   const [searchCity, setSearchCity] = useState("");
   const [activeType, setActiveType] = useState('all');
   const [loading, setLoading] = useState(false);
+  const [selectedInstitution, setSelectedInstitution] = useState<(typeof academicInstitutions[0]) | null>(null);
   
-  // Mock data
+  // Mock data with added images and details
   const academicInstitutions = [
     {
+      id: 1,
       name: "Al-Huda Islamic School",
       type: "school" as const,
       location: "New York, NY",
       distance: "2.3 miles",
-      rating: 4.7
+      rating: 4.7,
+      image: "https://images.unsplash.com/photo-1597600159211-d6c104f408d1?auto=format&fit=crop&q=80&w=400",
+      description: "Al-Huda Islamic School provides a comprehensive education based on Islamic principles. The curriculum includes Quran, Arabic language, Islamic studies alongside standard academic subjects like mathematics, science, and language arts.",
+      founded: "1995",
+      students: 350,
+      teachers: 28,
+      facilities: ["Library", "Computer Lab", "Prayer Room", "Sports Field"],
+      website: "www.alhudaschool.edu"
     },
     {
+      id: 2,
       name: "Masjid Manhattan",
       type: "masjid" as const,
       location: "New York, NY",
       distance: "1.8 miles",
-      rating: 4.9
+      rating: 4.9,
+      image: "https://images.unsplash.com/photo-1564214761401-e14efe64f9e1?auto=format&fit=crop&q=80&w=400",
+      description: "Masjid Manhattan serves the Muslim community in downtown New York. It offers daily prayers, Friday sermons, and weekend Islamic schools for children. The mosque also hosts community events and provides assistance to those in need.",
+      founded: "1970",
+      capacity: "500 worshippers",
+      services: ["Daily Prayers", "Friday Prayers", "Weekend School", "Community Events", "Funeral Services"],
+      imams: ["Sheikh Abdullah Rahman", "Sheikh Mohammed Hassan"],
+      website: "www.masjidmanhattan.org"
     },
     {
+      id: 3,
       name: "Zaytuna College",
       type: "college" as const,
       location: "Berkeley, CA",
-      rating: 4.8
+      rating: 4.8,
+      image: "https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?auto=format&fit=crop&q=80&w=400",
+      description: "Zaytuna College is America's first accredited Muslim liberal arts college. It offers undergraduate degrees combining Islamic and Western scholarship, preparing students for careers in various fields while maintaining Islamic values.",
+      founded: "2009",
+      degrees: ["Bachelor of Arts in Islamic Law and Theology", "Master of Arts in Islamic Texts"],
+      faculty: 15,
+      students: 95,
+      accreditation: "WASC Senior College and University Commission",
+      website: "www.zaytuna.edu"
     },
     {
+      id: 4,
       name: "Islamic Center of Southern California",
       type: "center" as const,
       location: "Los Angeles, CA",
       distance: "3.2 miles",
-      rating: 4.6
+      rating: 4.6,
+      image: "https://images.unsplash.com/photo-1581616446966-3f408dca5e94?auto=format&fit=crop&q=80&w=400",
+      description: "The Islamic Center of Southern California is one of the largest mosques in the region. It offers a wide range of religious, educational, and social services to the Muslim community in Los Angeles.",
+      founded: "1952",
+      facilities: ["Main Prayer Hall", "Community Center", "Educational Classrooms", "Library", "Conference Room"],
+      services: ["Daily Prayers", "Friday Prayer", "Youth Programs", "Family Counseling", "Matrimonial Services"],
+      website: "www.islamiccenter.org"
     },
     {
+      id: 5,
       name: "Qalam Institute",
       type: "center" as const,
       location: "Dallas, TX",
-      rating: 4.5
+      rating: 4.5,
+      image: "https://images.unsplash.com/photo-1583547587873-ef05858059c9?auto=format&fit=crop&q=80&w=400",
+      description: "Qalam Institute is dedicated to the study and teaching of Islamic sciences. It offers various courses and seminars on Quran, Hadith, Arabic, and Islamic law. Their programs cater to students of all levels.",
+      founded: "2011",
+      programs: ["Quran Memorization", "Arabic Language", "Islamic Jurisprudence", "Hadith Studies", "Islamic History"],
+      website: "www.qalaminstitute.org"
     },
     {
+      id: 6,
       name: "Noor Academy",
       type: "school" as const,
       location: "Chicago, IL",
       distance: "4.1 miles",
-      rating: 4.3
+      rating: 4.3,
+      image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&q=80&w=400",
+      description: "Noor Academy provides Islamic education alongside the standard curriculum. Students learn Quran, Arabic, and Islamic studies while receiving a strong foundation in math, science, and other academic subjects.",
+      founded: "2003",
+      grades: "PreK-12",
+      students: 280,
+      services: ["After-School Programs", "Summer Camp", "Parent Workshops"],
+      website: "www.nooracademy.org"
     },
     {
+      id: 7,
       name: "American Islamic College",
       type: "college" as const,
       location: "Chicago, IL",
-      rating: 4.2
+      rating: 4.2,
+      image: "https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?auto=format&fit=crop&q=80&w=400",
+      description: "American Islamic College offers undergraduate and graduate degrees in Islamic Studies and Arabic language. The college promotes understanding of Islam in the American context through education and research.",
+      founded: "1981",
+      degrees: ["Bachelor of Arts in Islamic Studies", "Master of Arts in Islamic Studies"],
+      faculty: 12,
+      students: 85,
+      website: "www.aicusa.edu"
     },
     {
+      id: 8,
       name: "Islamic Association of Raleigh",
       type: "masjid" as const,
       location: "Raleigh, NC",
       distance: "2.8 miles",
-      rating: 4.8
+      rating: 4.8,
+      image: "https://images.unsplash.com/photo-1553071358-3debba0f524c?auto=format&fit=crop&q=80&w=400",
+      description: "The Islamic Association of Raleigh serves the Muslim community in Raleigh and surrounding areas. The mosque provides religious services, educational programs, and social activities for Muslims of all ages.",
+      founded: "1985",
+      capacity: "1,200 worshippers",
+      facilities: ["Main Prayer Hall", "Educational Wing", "Community Hall", "Library", "Playground"],
+      services: ["Daily Prayers", "Weekend School", "Youth Activities", "Interfaith Events"],
+      website: "www.raleighmasjid.org"
     },
     {
+      id: 9,
       name: "Quranic Literacy Institute",
       type: "center" as const,
       location: "Houston, TX",
       distance: "5.3 miles",
-      rating: 4.4
+      rating: 4.4,
+      image: "https://images.unsplash.com/photo-1577324214097-ae3e7d756f0d?auto=format&fit=crop&q=80&w=400",
+      description: "Quranic Literacy Institute focuses on teaching the Quran and Islamic studies. They offer courses for all age groups and levels of proficiency, from beginners to advanced students of the Quran.",
+      founded: "2008",
+      programs: ["Quran Reading", "Tajweed", "Memorization", "Tafsir (Interpretation)", "Arabic for Quran Understanding"],
+      instructors: 8,
+      students: "over 200",
+      website: "www.quraniclit.org"
     }
   ];
 
@@ -110,6 +188,10 @@ const Academics = () => {
     }, 800);
   };
 
+  const viewInstitutionDetails = (institution: typeof academicInstitutions[0]) => {
+    setSelectedInstitution(institution);
+  };
+
   const institutionTypes = [
     { id: 'all', name: 'All' },
     { id: 'school', name: 'Schools' },
@@ -119,6 +201,119 @@ const Academics = () => {
   ];
 
   const filteredInstitutions = filterInstitutions();
+
+  const renderInstitutionDialog = () => {
+    if (!selectedInstitution) return null;
+    
+    return (
+      <Dialog open={!!selectedInstitution} onOpenChange={() => setSelectedInstitution(null)}>
+        <DialogContent className="sm:max-w-3xl bg-background/95 backdrop-blur-md border-white/10">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold">{selectedInstitution.name}</DialogTitle>
+            <DialogDescription className="text-white/70">
+              {selectedInstitution.location} {selectedInstitution.distance ? `· ${selectedInstitution.distance}` : ''}
+            </DialogDescription>
+          </DialogHeader>
+          
+          <div className="grid md:grid-cols-2 gap-6 py-4">
+            <div className="rounded-lg overflow-hidden">
+              <img 
+                src={selectedInstitution.image} 
+                alt={selectedInstitution.name}
+                className="w-full h-full object-cover"
+              />
+            </div>
+            
+            <div className="space-y-4">
+              <div>
+                <h4 className="text-sm text-white/60 mb-1">Description</h4>
+                <p>{selectedInstitution.description}</p>
+              </div>
+              
+              <div>
+                <h4 className="text-sm text-white/60 mb-1">Founded</h4>
+                <p>{selectedInstitution.founded}</p>
+              </div>
+              
+              {selectedInstitution.type === "school" && (
+                <>
+                  <div>
+                    <h4 className="text-sm text-white/60 mb-1">Students</h4>
+                    <p>{selectedInstitution.students}</p>
+                  </div>
+                  {selectedInstitution.teachers && (
+                    <div>
+                      <h4 className="text-sm text-white/60 mb-1">Teachers</h4>
+                      <p>{selectedInstitution.teachers}</p>
+                    </div>
+                  )}
+                </>
+              )}
+              
+              {selectedInstitution.type === "college" && (
+                <div>
+                  <h4 className="text-sm text-white/60 mb-1">Degrees Offered</h4>
+                  <ul className="list-disc list-inside space-y-1">
+                    {selectedInstitution.degrees?.map((degree, i) => (
+                      <li key={i}>{degree}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              
+              {selectedInstitution.type === "masjid" && (
+                <div>
+                  <h4 className="text-sm text-white/60 mb-1">Capacity</h4>
+                  <p>{selectedInstitution.capacity}</p>
+                </div>
+              )}
+              
+              {selectedInstitution.facilities && (
+                <div>
+                  <h4 className="text-sm text-white/60 mb-1">Facilities</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedInstitution.facilities.map((facility, i) => (
+                      <span key={i} className="px-2 py-1 rounded-full bg-lavender/20 text-sm">{facility}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              {selectedInstitution.services && (
+                <div>
+                  <h4 className="text-sm text-white/60 mb-1">Services</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedInstitution.services.map((service, i) => (
+                      <span key={i} className="px-2 py-1 rounded-full bg-lavender/20 text-sm">{service}</span>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+          
+          <DialogFooter className="flex-col sm:flex-row gap-3">
+            <div className="flex items-center text-white/70">
+              <span className="text-yellow-400 mr-1">★</span>
+              <span>{selectedInstitution.rating} / 5.0</span>
+            </div>
+            <div className="flex gap-3">
+              <Button 
+                variant="outline" 
+                className="border-lavender text-lavender hover:bg-lavender/20"
+              >
+                <Map className="h-4 w-4 mr-2" />
+                Get Directions
+              </Button>
+              <Button className="bg-lavender hover:bg-lavender-dark">
+                Visit Website
+              </Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    );
+  };
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -212,15 +407,40 @@ const Academics = () => {
                   <span className="text-white/60 text-sm">{filteredInstitutions.length} found</span>
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filteredInstitutions.map((institution, index) => (
-                    <AcademicCard
-                      key={index}
-                      name={institution.name}
-                      type={institution.type}
-                      location={institution.location}
-                      distance={institution.distance}
-                      rating={institution.rating}
-                    />
+                  {filteredInstitutions.map((institution) => (
+                    <div key={institution.id} className="glassy-card rounded-xl overflow-hidden" onClick={() => viewInstitutionDetails(institution)}>
+                      <div className="h-48 relative overflow-hidden">
+                        <img 
+                          src={institution.image} 
+                          alt={institution.name}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute top-2 right-2">
+                          <span className="px-2 py-1 rounded-full bg-black/50 text-white text-xs">
+                            {institutionTypes.find(t => t.id === institution.type)?.name.slice(0, -1)}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="p-4">
+                        <div className="flex justify-between items-start mb-2">
+                          <h3 className="font-semibold">{institution.name}</h3>
+                          <div className="flex items-center text-white/70 text-sm">
+                            <span className="text-yellow-400 mr-1">★</span>
+                            <span>{institution.rating}</span>
+                          </div>
+                        </div>
+                        <div className="text-white/60 text-sm mb-3">
+                          {institution.location}
+                          {institution.distance && <span className="ml-2">• {institution.distance}</span>}
+                        </div>
+                        <p className="text-white/80 text-sm line-clamp-2 mb-3">{institution.description}</p>
+                        <Button
+                          className="w-full bg-lavender hover:bg-lavender-dark mt-2"
+                        >
+                          View Details
+                        </Button>
+                      </div>
+                    </div>
                   ))}
                 </div>
 
@@ -322,6 +542,7 @@ const Academics = () => {
       </main>
 
       <Footer />
+      {renderInstitutionDialog()}
     </div>
   );
 };
