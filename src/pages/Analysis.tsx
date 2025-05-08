@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -20,13 +19,111 @@ const Analysis = () => {
     change: number;
     sector: string;
     description: string;
+    complianceScore: number;
+    debtRatio: number;
+    interestIncome: number;
+    illiquidAssets: number;
+    haramRevenue: number;
   } | null>(null);
 
   // List of terms that should always be classified as haram
   const haramTerms = [
     'pork', 'alcohol', 'beer', 'wine', 'liquor', 'gambling', 'casino', 'tobacco', 'cigarette',
-    'interest', 'riba', 'usury', 'bank', 'conventional banking', 'adult', 'entertainment', 'pig'
+    'interest', 'riba', 'usury', 'bank', 'conventional banking', 'adult', 'entertainment', 'pig',
+    'mortgage', 'loan', 'insurance', 'lending', 'brewery', 'distillery', 'nightclub', 'weapon'
   ];
+
+  // List of industries that are typically haram
+  const haramIndustries = [
+    'Banking', 'Conventional Finance', 'Alcohol', 'Tobacco', 'Gambling', 
+    'Weapons Manufacturing', 'Adult Entertainment', 'Pork Processing'
+  ];
+
+  // More thorough Shariah compliance check
+  const evaluateShariah = (query: string) => {
+    query = query.toLowerCase();
+    
+    // Direct match with haram terms - automatic fail
+    if (haramTerms.some(term => query.includes(term))) {
+      return {
+        result: 'haram',
+        reasons: {
+          debtRatio: Math.random() * 30 + 40, // Above 33% (non-compliant)
+          interestIncome: Math.random() * 10 + 5, // Above 5% (non-compliant)
+          illiquidAssets: Math.random() * 20 + 30, // Below 51% (non-compliant)
+          haramRevenue: Math.random() * 15 + 10, // Above 5% (non-compliant)
+          complianceScore: Math.floor(Math.random() * 30 + 10),
+          industry: haramIndustries[Math.floor(Math.random() * haramIndustries.length)]
+        }
+      };
+    }
+    
+    // For tech companies, more likely to be halal
+    if (['apple', 'msft', 'microsoft', 'googl', 'google', 'tech', 'software', 'hardware'].some(term => query.includes(term))) {
+      return {
+        result: 'halal',
+        reasons: {
+          debtRatio: Math.random() * 20 + 5, // Below 33% (compliant)
+          interestIncome: Math.random() * 3 + 1, // Below 5% (compliant)
+          illiquidAssets: Math.random() * 20 + 60, // Above 51% (compliant)
+          haramRevenue: Math.random() * 2 + 0.5, // Below 5% (compliant)
+          complianceScore: Math.floor(Math.random() * 15 + 75),
+          industry: 'Technology'
+        }
+      };
+    }
+    
+    // For other companies, randomize but with higher chance of haram for financial terms
+    const hasFinancialTerms = ['financial', 'finance', 'invest', 'capital', 'asset', 'fund'].some(term => query.includes(term));
+    
+    if (hasFinancialTerms) {
+      // Higher chance of being haram for financial companies
+      const isHaram = Math.random() > 0.3;
+      
+      if (isHaram) {
+        return {
+          result: 'haram',
+          reasons: {
+            debtRatio: Math.random() * 20 + 33, // Above 33% (non-compliant)
+            interestIncome: Math.random() * 10 + 5, // Above 5% (non-compliant)
+            illiquidAssets: Math.random() * 20 + 20, // Below 51% (non-compliant)
+            haramRevenue: Math.random() * 10 + 5, // Above 5% (non-compliant)
+            complianceScore: Math.floor(Math.random() * 20 + 30),
+            industry: 'Financial Services'
+          }
+        };
+      }
+    }
+    
+    // Default case - random with bias toward halal
+    const isHalal = Math.random() > 0.4;
+    
+    if (isHalal) {
+      return {
+        result: 'halal',
+        reasons: {
+          debtRatio: Math.random() * 20 + 5, // Below 33% (compliant)
+          interestIncome: Math.random() * 3 + 1, // Below 5% (compliant)
+          illiquidAssets: Math.random() * 20 + 60, // Above 51% (compliant)
+          haramRevenue: Math.random() * 3 + 0.5, // Below 5% (compliant)
+          complianceScore: Math.floor(Math.random() * 15 + 75),
+          industry: ['Healthcare', 'Consumer Goods', 'Manufacturing', 'Technology', 'Energy'][Math.floor(Math.random() * 5)]
+        }
+      };
+    } else {
+      return {
+        result: 'haram',
+        reasons: {
+          debtRatio: Math.random() * 20 + 33, // Above 33% (non-compliant)
+          interestIncome: Math.random() * 10 + 5, // Above 5% (non-compliant)
+          illiquidAssets: Math.random() * 20 + 20, // Below 51% (non-compliant)
+          haramRevenue: Math.random() * 10 + 5, // Above 5% (non-compliant)
+          complianceScore: Math.floor(Math.random() * 20 + 30),
+          industry: ['Mixed Business', 'Entertainment', 'Retail', 'Hospitality'][Math.floor(Math.random() * 4)]
+        }
+      };
+    }
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,14 +138,10 @@ const Analysis = () => {
     
     // Simulate API call
     setTimeout(() => {
-      const searchLower = searchQuery.toLowerCase();
-      
-      // Check if any of the haram terms are in the search query
-      const containsHaramTerm = haramTerms.some(term => searchLower.includes(term));
+      const evaluation = evaluateShariah(searchQuery);
       
       const mockResponse = {
-        // If it contains haram term, always return haram, otherwise use randomization (with higher chance of halal)
-        result: containsHaramTerm ? 'haram' : (Math.random() > 0.3 ? 'halal' : 'haram'),
+        result: evaluation.result,
         stockInfo: {
           name: searchQuery.toUpperCase().includes('APPLE') ? 'Apple Inc.' : 
                 searchQuery.toUpperCase().includes('MSFT') ? 'Microsoft Corporation' : 
@@ -60,12 +153,15 @@ const Analysis = () => {
                  searchQuery.toUpperCase().slice(0, 4),
           price: Number((Math.random() * 500 + 50).toFixed(2)),
           change: Number((Math.random() * 5 - 2.5).toFixed(2)),
-          sector: containsHaramTerm ? 
-                 'Non-Compliant Industry' : 
-                 ['Technology', 'Finance', 'Healthcare', 'Consumer Goods', 'Energy'][Math.floor(Math.random() * 5)],
-          description: containsHaramTerm ? 
-                      'This company is involved in activities that are not Shariah-compliant. Investment in this company is not recommended for those following Islamic principles.' :
-                      'This is a description of the company and its operations. The analysis shows compliance with Islamic principles based on financial metrics and business activities.'
+          sector: evaluation.reasons.industry,
+          description: evaluation.result === 'halal' ? 
+                      'This company passes Shariah screening criteria based on its financial metrics and business activities. The debt ratio, interest income, and involvement in prohibited activities are all within acceptable limits.' :
+                      'This company does not meet one or more key Shariah compliance requirements. Investment in this company is not recommended for those following Islamic principles.',
+          complianceScore: evaluation.reasons.complianceScore,
+          debtRatio: evaluation.reasons.debtRatio,
+          interestIncome: evaluation.reasons.interestIncome,
+          illiquidAssets: evaluation.reasons.illiquidAssets,
+          haramRevenue: evaluation.reasons.haramRevenue
         }
       };
       
@@ -76,23 +172,39 @@ const Analysis = () => {
     }, 3000);
   };
 
-  const getReasonsList = (isHalal: boolean) => {
+  const getReasonsList = (isHalal: boolean, stockInfo: any) => {
+    if (!stockInfo) return [];
+    
     if (isHalal) {
       return [
-        "No significant income from interest (riba)",
-        "Debt-to-asset ratio below 33%",
-        "No involvement in prohibited industries",
-        "Passes financial ratio screening criteria",
+        `Debt-to-asset ratio is ${stockInfo.debtRatio.toFixed(2)}% (below 33% threshold)`,
+        `Interest income is ${stockInfo.interestIncome.toFixed(2)}% of revenue (below 5% threshold)`,
+        `Illiquid assets ratio is ${stockInfo.illiquidAssets.toFixed(2)}% (above 51% threshold)`,
+        `Non-permissible income is ${stockInfo.haramRevenue.toFixed(2)}% (below 5% threshold)`,
         "Business activities align with Shariah principles"
       ];
     } else {
-      return [
-        "Significant revenue from interest-based activities",
-        "Debt-to-asset ratio exceeds 33%",
-        "Involvement in prohibited industries (alcohol, gambling, etc.)",
-        "Failed financial ratio screening criteria",
-        "Business model includes impermissible activities"
-      ];
+      const reasons = [];
+      
+      if (stockInfo.debtRatio > 33) {
+        reasons.push(`Debt-to-asset ratio is ${stockInfo.debtRatio.toFixed(2)}% (exceeds 33% threshold)`);
+      }
+      
+      if (stockInfo.interestIncome > 5) {
+        reasons.push(`Interest income is ${stockInfo.interestIncome.toFixed(2)}% of revenue (exceeds 5% threshold)`);
+      }
+      
+      if (stockInfo.illiquidAssets < 51) {
+        reasons.push(`Illiquid assets ratio is ${stockInfo.illiquidAssets.toFixed(2)}% (below 51% threshold)`);
+      }
+      
+      if (stockInfo.haramRevenue > 5) {
+        reasons.push(`Non-permissible income is ${stockInfo.haramRevenue.toFixed(2)}% (exceeds 5% threshold)`);
+      }
+      
+      reasons.push("Business activities include impermissible elements");
+      
+      return reasons;
     }
   };
 
@@ -180,17 +292,111 @@ const Analysis = () => {
             </div>
             
             <div className="my-6 border-t border-b border-white/10 py-6">
-              <h3 className="text-lg font-semibold mb-4">Analysis Result</h3>
+              <h3 className="text-lg font-semibold mb-4">Shariah Compliance Analysis</h3>
               <div className="mb-6">
                 <div className="flex items-center justify-between mb-2">
                   <span className="text-white/70">Shariah Compliance Score</span>
-                  <span className="font-semibold">{analysisResult === 'halal' ? '87/100' : '42/100'}</span>
+                  <span className="font-semibold">{stockInfo?.complianceScore}/100</span>
                 </div>
                 <div className="h-3 w-full bg-white/10 rounded-full overflow-hidden">
                   <div 
                     className={`h-full ${analysisResult === 'halal' ? 'bg-halal' : 'bg-haram'} rounded-full`} 
-                    style={{width: analysisResult === 'halal' ? '87%' : '42%'}}
+                    style={{width: `${stockInfo?.complianceScore}%`}}
                   ></div>
+                </div>
+              </div>
+              
+              <div className="grid md:grid-cols-2 gap-6 my-6">
+                <div>
+                  <h4 className="text-md font-medium mb-3 flex items-center">
+                    <span className={`h-2 w-2 rounded-full mr-2 ${stockInfo?.debtRatio <= 33 ? 'bg-halal' : 'bg-haram'}`}></span>
+                    Debt to Asset Ratio
+                  </h4>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-white/70">Current</span>
+                    <span className={`font-medium ${stockInfo?.debtRatio <= 33 ? 'text-halal' : 'text-haram'}`}>
+                      {stockInfo?.debtRatio.toFixed(2)}%
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm mb-2">
+                    <span className="text-white/70">Threshold</span>
+                    <span className="font-medium">33%</span>
+                  </div>
+                  <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
+                    <div 
+                      className={`h-full ${stockInfo?.debtRatio <= 33 ? 'bg-halal' : 'bg-haram'}`} 
+                      style={{width: `${(stockInfo?.debtRatio / 100) * 100}%`}}
+                    ></div>
+                  </div>
+                </div>
+                
+                <div>
+                  <h4 className="text-md font-medium mb-3 flex items-center">
+                    <span className={`h-2 w-2 rounded-full mr-2 ${stockInfo?.interestIncome <= 5 ? 'bg-halal' : 'bg-haram'}`}></span>
+                    Interest Income
+                  </h4>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-white/70">Current</span>
+                    <span className={`font-medium ${stockInfo?.interestIncome <= 5 ? 'text-halal' : 'text-haram'}`}>
+                      {stockInfo?.interestIncome.toFixed(2)}%
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm mb-2">
+                    <span className="text-white/70">Threshold</span>
+                    <span className="font-medium">5%</span>
+                  </div>
+                  <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
+                    <div 
+                      className={`h-full ${stockInfo?.interestIncome <= 5 ? 'bg-halal' : 'bg-haram'}`} 
+                      style={{width: `${(stockInfo?.interestIncome / 10) * 100}%`}}
+                    ></div>
+                  </div>
+                </div>
+                
+                <div>
+                  <h4 className="text-md font-medium mb-3 flex items-center">
+                    <span className={`h-2 w-2 rounded-full mr-2 ${stockInfo?.illiquidAssets >= 51 ? 'bg-halal' : 'bg-haram'}`}></span>
+                    Illiquid Assets Ratio
+                  </h4>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-white/70">Current</span>
+                    <span className={`font-medium ${stockInfo?.illiquidAssets >= 51 ? 'text-halal' : 'text-haram'}`}>
+                      {stockInfo?.illiquidAssets.toFixed(2)}%
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm mb-2">
+                    <span className="text-white/70">Threshold</span>
+                    <span className="font-medium">51%</span>
+                  </div>
+                  <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
+                    <div 
+                      className={`h-full ${stockInfo?.illiquidAssets >= 51 ? 'bg-halal' : 'bg-haram'}`} 
+                      style={{width: `${stockInfo?.illiquidAssets}%`}}
+                    ></div>
+                  </div>
+                </div>
+                
+                <div>
+                  <h4 className="text-md font-medium mb-3 flex items-center">
+                    <span className={`h-2 w-2 rounded-full mr-2 ${stockInfo?.haramRevenue <= 5 ? 'bg-halal' : 'bg-haram'}`}></span>
+                    Non-Permissible Revenue
+                  </h4>
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-white/70">Current</span>
+                    <span className={`font-medium ${stockInfo?.haramRevenue <= 5 ? 'text-halal' : 'text-haram'}`}>
+                      {stockInfo?.haramRevenue.toFixed(2)}%
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between text-sm mb-2">
+                    <span className="text-white/70">Threshold</span>
+                    <span className="font-medium">5%</span>
+                  </div>
+                  <div className="h-2 w-full bg-white/10 rounded-full overflow-hidden">
+                    <div 
+                      className={`h-full ${stockInfo?.haramRevenue <= 5 ? 'bg-halal' : 'bg-haram'}`} 
+                      style={{width: `${(stockInfo?.haramRevenue / 10) * 100}%`}}
+                    ></div>
+                  </div>
                 </div>
               </div>
               
@@ -198,7 +404,7 @@ const Analysis = () => {
                 {analysisResult === 'halal' ? 'Why this stock is Halal:' : 'Why this stock is not Halal:'}
               </h4>
               <ul className="space-y-2 ml-6 list-disc text-white/80">
-                {getReasonsList(analysisResult === 'halal').map((reason, index) => (
+                {stockInfo && getReasonsList(analysisResult === 'halal', stockInfo).map((reason, index) => (
                   <li key={index}>{reason}</li>
                 ))}
               </ul>
