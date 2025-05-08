@@ -773,4 +773,62 @@ const Wallet = () => {
             
             {/* Recent Transactions */}
             <div>
-              <h2 className
+              <h2 className="text-xl font-semibold mb-4">Recent Transactions</h2>
+              
+              {transactions.length > 0 ? (
+                <div className="overflow-x-auto">
+                  <table className="w-full border-collapse">
+                    <thead>
+                      <tr className="border-b border-white/10 text-left text-sm text-white/60">
+                        <th className="py-2 px-4">Date</th>
+                        <th className="py-2 px-4">Type</th>
+                        <th className="py-2 px-4">Amount</th>
+                        <th className="py-2 px-4">Method</th>
+                        <th className="py-2 px-4">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {transactions.map((tx) => (
+                        <tr key={tx.id} className="border-b border-white/5 hover:bg-white/5">
+                          <td className="py-3 px-4">{tx.date}</td>
+                          <td className="py-3 px-4 capitalize">
+                            <span className={tx.type === 'deposit' ? 'text-green-400' : tx.type === 'withdrawal' ? 'text-red-400' : ''}>
+                              {tx.type}
+                            </span>
+                          </td>
+                          <td className="py-3 px-4">
+                            <span className={tx.type === 'deposit' ? 'text-green-400' : tx.type === 'withdrawal' ? 'text-red-400' : ''}>
+                              {tx.type === 'deposit' ? '+ ' : tx.type === 'withdrawal' ? '- ' : ''}
+                              ${tx.amount.toFixed(2)}
+                            </span>
+                          </td>
+                          <td className="py-3 px-4">{tx.method || '-'}</td>
+                          <td className="py-3 px-4">
+                            <span className={`px-2 py-1 rounded-full text-xs ${
+                              tx.status === 'completed' ? 'bg-green-500/20 text-green-400' : 
+                              tx.status === 'pending' ? 'bg-yellow-500/20 text-yellow-400' : 
+                              'bg-red-500/20 text-red-400'
+                            }`}>
+                              {tx.status}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ) : (
+                <Card className="bg-secondary/20 border-white/10 p-6 text-center">
+                  <p className="text-white/70">No transaction history yet.</p>
+                </Card>
+              )}
+            </div>
+          </>
+        )}
+      </main>
+      <Footer />
+    </div>
+  );
+};
+
+export default Wallet;
