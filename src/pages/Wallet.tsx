@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, Link, useNavigate } from 'react-router-dom';
 import { Button } from "@/components/ui/button";
@@ -47,7 +46,7 @@ const Wallet = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { user, isAuthenticated, isLoading } = useAuth();
-  const [balance, setBalance] = useState(5000);
+  const [balance, setBalance] = useState(0); // Start with zero balance
   const [depositAmount, setDepositAmount] = useState('');
   const [withdrawAmount, setWithdrawAmount] = useState('');
   const [selectedDepositMethod, setSelectedDepositMethod] = useState('card');
@@ -57,6 +56,7 @@ const Wallet = () => {
   const [loading, setLoading] = useState(true);
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
+  const [showWelcomeMessage, setShowWelcomeMessage] = useState(false);
   
   // Check if we're coming from a stock buy action
   const buyAction = searchParams.get('action') === 'buy';
@@ -75,78 +75,21 @@ const Wallet = () => {
     if (isAuthenticated) {
       // Simulate fetching user wallet data
       setTimeout(() => {
-        // Mock initial transactions
-        const mockTransactions: WalletTransaction[] = [
-          {
-            id: '1',
-            type: 'deposit',
-            amount: 2000,
-            date: '2025-04-30',
-            status: 'completed',
-            method: 'Credit Card'
-          },
-          {
-            id: '2',
-            type: 'purchase',
-            amount: 894.5,
-            date: '2025-05-01',
-            symbol: 'RJHI.SR',
-            shares: 10,
-            price: 89.45,
-            status: 'completed'
-          },
-          {
-            id: '3',
-            type: 'purchase',
-            amount: 674.5,
-            date: '2025-05-03',
-            symbol: 'MSFT',
-            shares: 2,
-            price: 337.25,
-            status: 'completed'
-          },
-          {
-            id: '4',
-            type: 'deposit',
-            amount: 1000,
-            date: '2025-05-04',
-            status: 'completed',
-            method: 'UPI'
-          },
-          {
-            id: '5',
-            type: 'withdrawal',
-            amount: 500,
-            date: '2025-05-05',
-            status: 'completed',
-            method: 'Bank Transfer'
-          }
-        ];
-        
-        // Mock portfolio
-        const mockPortfolio: Portfolio[] = [
-          {
-            symbol: 'RJHI.SR',
-            name: 'Al Rajhi Bank',
-            shares: 10,
-            averagePrice: 89.45,
-            currentPrice: 89.25
-          },
-          {
-            symbol: 'MSFT',
-            name: 'Microsoft Corp.',
-            shares: 2,
-            averagePrice: 337.25,
-            currentPrice: 337.18
-          }
-        ];
+        // Start with an empty wallet
+        const mockTransactions: WalletTransaction[] = [];
+        const mockPortfolio: Portfolio[] = [];
         
         setTransactions(mockTransactions);
         setPortfolio(mockPortfolio);
         setLoading(false);
+        
+        // Show welcome message if no transactions
+        if (mockTransactions.length === 0 && balance === 0) {
+          setShowWelcomeMessage(true);
+        }
       }, 1200);
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated, balance]);
   
   // Handle stock purchase if coming from stock detail page
   useEffect(() => {
@@ -163,13 +106,23 @@ const Wallet = () => {
       
       // Open buy dialog or directly show modal
       setTimeout(() => {
-        toast({
-          title: "Ready to Invest",
-          description: `Enter the number of shares you want to buy for ${stockName} at $${price}`,
-        });
+        if (balance === 0) {
+          toast({
+            title: "Insufficient Balance",
+            description: `Please deposit funds first to invest in ${stockName}`,
+          });
+          setShowDepositModal(true);
+        } else {
+          toast({
+            title: "Ready to Invest",
+            description: `Enter the number of shares you want to buy for ${stockName} at $${price}`,
+          });
+          // Navigate to stock details with invest tab
+          navigate(`/stocks/${symbol}?tab=invest`);
+        }
       }, 1500);
     }
-  }, [buyAction, symbol, price, toast]);
+  }, [buyAction, symbol, price, toast, navigate, balance]);
 
   const handleDeposit = () => {
     const amount = parseFloat(depositAmount);
@@ -201,6 +154,7 @@ const Wallet = () => {
     setTransactions(prev => [newTransaction, ...prev]);
     setDepositAmount('');
     setShowDepositModal(false);
+    setShowWelcomeMessage(false);
     
     toast({
       title: "Deposit Successful",
@@ -303,6 +257,26 @@ const Wallet = () => {
           </div>
         ) : (
           <>
+            {showWelcomeMessage && (
+              <Card className="mb-8 bg-lavender/10 border-lavender/30">
+                <CardHeader>
+                  <CardTitle>Welcome to Your Investment Wallet</CardTitle>
+                  <CardDescription>Get started by adding funds to your wallet</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <p className="mb-4 text-white/80">
+                    Your wallet is ready! To begin investing in halal stocks, you'll need to deposit funds first.
+                  </p>
+                  <Button 
+                    onClick={() => setShowDepositModal(true)} 
+                    className="bg-lavender hover:bg-lavender-dark"
+                  >
+                    <Plus className="mr-2 h-4 w-4" /> Add Funds Now
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+            
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
               {/* Main Wallet Balance Card */}
               <Card className="bg-gradient-to-br from-lavender/30 to-lavender/5 border-white/10">
@@ -380,6 +354,7 @@ const Wallet = () => {
                         </TabsContent>
                         
                         <TabsContent value="upi" className="space-y-4">
+                          {/* UPI deposit content */}
                           <div className="p-4 border border-white/10 rounded-lg bg-lavender/5">
                             <div className="flex items-center mb-4">
                               <DollarSign className="h-5 w-5 text-green-400 mr-2" />
@@ -419,6 +394,7 @@ const Wallet = () => {
                         </TabsContent>
                         
                         <TabsContent value="crypto" className="space-y-4">
+                          {/* Crypto deposit content */}
                           <div className="p-4 border border-white/10 rounded-lg bg-lavender/5">
                             <div className="flex items-center mb-4">
                               <Bitcoin className="h-5 w-5 text-yellow-400 mr-2" />
@@ -466,6 +442,7 @@ const Wallet = () => {
                       <Button 
                         variant="outline"
                         className="border-lavender text-lavender hover:bg-lavender/20"
+                        disabled={balance <= 0}
                       >
                         <ArrowUp className="mr-2 h-4 w-4" /> Withdraw
                       </Button>
@@ -485,6 +462,7 @@ const Wallet = () => {
                         </TabsList>
                         
                         <TabsContent value="bank" className="space-y-4">
+                          {/* Bank withdrawal content */}
                           <div className="p-4 border border-white/10 rounded-lg bg-lavender/5">
                             <div className="flex items-center mb-4">
                               <CreditCard className="h-5 w-5 text-lavender mr-2" />
@@ -737,7 +715,7 @@ const Wallet = () => {
                   <CardDescription>Add money to your investment wallet</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <form onSubmit={handleDeposit}>
+                  <form onSubmit={(e) => { e.preventDefault(); handleDeposit(); }}>
                     <div className="flex space-x-2">
                       <div className="relative flex-1">
                         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -765,7 +743,7 @@ const Wallet = () => {
                   <CardDescription>Transfer money from your wallet</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <form onSubmit={handleWithdraw}>
+                  <form onSubmit={(e) => { e.preventDefault(); handleWithdraw(); }}>
                     <div className="flex space-x-2">
                       <div className="relative flex-1">
                         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
@@ -780,7 +758,11 @@ const Wallet = () => {
                           max={balance}
                         />
                       </div>
-                      <Button type="submit" className="bg-lavender hover:bg-lavender-dark">
+                      <Button 
+                        type="submit" 
+                        className="bg-lavender hover:bg-lavender-dark"
+                        disabled={balance <= 0}
+                      >
                         Withdraw
                       </Button>
                     </div>
@@ -791,73 +773,4 @@ const Wallet = () => {
             
             {/* Recent Transactions */}
             <div>
-              <h2 className="text-xl font-semibold mb-4">Recent Transactions</h2>
-              
-              <Card className="bg-secondary/30 border-white/10">
-                {transactions.length > 0 ? (
-                  <div className="divide-y divide-white/5">
-                    {transactions.map((transaction) => (
-                      <div key={transaction.id} className="p-4 flex justify-between items-center">
-                        <div>
-                          <div className="font-medium flex items-center">
-                            {transaction.type === 'deposit' && (
-                              <ArrowDown className="mr-2 h-4 w-4 text-green-400" />
-                            )}
-                            {transaction.type === 'withdrawal' && (
-                              <ArrowUp className="mr-2 h-4 w-4 text-red-400" />
-                            )}
-                            {transaction.type === 'purchase' && (
-                              <ShoppingBag className="mr-2 h-4 w-4 text-lavender" />
-                            )}
-                            {transaction.type === 'sale' && (
-                              <ShoppingBag className="mr-2 h-4 w-4 text-lavender" />
-                            )}
-                            {transaction.type === 'deposit' && 'Deposit'}
-                            {transaction.type === 'withdrawal' && 'Withdrawal'}
-                            {transaction.type === 'purchase' && `Purchased ${transaction.symbol}`}
-                            {transaction.type === 'sale' && `Sold ${transaction.symbol}`}
-                            {transaction.method && ` via ${transaction.method}`}
-                          </div>
-                          <div className="text-xs text-white/60">
-                            {transaction.date}
-                            {transaction.shares && transaction.price && (
-                              <span> • {transaction.shares} shares @ ${transaction.price}</span>
-                            )}
-                          </div>
-                        </div>
-                        <div>
-                          <div className={`text-right font-medium ${
-                            transaction.type === 'deposit' || transaction.type === 'sale' ? 'text-green-400' : 'text-red-400'
-                          }`}>
-                            {transaction.type === 'deposit' || transaction.type === 'sale' ? '+' : '-'}${transaction.amount.toFixed(2)}
-                          </div>
-                          <div className="text-xs text-right">
-                            <span className={`px-2 py-0.5 rounded-full ${
-                              transaction.status === 'completed' ? 'bg-green-500/10 text-green-400' : 
-                              transaction.status === 'pending' ? 'bg-yellow-500/10 text-yellow-400' : 
-                              'bg-red-500/10 text-red-400'
-                            }`}>
-                              {transaction.status.charAt(0).toUpperCase() + transaction.status.slice(1)}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : (
-                  <CardContent className="text-center py-6">
-                    <p className="text-white/70">No transactions yet</p>
-                  </CardContent>
-                )}
-              </Card>
-            </div>
-          </>
-        )}
-      </main>
-      
-      <Footer />
-    </div>
-  );
-};
-
-export default Wallet;
+              <h2 className

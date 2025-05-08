@@ -29,14 +29,20 @@ const StockCard: React.FC<StockCardProps> = ({
   const { toast } = useToast();
   const navigate = useNavigate();
 
-  const handleInvest = () => {
+  const handleViewDetails = () => {
+    // Navigate to stock details instead of wallet
+    navigate(`/stocks/${symbol}`);
+  };
+
+  const handleInvest = (e: React.MouseEvent) => {
+    e.stopPropagation();
     toast({
-      title: "Investment Started",
-      description: `You started the investment process for ${name} (${symbol})`,
+      title: "Investment Options",
+      description: `Choose investment options for ${name} (${symbol})`,
     });
     
-    // Navigate to wallet page with the stock information
-    navigate(`/wallet?action=buy&symbol=${symbol}&price=${price}`);
+    // Navigate to stock details with investment tab active
+    navigate(`/stocks/${symbol}?tab=invest`);
   };
 
   const handleShare = (e: React.MouseEvent) => {
@@ -101,10 +107,7 @@ const StockCard: React.FC<StockCardProps> = ({
       </div>
       
       <Button 
-        onClick={(e) => {
-          e.stopPropagation();
-          handleInvest();
-        }}
+        onClick={handleInvest}
         className="w-full bg-lavender hover:bg-lavender-dark"
         disabled={status === 'haram'}
       >
