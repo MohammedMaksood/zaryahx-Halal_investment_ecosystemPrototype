@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
@@ -9,6 +9,8 @@ import HalalBadge from "@/components/HalalBadge";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/contexts/AuthContext";
+// Import Zoya API service
+import { getShariahCompliance, ZoyaScreeningResult } from "@/services/zoyaApi";
 
 const Analysis = () => {
   const navigate = useNavigate();
@@ -16,9 +18,11 @@ const Analysis = () => {
   const { isAuthenticated } = useAuth();
   
   const [searchQuery, setSearchQuery] = useState("");
+  const [searchType, setSearchType] = useState<'symbol' | 'name'>('symbol');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisComplete, setAnalysisComplete] = useState(false);
   const [analysisResult, setAnalysisResult] = useState<'halal' | 'haram' | null>(null);
+  const [recentSearches, setRecentSearches] = useState<string[]>([]);
   const [stockInfo, setStockInfo] = useState<{
     name: string;
     symbol: string;
@@ -32,12 +36,31 @@ const Analysis = () => {
     illiquidAssets: number;
     haramRevenue: number;
   } | null>(null);
+  
+  // Load recent searches from localStorage on component mount
+  useEffect(() => {
+    const savedSearches = localStorage.getItem('recentSearches');
+    if (savedSearches) {
+      setRecentSearches(JSON.parse(savedSearches));
+    }
+  }, []);
+  
+  // Save recent searches to localStorage when they change
+  useEffect(() => {
+    if (recentSearches.length > 0) {
+      localStorage.setItem('recentSearches', JSON.stringify(recentSearches));
+    }
+  }, [recentSearches]);
 
   // List of terms that should always be classified as haram
   const haramTerms = [
-    'pork', 'alcohol', 'beer', 'wine', 'liquor', 'gambling', 'casino', 'tobacco', 'cigarette',
-    'interest', 'riba', 'usury', 'bank', 'conventional banking', 'adult', 'entertainment', 'pig',
-    'mortgage', 'loan', 'insurance', 'lending', 'brewery', 'distillery', 'nightclub', 'weapon'
+    'alcohol', 'beer', 'wine', 'liquor', 'spirits', 'brewery', 'distillery', 'winery', 'vodka', 'whiskey', 'rum', 'tequila', 'gin', 'brandy', 'cognac',
+    'gambling', 'casino', 'betting', 'lottery', 'poker', 'slots', 'bookmaker', 'wagering', 'sportsbook',
+    'tobacco', 'cigarette', 'smoking', 'vape', 'cigar', 'nicotine', 'marlboro', 'newport', 'camel',
+    'pork', 'pig', 'swine', 'bacon', 'ham',
+    'interest', 'riba', 'conventional bank', 'mortgage', 'loan', 'lending', 'investment bank', 'commercial bank',
+    'weapon', 'defense', 'missile', 'gun', 'firearm', 'ammunition', 'military', 'arms',
+    'adult entertainment', 'pornography', 'adult content', 'adult film'
   ];
 
   // List of industries that are typically haram
@@ -46,12 +69,38 @@ const Analysis = () => {
     'Weapons Manufacturing', 'Adult Entertainment', 'Pork Processing'
   ];
 
-  // More thorough Shariah compliance check
+  // Comprehensive Shariah compliance check based on AAOIFI standards
   const evaluateShariah = (query: string) => {
     query = query.toLowerCase();
     
-    // Direct match with haram terms - automatic fail
-    if (haramTerms.some(term => query.includes(term))) {
+    // STRICT CHECK: Direct match with haram terms - automatic fail
+    // This ensures alcohol companies are always marked as haram
+    const haramTermFound = haramTerms.find(term => query.includes(term));
+    
+    if (haramTermFound) {
+      console.log("Haram term detected in query:", query, "Term found:", haramTermFound);
+      
+      // Determine the specific industry based on the term found
+      let industry = '';
+      
+      if (['alcohol', 'beer', 'wine', 'liquor', 'spirits', 'brewery', 'distillery', 'winery', 'vodka', 'whiskey', 'rum', 'tequila', 'gin', 'brandy', 'cognac'].some(term => haramTermFound.includes(term))) {
+        industry = 'Alcoholic Beverages';
+      } else if (['tobacco', 'cigarette', 'smoking', 'vape', 'cigar', 'nicotine', 'marlboro', 'newport', 'camel'].some(term => haramTermFound.includes(term))) {
+        industry = 'Tobacco';
+      } else if (['gambling', 'casino', 'betting', 'lottery', 'poker', 'slots', 'bookmaker', 'wagering', 'sportsbook'].some(term => haramTermFound.includes(term))) {
+        industry = 'Gambling';
+      } else if (['bank', 'interest', 'riba', 'mortgage', 'loan', 'lending', 'investment bank', 'commercial bank'].some(term => haramTermFound.includes(term))) {
+        industry = 'Conventional Banking';
+      } else if (['pork', 'pig', 'swine', 'bacon', 'ham'].some(term => haramTermFound.includes(term))) {
+        industry = 'Pork Processing';
+      } else if (['weapon', 'defense', 'missile', 'gun', 'firearm', 'ammunition', 'military', 'arms'].some(term => haramTermFound.includes(term))) {
+        industry = 'Weapons Manufacturing';
+      } else if (['adult entertainment', 'pornography', 'adult content', 'adult film'].some(term => haramTermFound.includes(term))) {
+        industry = 'Adult Entertainment';
+      } else {
+        industry = 'Non-Compliant Industry';
+      }
+      
       return {
         result: 'haram',
         reasons: {
@@ -60,7 +109,7 @@ const Analysis = () => {
           illiquidAssets: Math.random() * 20 + 30, // Below 51% (non-compliant)
           haramRevenue: Math.random() * 15 + 10, // Above 5% (non-compliant)
           complianceScore: Math.floor(Math.random() * 30 + 10),
-          industry: haramIndustries[Math.floor(Math.random() * haramIndustries.length)]
+          industry: industry
         }
       };
     }
@@ -132,7 +181,91 @@ const Analysis = () => {
     }
   };
 
-  const handleSearch = (e: React.FormEvent) => {
+  // Common alcohol company names and symbols for accurate identification
+  const alcoholCompanies = [
+    { name: 'Diageo', symbol: 'DEO', industry: 'Alcoholic Beverages' },
+    { name: 'Anheuser-Busch InBev', symbol: 'BUD', industry: 'Alcoholic Beverages' },
+    { name: 'Heineken', symbol: 'HEINY', industry: 'Alcoholic Beverages' },
+    { name: 'Constellation Brands', symbol: 'STZ', industry: 'Alcoholic Beverages' },
+    { name: 'Molson Coors', symbol: 'TAP', industry: 'Alcoholic Beverages' },
+    { name: 'Brown-Forman', symbol: 'BF-B', industry: 'Alcoholic Beverages' },
+    { name: 'Pernod Ricard', symbol: 'PDRDY', industry: 'Alcoholic Beverages' },
+    { name: 'Carlsberg', symbol: 'CABGY', industry: 'Alcoholic Beverages' },
+    { name: 'Boston Beer', symbol: 'SAM', industry: 'Alcoholic Beverages' },
+    { name: 'Budweiser', symbol: 'BUD', industry: 'Alcoholic Beverages' },
+    { name: 'Coors', symbol: 'TAP', industry: 'Alcoholic Beverages' },
+    { name: 'Corona', symbol: 'STZ', industry: 'Alcoholic Beverages' },
+    { name: 'Bacardi', symbol: 'PRIVATE', industry: 'Alcoholic Beverages' },
+    { name: 'Jack Daniels', symbol: 'BF-B', industry: 'Alcoholic Beverages' },
+    { name: 'Smirnoff', symbol: 'DEO', industry: 'Alcoholic Beverages' },
+    { name: 'Johnnie Walker', symbol: 'DEO', industry: 'Alcoholic Beverages' },
+    { name: 'Absolut', symbol: 'PDRDY', industry: 'Alcoholic Beverages' },
+    { name: 'Hennessy', symbol: 'LVMUY', industry: 'Alcoholic Beverages' },
+    { name: 'Guinness', symbol: 'DEO', industry: 'Alcoholic Beverages' },
+    { name: 'Stella Artois', symbol: 'BUD', industry: 'Alcoholic Beverages' },
+    { name: 'Modelo', symbol: 'STZ', industry: 'Alcoholic Beverages' },
+    { name: 'Jameson', symbol: 'PDRDY', industry: 'Alcoholic Beverages' },
+    { name: 'Captain Morgan', symbol: 'DEO', industry: 'Alcoholic Beverages' },
+    { name: 'Don Julio', symbol: 'DEO', industry: 'Alcoholic Beverages' },
+    { name: 'Grey Goose', symbol: 'BF-B', industry: 'Alcoholic Beverages' },
+    { name: 'Moet', symbol: 'LVMUY', industry: 'Alcoholic Beverages' },
+    { name: 'Chandon', symbol: 'LVMUY', industry: 'Alcoholic Beverages' },
+    { name: 'Dom Perignon', symbol: 'LVMUY', industry: 'Alcoholic Beverages' },
+    { name: 'Tsingtao', symbol: '0168.HK', industry: 'Alcoholic Beverages' },
+    { name: 'Asahi', symbol: 'ASBRF', industry: 'Alcoholic Beverages' },
+    { name: 'Kirin', symbol: 'KNBWY', industry: 'Alcoholic Beverages' },
+    { name: 'Sapporo', symbol: 'SOOBF', industry: 'Alcoholic Beverages' },
+    // Generic alcohol terms that should always be identified as non-compliant
+    { name: 'Alcohol', symbol: 'N/A', industry: 'Alcoholic Beverages' },
+    { name: 'Beer', symbol: 'N/A', industry: 'Alcoholic Beverages' },
+    { name: 'Wine', symbol: 'N/A', industry: 'Alcoholic Beverages' },
+    { name: 'Liquor', symbol: 'N/A', industry: 'Alcoholic Beverages' },
+    { name: 'Spirits', symbol: 'N/A', industry: 'Alcoholic Beverages' },
+    { name: 'Brewery', symbol: 'N/A', industry: 'Alcoholic Beverages' },
+    { name: 'Distillery', symbol: 'N/A', industry: 'Alcoholic Beverages' },
+    { name: 'Winery', symbol: 'N/A', industry: 'Alcoholic Beverages' }
+  ];
+
+  // Common tobacco company names and symbols
+  const tobaccoCompanies = [
+    { name: 'Altria', symbol: 'MO', industry: 'Tobacco' },
+    { name: 'Philip Morris', symbol: 'PM', industry: 'Tobacco' },
+    { name: 'British American Tobacco', symbol: 'BTI', industry: 'Tobacco' },
+    { name: 'Imperial Brands', symbol: 'IMBBY', industry: 'Tobacco' },
+    { name: 'Japan Tobacco', symbol: 'JAPAY', industry: 'Tobacco' },
+    { name: 'Marlboro', symbol: 'MO', industry: 'Tobacco' },
+    { name: 'Newport', symbol: 'BTI', industry: 'Tobacco' },
+    { name: 'Camel', symbol: 'BTI', industry: 'Tobacco' }
+  ];
+
+  // Common gambling company names and symbols
+  const gamblingCompanies = [
+    { name: 'Las Vegas Sands', symbol: 'LVS', industry: 'Gambling' },
+    { name: 'MGM Resorts', symbol: 'MGM', industry: 'Gambling' },
+    { name: 'Wynn Resorts', symbol: 'WYNN', industry: 'Gambling' },
+    { name: 'Caesars Entertainment', symbol: 'CZR', industry: 'Gambling' },
+    { name: 'Flutter Entertainment', symbol: 'FLUT', industry: 'Gambling' },
+    { name: 'DraftKings', symbol: 'DKNG', industry: 'Gambling' },
+    { name: 'Penn National Gaming', symbol: 'PENN', industry: 'Gambling' },
+    { name: 'Boyd Gaming', symbol: 'BYD', industry: 'Gambling' }
+  ];
+
+  // Common conventional banking names and symbols
+  const bankingCompanies = [
+    { name: 'JPMorgan Chase', symbol: 'JPM', industry: 'Conventional Banking' },
+    { name: 'Bank of America', symbol: 'BAC', industry: 'Conventional Banking' },
+    { name: 'Wells Fargo', symbol: 'WFC', industry: 'Conventional Banking' },
+    { name: 'Citigroup', symbol: 'C', industry: 'Conventional Banking' },
+    { name: 'Goldman Sachs', symbol: 'GS', industry: 'Conventional Banking' },
+    { name: 'Morgan Stanley', symbol: 'MS', industry: 'Conventional Banking' },
+    { name: 'HSBC', symbol: 'HSBC', industry: 'Conventional Banking' },
+    { name: 'Barclays', symbol: 'BCS', industry: 'Conventional Banking' },
+    { name: 'Deutsche Bank', symbol: 'DB', industry: 'Conventional Banking' },
+    { name: 'UBS', symbol: 'UBS', industry: 'Conventional Banking' }
+  ];
+
+  // Enhanced search function with Zoya API integration
+  const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!searchQuery.trim()) return;
@@ -143,40 +276,45 @@ const Analysis = () => {
     setAnalysisResult(null);
     setStockInfo(null);
     
-    // Simulate API call
-    setTimeout(() => {
-      const evaluation = evaluateShariah(searchQuery);
+    try {
+      console.log(`Searching for ${searchQuery} as ${searchType}`);
       
-      const mockResponse = {
-        result: evaluation.result,
-        stockInfo: {
-          name: searchQuery.toUpperCase().includes('APPLE') ? 'Apple Inc.' : 
-                searchQuery.toUpperCase().includes('MSFT') ? 'Microsoft Corporation' : 
-                searchQuery.toUpperCase().includes('GOOGL') ? 'Alphabet Inc.' : 
-                `${searchQuery.charAt(0).toUpperCase() + searchQuery.slice(1)}`,
-          symbol: searchQuery.toUpperCase().includes('APPLE') ? 'AAPL' : 
-                 searchQuery.toUpperCase().includes('MSFT') ? 'MSFT' : 
-                 searchQuery.toUpperCase().includes('GOOGL') ? 'GOOGL' : 
-                 searchQuery.toUpperCase().slice(0, 4),
-          price: Number((Math.random() * 500 + 50).toFixed(2)),
-          change: Number((Math.random() * 5 - 2.5).toFixed(2)),
-          sector: evaluation.reasons.industry,
-          description: evaluation.result === 'halal' ? 
-                      'This company passes Shariah screening criteria based on its financial metrics and business activities. The debt ratio, interest income, and involvement in prohibited activities are all within acceptable limits.' :
-                      'This company does not meet one or more key Shariah compliance requirements. Investment in this company is not recommended for those following Islamic principles.',
-          complianceScore: evaluation.reasons.complianceScore,
-          debtRatio: evaluation.reasons.debtRatio,
-          interestIncome: evaluation.reasons.interestIncome,
-          illiquidAssets: evaluation.reasons.illiquidAssets,
-          haramRevenue: evaluation.reasons.haramRevenue
-        }
-      };
+      // Call Zoya API service
+      const result = await getShariahCompliance(searchQuery, searchType);
+      console.log('Zoya API result:', result);
       
-      setIsAnalyzing(false);
+      // Add to recent searches
+      if (!recentSearches.includes(searchQuery)) {
+        setRecentSearches(prev => [searchQuery, ...prev].slice(0, 5));
+      }
+      
+      // Map Zoya API response to our UI model
+      setAnalysisResult(result.isCompliant ? 'halal' : 'haram');
+      setStockInfo({
+        name: result.name,
+        symbol: result.ticker,
+        price: Number((Math.random() * 500 + 50).toFixed(2)), // Random price for demo
+        change: Number((Math.random() * 5 - 2.5).toFixed(2)), // Random change for demo
+        sector: result.sector,
+        description: result.description || '',
+        complianceScore: result.complianceScore,
+        debtRatio: result.financialRatios.debtRatio,
+        interestIncome: result.financialRatios.interestIncome,
+        illiquidAssets: result.financialRatios.illiquidAssets,
+        haramRevenue: result.financialRatios.haramRevenue
+      });
+      
       setAnalysisComplete(true);
-      setAnalysisResult(mockResponse.result as 'halal' | 'haram');
-      setStockInfo(mockResponse.stockInfo);
-    }, 3000);
+    } catch (error) {
+      console.error('Error analyzing stock:', error);
+      toast({
+        title: "Analysis Error",
+        description: "There was an error analyzing this stock. Please try again.",
+        variant: "destructive"
+      });
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   const getReasonsList = (isHalal: boolean, stockInfo: any) => {
@@ -226,8 +364,26 @@ const Analysis = () => {
             Enter any stock ticker or company name to analyze its Shariah compliance status. Our AI-powered system will evaluate financial metrics and business activities.
           </p>
           <form onSubmit={handleSearch} className="relative max-w-md mx-auto">
+            <div className="flex mb-3">
+              <Button
+                type="button"
+                variant={searchType === 'symbol' ? 'default' : 'outline'}
+                className={`rounded-r-none ${searchType === 'symbol' ? 'bg-lavender text-white' : 'text-white/70'}`}
+                onClick={() => setSearchType('symbol')}
+              >
+                Symbol
+              </Button>
+              <Button
+                type="button"
+                variant={searchType === 'name' ? 'default' : 'outline'}
+                className={`rounded-l-none ${searchType === 'name' ? 'bg-lavender text-white' : 'text-white/70'}`}
+                onClick={() => setSearchType('name')}
+              >
+                Company Name
+              </Button>
+            </div>
             <Input
-              placeholder="Enter stock symbol (e.g., AAPL)"
+              placeholder={searchType === 'symbol' ? "Enter stock symbol (e.g., AAPL)" : "Enter company name (e.g., Apple)"}
               className="pr-10 bg-secondary/50 border-white/10 focus-visible:ring-lavender h-12"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
@@ -236,7 +392,7 @@ const Analysis = () => {
               type="submit" 
               variant="ghost" 
               size="icon" 
-              className="absolute right-0 top-0 h-12 w-12"
+              className="absolute right-0 top-12 h-12 w-12"
               disabled={isAnalyzing}
             >
               <Search className="h-5 w-5 text-lavender" />
@@ -246,6 +402,28 @@ const Analysis = () => {
           <div className="mt-4 text-xs text-white/50">
             Try: AAPL (Apple), MSFT (Microsoft), GOOGL (Google)
           </div>
+          
+          {recentSearches.length > 0 && (
+            <div className="mt-4">
+              <p className="text-xs text-white/50 mb-2">Recent searches:</p>
+              <div className="flex flex-wrap gap-2">
+                {recentSearches.map((search, index) => (
+                  <Button 
+                    key={index} 
+                    variant="outline" 
+                    size="sm"
+                    className="text-xs py-1 h-auto"
+                    onClick={() => {
+                      setSearchQuery(search);
+                      handleSearch(new Event('submit') as unknown as React.FormEvent);
+                    }}
+                  >
+                    {search}
+                  </Button>
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </section>
@@ -562,4 +740,5 @@ const Analysis = () => {
     </div>
   );
 };
+
 export default Analysis;

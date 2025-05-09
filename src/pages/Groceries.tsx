@@ -76,13 +76,13 @@ const Groceries = () => {
   const groceryItems = [
     {
       id: 1,
-      name: "Premium Halal Beef",
+      name: "Premium Halal Beef Steak",
       category: "meat",
       price: 15.99,
       rating: 4.8,
       featured: true,
       image: "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?auto=format&fit=crop&q=80&w=200",
-      description: "Premium grass-fed halal beef, sourced from ethical farms with proper Islamic slaughter methods. High in protein and essential nutrients with no added hormones or antibiotics.",
+      description: "Premium grass-fed halal beef steak, sourced from ethical farms with proper Islamic slaughter methods. High in protein and essential nutrients with no added hormones or antibiotics.",
       nutritionalInfo: {
         calories: 250,
         protein: 26,
@@ -111,7 +111,7 @@ const Groceries = () => {
       category: "meat",
       price: 12.99,
       rating: 4.7,
-      image: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&q=80&w=200",
+      image: "https://images.unsplash.com/photo-1604503468506-a8da13d82791?auto=format&fit=crop&q=80&w=200",
       description: "Free-range, halal-certified chicken breast. Raised without antibiotics or growth hormones. Lean source of protein perfect for grilling, baking, or stir-frying.",
       nutritionalInfo: {
         calories: 165,
@@ -142,7 +142,7 @@ const Groceries = () => {
       category: "meat",
       price: 19.99,
       rating: 4.6,
-      image: "https://images.unsplash.com/photo-1608500218890-c4f9a2fbcaa1?auto=format&fit=crop&q=80&w=200",
+      image: "https://images.unsplash.com/photo-1603048593587-e3317a989a39?auto=format&fit=crop&q=80&w=200",
       description: "Premium halal lamb chops from grass-fed, ethically raised sheep. Tender, flavorful, and perfect for grilling or roasting. Cut and prepared according to Islamic dietary guidelines.",
       nutritionalInfo: {
         calories: 294,
@@ -183,12 +183,12 @@ const Groceries = () => {
     },
     {
       id: 8,
-      name: "Halal Turkey",
+      name: "Halal Turkey Breast",
       category: "meat",
       price: 13.99,
       rating: 4.3,
       image: "https://images.unsplash.com/photo-1606728035253-49e8a23146de?auto=format&fit=crop&q=80&w=200",
-      description: "Halal-certified turkey raised without antibiotics or growth hormones. Lean, versatile meat perfect for roasting, grilling, or making deli-style sandwiches. Processed according to Islamic dietary guidelines.",
+      description: "Halal-certified turkey breast raised without antibiotics or growth hormones. Lean, versatile meat perfect for roasting, grilling, or making deli-style sandwiches. Processed according to Islamic dietary guidelines.",
       nutritionalInfo: {
         calories: 135,
         protein: 25,
@@ -198,12 +198,12 @@ const Groceries = () => {
     },
     {
       id: 9,
-      name: "Tahini Sauce",
+      name: "Organic Tahini",
       category: "prepared",
       price: 6.49,
       rating: 4.7,
       image: "https://images.unsplash.com/photo-1559304192-f8d7c782f617?auto=format&fit=crop&q=80&w=200",
-      description: "Smooth, creamy tahini made from roasted sesame seeds. Rich in calcium, protein, and healthy fats. Essential ingredient for hummus, baba ganoush, and many Middle Eastern dishes and dressings.",
+      description: "Smooth, creamy tahini made from roasted organic sesame seeds. Rich in calcium, protein, and healthy fats. Essential ingredient for hummus, baba ganoush, and many Middle Eastern dishes and dressings.",
       nutritionalInfo: {
         calories: 193,
         protein: 5.8,
@@ -213,12 +213,12 @@ const Groceries = () => {
     },
     {
       id: 10,
-      name: "Halal Breakfast Sausage",
+      name: "Halal Beef Sausages",
       category: "meat",
       price: 7.99,
       rating: 4.2,
       image: "https://images.unsplash.com/photo-1565299507177-b0ac66763828?auto=format&fit=crop&q=80&w=200",
-      description: "Halal-certified breakfast sausages made from premium beef or chicken. Seasoned with a blend of herbs and spices. Free from pork and alcohol, and processed according to Islamic dietary guidelines.",
+      description: "Halal-certified beef sausages made from premium cuts. Seasoned with a blend of herbs and spices. Free from pork and alcohol, and processed according to Islamic dietary guidelines. Perfect for breakfast or grilling.",
       nutritionalInfo: {
         calories: 220,
         protein: 14,
@@ -274,12 +274,12 @@ const Groceries = () => {
     },
     {
       id: 14,
-      name: "Fresh Tomatoes",
+      name: "Organic Cherry Tomatoes",
       category: "fruits",
       price: 2.99,
       rating: 4.5,
       image: "https://images.unsplash.com/photo-1561136594-7f68413baa99?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8dG9tYXRvZXN8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=200&q=80",
-      description: "Vine-ripened, juicy tomatoes grown without synthetic pesticides. Rich in lycopene and vitamin C. Perfect for salads, sauces, or enjoying fresh with a sprinkle of salt.",
+      description: "Sweet, vine-ripened organic cherry tomatoes grown without synthetic pesticides. Rich in lycopene and vitamin C. Perfect for salads, roasting, or enjoying fresh with a sprinkle of salt.",
       nutritionalInfo: {
         calories: 18,
         protein: 0.9,
@@ -304,12 +304,12 @@ const Groceries = () => {
     },
     {
       id: 16,
-      name: "Red Onions",
+      name: "Organic Red Onions",
       category: "fruits",
       price: 1.99,
       rating: 4.3,
       image: "https://images.unsplash.com/photo-1508747703725-719777637510?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVkJTIwb25pb258ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=200&q=80",
-      description: "Sweet and mildly pungent red onions with vibrant purple skin. Rich in antioxidants and adds beautiful color and flavor to salads, sandwiches, and cooked dishes.",
+      description: "Sweet and mildly pungent organic red onions with vibrant purple skin. Rich in antioxidants and adds beautiful color and flavor to salads, sandwiches, and cooked dishes.",
       nutritionalInfo: {
         calories: 40,
         protein: 1.1,
@@ -380,12 +380,12 @@ const Groceries = () => {
     },
     {
       id: 21,
-      name: "Bell Peppers Mix",
+      name: "Organic Bell Peppers",
       category: "fruits",
       price: 4.49,
       rating: 4.5,
       image: "https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8YmVsbCUyMHBlcHBlcnN8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=200&q=80",
-      description: "Colorful mix of sweet red, yellow, and green bell peppers. Rich in vitamins C and A, with each color offering different antioxidants. Versatile for stir-fries, salads, roasting, or stuffing.",
+      description: "Colorful organic bell peppers in vibrant red, yellow, and orange. Rich in vitamins C and A, with each color offering different antioxidants. Versatile for stir-fries, salads, roasting, or stuffing.",
       nutritionalInfo: {
         calories: 31,
         protein: 1,
@@ -885,9 +885,20 @@ const Groceries = () => {
       
       {/* Product Details Dialog */}
       <Dialog open={!!selectedItem} onOpenChange={(open) => !open && setSelectedItem(null)}>
-        <DialogContent className="sm:max-w-[500px] bg-background border border-white/10">
+        <DialogContent className="sm:max-w-[500px] max-h-[90vh] bg-background border border-white/10 overflow-y-auto">
           {selectedItem && (
             <>
+              <div className="absolute right-4 top-4 z-10">
+                <button 
+                  onClick={() => setSelectedItem(null)} 
+                  className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground bg-background/80 p-1"
+                >
+                  <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-4 w-4">
+                    <path d="M11.7816 4.03157C12.0062 3.80702 12.0062 3.44295 11.7816 3.2184C11.5571 2.99385 11.193 2.99385 10.9685 3.2184L7.50005 6.68682L4.03164 3.2184C3.80708 2.99385 3.44301 2.99385 3.21846 3.2184C2.99391 3.44295 2.99391 3.80702 3.21846 4.03157L6.68688 7.49999L3.21846 10.9684C2.99391 11.193 2.99391 11.557 3.21846 11.7816C3.44301 12.0061 3.80708 12.0061 4.03164 11.7816L7.50005 8.31316L10.9685 11.7816C11.193 12.0061 11.5571 12.0061 11.7816 11.7816C12.0062 11.557 12.0062 11.193 11.7816 10.9684L8.31322 7.49999L11.7816 4.03157Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path>
+                  </svg>
+                  <span className="sr-only">Close</span>
+                </button>
+              </div>
               <DialogHeader>
                 <DialogTitle className="text-2xl">{selectedItem.name}</DialogTitle>
                 <DialogDescription>
