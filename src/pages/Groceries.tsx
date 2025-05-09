@@ -72,7 +72,7 @@ const Groceries = () => {
       `https://source.unsplash.com/200x200/?${encodeURIComponent(name.toLowerCase())},food`;
   };
 
-  // Mock data with added IDs
+  // Mock data with added IDs, descriptions, and nutritional information
   const groceryItems = [
     {
       id: 1,
@@ -81,7 +81,14 @@ const Groceries = () => {
       price: 15.99,
       rating: 4.8,
       featured: true,
-      image: "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?auto=format&fit=crop&q=80&w=200"
+      image: "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?auto=format&fit=crop&q=80&w=200",
+      description: "Premium grass-fed halal beef, sourced from ethical farms with proper Islamic slaughter methods. High in protein and essential nutrients with no added hormones or antibiotics.",
+      nutritionalInfo: {
+        calories: 250,
+        protein: 26,
+        carbs: 0,
+        fat: 17
+      }
     },
     {
       id: 2,
@@ -89,7 +96,14 @@ const Groceries = () => {
       category: "grains",
       price: 9.99,
       rating: 4.5,
-      image: "https://images.unsplash.com/photo-1586201375761-83865001e8c7?auto=format&fit=crop&q=80&w=200"
+      image: "https://images.unsplash.com/photo-1586201375761-83865001e8c7?auto=format&fit=crop&q=80&w=200",
+      description: "Premium aged basmati rice grown in the Himalayan foothills. Known for its distinctive aroma and long, fluffy grains. Perfect for biryani and pilaf dishes.",
+      nutritionalInfo: {
+        calories: 150,
+        protein: 3,
+        carbs: 34,
+        fat: 0.3
+      }
     },
     {
       id: 3,
@@ -97,7 +111,14 @@ const Groceries = () => {
       category: "meat",
       price: 12.99,
       rating: 4.7,
-      image: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&q=80&w=200"
+      image: "https://images.unsplash.com/photo-1615485290382-441e4d049cb5?auto=format&fit=crop&q=80&w=200",
+      description: "Free-range, halal-certified chicken breast. Raised without antibiotics or growth hormones. Lean source of protein perfect for grilling, baking, or stir-frying.",
+      nutritionalInfo: {
+        calories: 165,
+        protein: 31,
+        carbs: 0,
+        fat: 3.6
+      }
     },
     {
       id: 4,
@@ -106,7 +127,14 @@ const Groceries = () => {
       price: 8.99,
       rating: 4.9,
       featured: true,
-      image: "https://images.unsplash.com/photo-1595231776515-ddffb1f4eb73?auto=format&fit=crop&q=80&w=200"
+      image: "https://images.unsplash.com/photo-1595231776515-ddffb1f4eb73?auto=format&fit=crop&q=80&w=200",
+      description: "Premium Medjool dates known for their exceptional sweetness and soft, chewy texture. Rich in fiber, potassium, and antioxidants. Perfect for snacking, baking, or breaking fast during Ramadan.",
+      nutritionalInfo: {
+        calories: 277,
+        protein: 1.8,
+        carbs: 75,
+        fat: 0.2
+      }
     },
     {
       id: 5,
@@ -114,7 +142,14 @@ const Groceries = () => {
       category: "meat",
       price: 19.99,
       rating: 4.6,
-      image: "https://images.unsplash.com/photo-1608500218890-c4f9a2fbcaa1?auto=format&fit=crop&q=80&w=200"
+      image: "https://images.unsplash.com/photo-1608500218890-c4f9a2fbcaa1?auto=format&fit=crop&q=80&w=200",
+      description: "Premium halal lamb chops from grass-fed, ethically raised sheep. Tender, flavorful, and perfect for grilling or roasting. Cut and prepared according to Islamic dietary guidelines.",
+      nutritionalInfo: {
+        calories: 294,
+        protein: 25,
+        carbs: 0,
+        fat: 21
+      }
     },
     {
       id: 6,
@@ -122,7 +157,14 @@ const Groceries = () => {
       category: "oils",
       price: 12.99,
       rating: 4.8,
-      image: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&q=80&w=200"
+      image: "https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?auto=format&fit=crop&q=80&w=200",
+      description: "Cold-pressed extra virgin olive oil from Mediterranean olive groves. Rich in healthy monounsaturated fats and antioxidants. Features a robust, fruity flavor perfect for dressings, marinades, and cooking.",
+      nutritionalInfo: {
+        calories: 120,
+        protein: 0,
+        carbs: 0,
+        fat: 14
+      }
     },
     {
       id: 7,
@@ -130,7 +172,14 @@ const Groceries = () => {
       category: "prepared",
       price: 4.99,
       rating: 4.4,
-      image: "https://images.unsplash.com/photo-1563379926898-05f4575a45d8?auto=format&fit=crop&q=80&w=200"
+      image: "https://images.unsplash.com/photo-1563379926898-05f4575a45d8?auto=format&fit=crop&q=80&w=200",
+      description: "Creamy traditional hummus made with organic chickpeas, tahini, olive oil, and fresh lemon juice. Perfect as a dip with vegetables, pita bread, or as a spread in sandwiches.",
+      nutritionalInfo: {
+        calories: 166,
+        protein: 7.9,
+        carbs: 14.3,
+        fat: 9.6
+      }
     },
     {
       id: 8,
@@ -138,7 +187,14 @@ const Groceries = () => {
       category: "meat",
       price: 13.99,
       rating: 4.3,
-      image: "https://images.unsplash.com/photo-1606728035253-49e8a23146de?auto=format&fit=crop&q=80&w=200"
+      image: "https://images.unsplash.com/photo-1606728035253-49e8a23146de?auto=format&fit=crop&q=80&w=200",
+      description: "Halal-certified turkey raised without antibiotics or growth hormones. Lean, versatile meat perfect for roasting, grilling, or making deli-style sandwiches. Processed according to Islamic dietary guidelines.",
+      nutritionalInfo: {
+        calories: 135,
+        protein: 25,
+        carbs: 0,
+        fat: 3
+      }
     },
     {
       id: 9,
@@ -146,7 +202,14 @@ const Groceries = () => {
       category: "prepared",
       price: 6.49,
       rating: 4.7,
-      image: "https://images.unsplash.com/photo-1559304192-f8d7c782f617?auto=format&fit=crop&q=80&w=200"
+      image: "https://images.unsplash.com/photo-1559304192-f8d7c782f617?auto=format&fit=crop&q=80&w=200",
+      description: "Smooth, creamy tahini made from roasted sesame seeds. Rich in calcium, protein, and healthy fats. Essential ingredient for hummus, baba ganoush, and many Middle Eastern dishes and dressings.",
+      nutritionalInfo: {
+        calories: 193,
+        protein: 5.8,
+        carbs: 6.4,
+        fat: 17.4
+      }
     },
     {
       id: 10,
@@ -154,7 +217,14 @@ const Groceries = () => {
       category: "meat",
       price: 7.99,
       rating: 4.2,
-      image: "https://images.unsplash.com/photo-1565299507177-b0ac66763828?auto=format&fit=crop&q=80&w=200"
+      image: "https://images.unsplash.com/photo-1565299507177-b0ac66763828?auto=format&fit=crop&q=80&w=200",
+      description: "Halal-certified breakfast sausages made from premium beef or chicken. Seasoned with a blend of herbs and spices. Free from pork and alcohol, and processed according to Islamic dietary guidelines.",
+      nutritionalInfo: {
+        calories: 220,
+        protein: 14,
+        carbs: 2,
+        fat: 18
+      }
     },
     {
       id: 11,
@@ -163,7 +233,14 @@ const Groceries = () => {
       price: 9.49,
       rating: 4.9,
       featured: true,
-      image: "https://images.unsplash.com/photo-1558642891-54be180ea339?auto=format&fit=crop&q=80&w=200"
+      image: "https://images.unsplash.com/photo-1558642891-54be180ea339?auto=format&fit=crop&q=80&w=200",
+      description: "Pure, raw organic honey harvested from sustainable apiaries. Rich in antioxidants and natural enzymes with a smooth, complex flavor profile. Never heated or filtered, preserving all natural benefits.",
+      nutritionalInfo: {
+        calories: 64,
+        protein: 0.1,
+        carbs: 17,
+        fat: 0
+      }
     },
     {
       id: 12,
@@ -171,7 +248,14 @@ const Groceries = () => {
       category: "spices",
       price: 5.99,
       rating: 4.6,
-      image: "https://images.unsplash.com/photo-1532336414038-cf19250c5757?auto=format&fit=crop&q=80&w=200"
+      image: "https://images.unsplash.com/photo-1532336414038-cf19250c5757?auto=format&fit=crop&q=80&w=200",
+      description: "Traditional Middle Eastern spice blend of thyme, sumac, sesame seeds, and other herbs. Perfect for sprinkling on flatbreads, meats, vegetables, or mixing with olive oil as a dip.",
+      nutritionalInfo: {
+        calories: 22,
+        protein: 0.8,
+        carbs: 2.7,
+        fat: 1.2
+      }
     },
     {
       id: 13,
@@ -179,7 +263,14 @@ const Groceries = () => {
       category: "fruits",
       price: 3.99,
       rating: 4.7,
-      image: "https://images.unsplash.com/photo-1576045057995-568f588f82fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c3BpbmFjaHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=200&q=80"
+      image: "https://images.unsplash.com/photo-1576045057995-568f588f82fb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8c3BpbmFjaHxlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=200&q=80",
+      description: "Fresh organic spinach leaves, rich in iron, vitamins A and C, and antioxidants. Versatile leafy green perfect for salads, smoothies, sautéing, or adding to soups and stews.",
+      nutritionalInfo: {
+        calories: 23,
+        protein: 2.9,
+        carbs: 3.6,
+        fat: 0.4
+      }
     },
     {
       id: 14,
@@ -187,7 +278,14 @@ const Groceries = () => {
       category: "fruits",
       price: 2.99,
       rating: 4.5,
-      image: "https://images.unsplash.com/photo-1561136594-7f68413baa99?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8dG9tYXRvZXN8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=200&q=80"
+      image: "https://images.unsplash.com/photo-1561136594-7f68413baa99?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8dG9tYXRvZXN8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=200&q=80",
+      description: "Vine-ripened, juicy tomatoes grown without synthetic pesticides. Rich in lycopene and vitamin C. Perfect for salads, sauces, or enjoying fresh with a sprinkle of salt.",
+      nutritionalInfo: {
+        calories: 18,
+        protein: 0.9,
+        carbs: 3.9,
+        fat: 0.2
+      }
     },
     {
       id: 15,
@@ -195,7 +293,14 @@ const Groceries = () => {
       category: "fruits",
       price: 2.49,
       rating: 4.6,
-      image: "https://images.unsplash.com/photo-1449300079323-02e209d9d3a6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y3VjdW1iZXJ8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=200&q=80"
+      image: "https://images.unsplash.com/photo-1449300079323-02e209d9d3a6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y3VjdW1iZXJ8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=200&q=80",
+      description: "Crisp, refreshing organic cucumbers with thin, edible skin. Low in calories and high in water content, making them perfect for salads, sandwiches, or as a cooling snack.",
+      nutritionalInfo: {
+        calories: 16,
+        protein: 0.7,
+        carbs: 3.6,
+        fat: 0.1
+      }
     },
     {
       id: 16,
@@ -203,7 +308,14 @@ const Groceries = () => {
       category: "fruits",
       price: 1.99,
       rating: 4.3,
-      image: "https://images.unsplash.com/photo-1508747703725-719777637510?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVkJTIwb25pb258ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=200&q=80"
+      image: "https://images.unsplash.com/photo-1508747703725-719777637510?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8cmVkJTIwb25pb258ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=200&q=80",
+      description: "Sweet and mildly pungent red onions with vibrant purple skin. Rich in antioxidants and adds beautiful color and flavor to salads, sandwiches, and cooked dishes.",
+      nutritionalInfo: {
+        calories: 40,
+        protein: 1.1,
+        carbs: 9.3,
+        fat: 0.1
+      }
     },
     {
       id: 17,
@@ -211,7 +323,14 @@ const Groceries = () => {
       category: "fruits",
       price: 2.29,
       rating: 4.4,
-      image: "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Y2Fycm90c3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=200&q=80"
+      image: "https://images.unsplash.com/photo-1598170845058-32b9d6a5da37?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Y2Fycm90c3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=200&q=80",
+      description: "Sweet, crunchy organic carrots rich in beta-carotene, fiber, and vitamins. Versatile vegetable perfect for snacking, juicing, roasting, or adding to soups and stews.",
+      nutritionalInfo: {
+        calories: 41,
+        protein: 0.9,
+        carbs: 9.6,
+        fat: 0.2
+      }
     },
     {
       id: 18,
@@ -220,7 +339,14 @@ const Groceries = () => {
       price: 4.99,
       rating: 4.8,
       featured: true,
-      image: "https://images.unsplash.com/photo-1541344999736-83eca272f6fc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cG9tZWdyYW5hdGV8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=200&q=80"
+      image: "https://images.unsplash.com/photo-1541344999736-83eca272f6fc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cG9tZWdyYW5hdGV8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=200&q=80",
+      description: "Juicy, ruby-red pomegranates packed with antioxidants and vitamin C. Each fruit contains hundreds of sweet-tart arils that are perfect for salads, desserts, or eating fresh.",
+      nutritionalInfo: {
+        calories: 83,
+        protein: 1.7,
+        carbs: 19,
+        fat: 1.2
+      }
     },
     {
       id: 19,
@@ -228,7 +354,14 @@ const Groceries = () => {
       category: "fruits",
       price: 6.99,
       rating: 4.7,
-      image: "https://images.unsplash.com/photo-1597875566588-5217d5931b0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8Zmlnc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=200&q=80"
+      image: "https://images.unsplash.com/photo-1597875566588-5217d5931b0b?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8Zmlnc3xlbnwwfHwwfHx8MA%3D%3D&auto=format&fit=crop&w=200&q=80",
+      description: "Sweet, honey-like organic figs with a unique texture combining chewy flesh and crunchy seeds. Rich in fiber, potassium, and antioxidants. Perfect for both sweet and savory dishes.",
+      nutritionalInfo: {
+        calories: 74,
+        protein: 0.8,
+        carbs: 19.2,
+        fat: 0.3
+      }
     },
     {
       id: 20,
@@ -236,7 +369,14 @@ const Groceries = () => {
       category: "fruits",
       price: 2.79,
       rating: 4.2,
-      image: "https://images.unsplash.com/photo-1613884823171-49bca3bd289f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZWdncGxhbnR8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=200&q=80"
+      image: "https://images.unsplash.com/photo-1613884823171-49bca3bd289f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8ZWdncGxhbnR8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=200&q=80",
+      description: "Glossy, deep purple eggplants with tender, absorbent flesh. Low in calories and rich in antioxidants. Perfect for roasting, grilling, or making classic dishes like baba ganoush and moussaka.",
+      nutritionalInfo: {
+        calories: 25,
+        protein: 1,
+        carbs: 6,
+        fat: 0.2
+      }
     },
     {
       id: 21,
@@ -244,7 +384,14 @@ const Groceries = () => {
       category: "fruits",
       price: 4.49,
       rating: 4.5,
-      image: "https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8YmVsbCUyMHBlcHBlcnN8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=200&q=80"
+      image: "https://images.unsplash.com/photo-1563565375-f3fdfdbefa83?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8YmVsbCUyMHBlcHBlcnN8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=200&q=80",
+      description: "Colorful mix of sweet red, yellow, and green bell peppers. Rich in vitamins C and A, with each color offering different antioxidants. Versatile for stir-fries, salads, roasting, or stuffing.",
+      nutritionalInfo: {
+        calories: 31,
+        protein: 1,
+        carbs: 7.6,
+        fat: 0.3
+      }
     },
     {
       id: 22,
@@ -252,7 +399,14 @@ const Groceries = () => {
       category: "fruits",
       price: 2.99,
       rating: 4.3,
-      image: "https://images.unsplash.com/photo-1583687355032-89b902b7335f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8enVjY2hpbml8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=200&q=80"
+      image: "https://images.unsplash.com/photo-1583687355032-89b902b7335f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8enVjY2hpbml8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=200&q=80",
+      description: "Tender, mild-flavored organic zucchini with edible skin and seeds. Low in calories and versatile for grilling, sautéing, spiralizing into noodles, or baking into bread and muffins.",
+      nutritionalInfo: {
+        calories: 17,
+        protein: 1.2,
+        carbs: 3.1,
+        fat: 0.3
+      }
     }
   ];
 
@@ -768,27 +922,26 @@ const Groceries = () => {
                 <div className="bg-white/5 p-4 rounded-lg mb-6">
                   <h4 className="font-medium mb-2">Product Description</h4>
                   <p className="text-white/80">
-                    {selectedItem.name} is a premium quality halal product, sourced from trusted suppliers. 
-                    This product is certified halal and meets our strict quality standards.
+                    {selectedItem.description || `${selectedItem.name} is a premium quality halal product, sourced from trusted suppliers. This product is certified halal and meets our strict quality standards.`}
                   </p>
                   
                   <h4 className="font-medium mt-4 mb-2">Nutritional Information</h4>
                   <div className="grid grid-cols-2 gap-2 text-sm">
                     <div className="flex justify-between">
                       <span className="text-white/60">Calories</span>
-                      <span>120 kcal</span>
+                      <span>{selectedItem.nutritionalInfo?.calories || '120'} kcal</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-white/60">Protein</span>
-                      <span>5g</span>
+                      <span>{selectedItem.nutritionalInfo?.protein || '5'}g</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-white/60">Carbs</span>
-                      <span>22g</span>
+                      <span>{selectedItem.nutritionalInfo?.carbs || '22'}g</span>
                     </div>
                     <div className="flex justify-between">
                       <span className="text-white/60">Fat</span>
-                      <span>2g</span>
+                      <span>{selectedItem.nutritionalInfo?.fat || '2'}g</span>
                     </div>
                   </div>
                 </div>
