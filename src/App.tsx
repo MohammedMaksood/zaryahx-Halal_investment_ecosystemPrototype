@@ -18,6 +18,7 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Account from "./pages/Account";
 import PaymentMethods from "./pages/PaymentMethods";
+import Portfolio from "./pages/Portfolio";
 import React from "react";
 import ChatBot from "./components/ChatBot";
 
@@ -46,6 +47,7 @@ const App = () => {
               <Route path="/signup" element={<SignUp />} />
               <Route path="/account" element={<Account />} />
               <Route path="/payment-methods" element={<PaymentMethods />} />
+              <Route path="/portfolio" element={<Portfolio />} />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>

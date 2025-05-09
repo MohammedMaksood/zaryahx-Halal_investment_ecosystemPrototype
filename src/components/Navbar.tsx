@@ -1,7 +1,7 @@
 
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Bell, Menu, User, X, LogIn, Wallet } from 'lucide-react';
+import { Bell, Menu, User, X, LogIn, Wallet, BarChart3, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
@@ -110,6 +110,10 @@ export const Navbar = () => {
                     <DropdownMenuItem onClick={() => navigate('/account')}>
                       <User className="mr-2 h-4 w-4" />
                       <span>Profile</span>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => navigate('/portfolio')}>
+                      <BarChart3 className="mr-2 h-4 w-4" />
+                      <span>Portfolio</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={() => navigate('/wallet')}>
                       <Wallet className="mr-2 h-4 w-4" />
