@@ -8,6 +8,7 @@ import Footer from "@/components/Footer";
 import { useAuth } from "@/contexts/AuthContext";
 import LoadingAnimation from "@/components/LoadingAnimation";
 import StockTransactionDialog from "@/components/StockTransactionDialog";
+import LearnMoreButton from "@/components/LearnMoreButton";
 import { useToast } from "@/hooks/use-toast";
 
 // Define interfaces for our data
@@ -153,12 +154,15 @@ const Portfolio = () => {
       <main className="flex-grow container mx-auto px-4 py-8">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-gradient">My Investment Portfolio</h1>
-          <Button 
-            className="bg-lavender hover:bg-lavender-dark"
-            onClick={() => navigate('/stocks')}
-          >
-            Invest in New Stock
-          </Button>
+          <div className="flex items-center gap-3">
+            <LearnMoreButton />
+            <Button 
+              className="bg-lavender hover:bg-lavender-dark"
+              onClick={() => navigate('/stocks')}
+            >
+              Invest in New Stock
+            </Button>
+          </div>
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
@@ -261,9 +265,17 @@ const Portfolio = () => {
                                   <div className="h-8 w-8 rounded-full bg-lavender/20 flex items-center justify-center mr-3">
                                     <span className="text-xs font-medium">AAPL</span>
                                   </div>
-                                  <div>
-                                    <div className="font-medium">Apple Inc.</div>
-                                    <div className="text-xs text-white/60">AAPL</div>
+                                  <div className="flex items-center">
+                                    <div>
+                                      <div className="font-medium">Apple Inc.</div>
+                                      <div className="text-xs text-white/60">AAPL</div>
+                                    </div>
+                                    <div className="ml-2">
+                                      <LearnMoreButton 
+                                        stockSymbol="AAPL"
+                                        stockName="Apple Inc."
+                                      />
+                                    </div>
                                   </div>
                                 </div>
                               </td>
@@ -307,9 +319,17 @@ const Portfolio = () => {
                                   <div className="h-8 w-8 rounded-full bg-lavender/20 flex items-center justify-center mr-3">
                                     <span className="text-xs font-medium">MSFT</span>
                                   </div>
-                                  <div>
-                                    <div className="font-medium">Microsoft Corporation</div>
-                                    <div className="text-xs text-white/60">MSFT</div>
+                                  <div className="flex items-center">
+                                    <div>
+                                      <div className="font-medium">Microsoft Corporation</div>
+                                      <div className="text-xs text-white/60">MSFT</div>
+                                    </div>
+                                    <div className="ml-2">
+                                      <LearnMoreButton 
+                                        stockSymbol="MSFT"
+                                        stockName="Microsoft Corporation"
+                                      />
+                                    </div>
                                   </div>
                                 </div>
                               </td>
@@ -353,9 +373,17 @@ const Portfolio = () => {
                                   <div className="h-8 w-8 rounded-full bg-lavender/20 flex items-center justify-center mr-3">
                                     <span className="text-xs font-medium">GOOGL</span>
                                   </div>
-                                  <div>
-                                    <div className="font-medium">Alphabet Inc.</div>
-                                    <div className="text-xs text-white/60">GOOGL</div>
+                                  <div className="flex items-center">
+                                    <div>
+                                      <div className="font-medium">Alphabet Inc.</div>
+                                      <div className="text-xs text-white/60">GOOGL</div>
+                                    </div>
+                                    <div className="ml-2">
+                                      <LearnMoreButton 
+                                        stockSymbol="GOOGL"
+                                        stockName="Alphabet Inc."
+                                      />
+                                    </div>
                                   </div>
                                 </div>
                               </td>
