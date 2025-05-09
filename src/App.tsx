@@ -18,7 +18,8 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Account from "./pages/Account";
 import PaymentMethods from "./pages/PaymentMethods";
-import React from "react"; // Add this import
+import React from "react";
+import ChatBot from "./components/ChatBot";
 
 // Create a new QueryClient instance inside the component to ensure proper React context
 const App = () => {
@@ -48,6 +49,8 @@ const App = () => {
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
             </Routes>
+            {/* Global ChatBot that appears on all pages */}
+            <ChatBot />
           </BrowserRouter>
         </TooltipProvider>
       </AuthProvider>

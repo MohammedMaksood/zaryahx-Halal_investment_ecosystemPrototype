@@ -6,8 +6,15 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import LoadingAnimation from "@/components/LoadingAnimation";
 import HalalBadge from "@/components/HalalBadge";
+import { useNavigate } from "react-router-dom";
+import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Analysis = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const { isAuthenticated } = useAuth();
+  
   const [searchQuery, setSearchQuery] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [analysisComplete, setAnalysisComplete] = useState(false);
@@ -414,6 +421,21 @@ const Analysis = () => {
               <Button 
                 className={analysisResult === 'halal' ? "bg-halal hover:bg-halal/80 flex-1" : "bg-haram hover:bg-haram/80 flex-1"}
                 disabled={analysisResult === 'haram'}
+                onClick={() => {
+                  if (analysisResult === 'halal' && stockInfo) {
+                    if (!isAuthenticated) {
+                      toast({
+                        title: "Authentication Required",
+                        description: "Please sign in to invest in stocks",
+                      });
+                      navigate('/signin?redirect=/stocks/' + stockInfo.symbol);
+                      return;
+                    }
+                    
+                    // Navigate to stock details with invest tab active
+                    navigate(`/stocks/${stockInfo.symbol}?tab=invest`);
+                  }
+                }}
               >
                 {analysisResult === 'halal' ? 'Invest Now' : 'Not Halal for Investment'}
               </Button>
@@ -536,10 +558,8 @@ const Analysis = () => {
           </div>
         </section>
       </main>
-
       <Footer />
     </div>
   );
 };
-
 export default Analysis;

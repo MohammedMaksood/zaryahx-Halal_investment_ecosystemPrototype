@@ -46,14 +46,32 @@ const Index = () => {
       category: "Meat & Poultry",
       price: 15.99,
       rating: 4.8,
-      featured: true
+      featured: true,
+      imageSrc: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8aGFsYWwlMjBiZWVmfGVufDB8fDB8fHww&auto=format&fit=crop&w=200&q=80"
     },
     {
       name: "Organic Basmati Rice",
       category: "Grains",
       price: 9.99,
       rating: 4.7,
-      featured: true
+      featured: true,
+      imageSrc: "https://images.unsplash.com/photo-1550617931-e17a7b70dce2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YmFzbWF0aSUyMHJpY2V8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=200&q=80"
+    },
+    {
+      name: "Organic Honey",
+      category: "Condiments",
+      price: 9.49,
+      rating: 4.9,
+      featured: true,
+      imageSrc: "https://images.unsplash.com/photo-1558642891-54be180ea339?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8aG9uZXl8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=200&q=80"
+    },
+    {
+      name: "Fresh Pomegranate",
+      category: "Fruits",
+      price: 4.99,
+      rating: 4.8,
+      featured: true,
+      imageSrc: "https://images.unsplash.com/photo-1541344999736-83eca272f6fc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cG9tZWdyYW5hdGV8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=200&q=80"
     }
   ];
 
