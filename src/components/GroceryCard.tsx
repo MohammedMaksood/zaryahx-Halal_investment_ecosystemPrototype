@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Check, ShoppingCart } from 'lucide-react';
+import { Check, ShoppingCart, Info } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
 
@@ -14,6 +14,8 @@ interface GroceryCardProps {
   imageSrc?: string;
   featured?: boolean;
   className?: string;
+  onViewDetails?: () => void;
+  onAddToCart?: () => void;
 }
 
 const GroceryCard: React.FC<GroceryCardProps> = ({
@@ -24,21 +26,36 @@ const GroceryCard: React.FC<GroceryCardProps> = ({
   imageSrc,
   featured = false,
   className,
+  onViewDetails,
+  onAddToCart,
 }) => {
   const [added, setAdded] = useState(false);
   const { toast } = useToast();
 
   const handleAddToCart = () => {
     setAdded(true);
-    toast({
-      title: "Added to Cart",
-      description: `${name} has been added to your cart`,
-    });
+    
+    // Call the provided onAddToCart callback if available
+    if (onAddToCart) {
+      onAddToCart();
+    } else {
+      // Default behavior if no callback provided
+      toast({
+        title: "Added to Cart",
+        description: `${name} has been added to your cart`,
+      });
+    }
     
     // Reset after 2 seconds
     setTimeout(() => {
       setAdded(false);
     }, 2000);
+  };
+  
+  const handleViewDetails = () => {
+    if (onViewDetails) {
+      onViewDetails();
+    }
   };
 
   return (
@@ -118,29 +135,39 @@ const GroceryCard: React.FC<GroceryCardProps> = ({
           </div>
         )}
         
-        <Button
-          onClick={handleAddToCart}
-          className={cn(
-            "w-full transition-all",
-            added 
-              ? "bg-green-600 hover:bg-green-700"
-              : featured 
-                ? "bg-lavender hover:bg-lavender-dark"
-                : "bg-lavender hover:bg-lavender-dark"
-          )}
-        >
-          {added ? (
-            <>
-              <Check className="h-4 w-4 mr-2" />
-              Added to Cart
-            </>
-          ) : (
-            <>
-              <ShoppingCart className="h-4 w-4 mr-2" />
-              Add to Cart
-            </>
-          )}
-        </Button>
+        <div className="flex gap-2">
+          <Button
+            onClick={handleAddToCart}
+            className={cn(
+              "flex-1 transition-all",
+              added 
+                ? "bg-green-600 hover:bg-green-700"
+                : featured 
+                  ? "bg-lavender hover:bg-lavender-dark"
+                  : "bg-lavender hover:bg-lavender-dark"
+            )}
+          >
+            {added ? (
+              <>
+                <Check className="h-4 w-4 mr-2" />
+                Added to Cart
+              </>
+            ) : (
+              <>
+                <ShoppingCart className="h-4 w-4 mr-2" />
+                Add to Cart
+              </>
+            )}
+          </Button>
+          
+          <Button 
+            variant="outline" 
+            className="border-lavender text-lavender hover:bg-lavender/20"
+            onClick={handleViewDetails}
+          >
+            <Info className="h-4 w-4" />
+          </Button>
+        </div>
       </div>
     </div>
   );

@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Info, ShoppingCart } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -8,9 +8,65 @@ import FeaturedCard from "@/components/FeaturedCard";
 import StockCard from "@/components/StockCard";
 import GroceryCard from "@/components/GroceryCard";
 import { useAuth } from "@/contexts/AuthContext";
+import { useToast } from "@/hooks/use-toast";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogClose
+} from "@/components/ui/dialog";
 
 const Index = () => {
   const { isAuthenticated } = useAuth();
+  const { toast } = useToast();
+  const [selectedItem, setSelectedItem] = useState<typeof featuredGroceries[0] | null>(null);
+  
+  const showItemDetails = (item: typeof featuredGroceries[0]) => {
+    setSelectedItem(item);
+  };
+  
+  const addToCart = (item: typeof featuredGroceries[0]) => {
+    // Get existing cart from localStorage
+    const existingCartJSON = localStorage.getItem('zaryah_cart');
+    let cart = [];
+    
+    if (existingCartJSON) {
+      try {
+        cart = JSON.parse(existingCartJSON);
+      } catch (error) {
+        console.error('Error parsing cart from localStorage:', error);
+      }
+    }
+    
+    // Check if item already exists in cart
+    const existingItemIndex = cart.findIndex((cartItem: any) => cartItem.id === item.id);
+    
+    if (existingItemIndex >= 0) {
+      // Item exists, update quantity
+      cart[existingItemIndex].quantity += 1;
+    } else {
+      // Item doesn't exist, add new item
+      cart.push({ 
+        id: item.id || Math.random(), 
+        name: item.name, 
+        price: item.price, 
+        quantity: 1,
+        image: item.imageSrc,
+        category: item.category
+      });
+    }
+    
+    // Save updated cart to localStorage
+    localStorage.setItem('zaryah_cart', JSON.stringify(cart));
+    
+    toast({
+      title: "Added to cart",
+      description: `${item.name} added to your cart`,
+    });
+  };
   
   // Mock data
   const featuredStocks = [
@@ -42,36 +98,68 @@ const Index = () => {
 
   const featuredGroceries = [
     {
+      id: 1,
       name: "Premium Halal Beef",
       category: "Meat & Poultry",
       price: 15.99,
       rating: 4.8,
       featured: true,
-      imageSrc: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8aGFsYWwlMjBiZWVmfGVufDB8fDB8fHww&auto=format&fit=crop&w=200&q=80"
+      imageSrc: "https://images.unsplash.com/photo-1607623814075-e51df1bdc82f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8aGFsYWwlMjBiZWVmfGVufDB8fDB8fHww&auto=format&fit=crop&w=200&q=80",
+      description: "Premium grass-fed halal beef, sourced from ethical farms with proper Islamic slaughter methods. High in protein and essential nutrients with no added hormones or antibiotics.",
+      nutritionalInfo: {
+        calories: 250,
+        protein: 26,
+        carbs: 0,
+        fat: 17
+      }
     },
     {
+      id: 2,
       name: "Organic Basmati Rice",
       category: "Grains",
       price: 9.99,
       rating: 4.7,
       featured: true,
-      imageSrc: "https://images.unsplash.com/photo-1550617931-e17a7b70dce2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YmFzbWF0aSUyMHJpY2V8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=200&q=80"
+      imageSrc: "https://images.unsplash.com/photo-1550617931-e17a7b70dce2?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mnx8YmFzbWF0aSUyMHJpY2V8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=200&q=80",
+      description: "Premium aged basmati rice grown in the Himalayan foothills. Known for its distinctive aroma and long, fluffy grains. Perfect for biryani and pilaf dishes.",
+      nutritionalInfo: {
+        calories: 150,
+        protein: 3,
+        carbs: 34,
+        fat: 0.3
+      }
     },
     {
+      id: 3,
       name: "Organic Honey",
       category: "Condiments",
       price: 9.49,
       rating: 4.9,
       featured: true,
-      imageSrc: "https://images.unsplash.com/photo-1558642891-54be180ea339?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8aG9uZXl8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=200&q=80"
+      imageSrc: "https://images.unsplash.com/photo-1558642891-54be180ea339?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8aG9uZXl8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=200&q=80",
+      description: "Pure, raw organic honey harvested from sustainable apiaries. Rich in antioxidants and natural enzymes with a smooth, complex flavor profile. Never heated or filtered.",
+      nutritionalInfo: {
+        calories: 64,
+        protein: 0.1,
+        carbs: 17,
+        fat: 0
+      }
     },
     {
+      id: 4,
       name: "Fresh Pomegranate",
       category: "Fruits",
       price: 4.99,
       rating: 4.8,
       featured: true,
-      imageSrc: "https://images.unsplash.com/photo-1541344999736-83eca272f6fc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cG9tZWdyYW5hdGV8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=200&q=80"
+      imageSrc: "https://images.unsplash.com/photo-1541344999736-83eca272f6fc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cG9tZWdyYW5hdGV8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=200&q=80",
+      description: "Juicy, ruby-red pomegranates packed with antioxidants and vitamin C. Each fruit contains hundreds of sweet-tart arils that are perfect for salads, desserts, or eating fresh.",
+      nutritionalInfo: {
+        calories: 83,
+        protein: 1.7,
+        carbs: 19,
+        fat: 1.2
+      }
     }
   ];
 
@@ -324,6 +412,9 @@ const Index = () => {
                 price={grocery.price}
                 rating={grocery.rating}
                 featured={grocery.featured}
+                imageSrc={grocery.imageSrc}
+                onViewDetails={() => showItemDetails(grocery)}
+                onAddToCart={() => addToCart(grocery)}
               />
             ))}
           </div>
@@ -375,6 +466,93 @@ const Index = () => {
       </section>
 
       <Footer />
+      
+      {/* Product Details Dialog */}
+      <Dialog open={!!selectedItem} onOpenChange={(open) => !open && setSelectedItem(null)}>
+        <DialogContent className="sm:max-w-[500px] bg-background border border-white/10">
+          {selectedItem && (
+            <>
+              <DialogHeader>
+                <DialogTitle className="text-2xl">{selectedItem.name}</DialogTitle>
+                <DialogDescription>
+                  {selectedItem.category}
+                </DialogDescription>
+              </DialogHeader>
+              
+              <div className="mt-4">
+                <div className="rounded-lg overflow-hidden mb-4">
+                  <img 
+                    src={selectedItem.imageSrc} 
+                    alt={selectedItem.name} 
+                    className="w-full h-64 object-cover"
+                  />
+                </div>
+                
+                <div className="grid grid-cols-2 gap-4 mb-4">
+                  <div className="bg-white/5 p-3 rounded-lg">
+                    <div className="text-white/60 text-sm mb-1">Price</div>
+                    <div className="font-semibold text-lg">${selectedItem.price.toFixed(2)}</div>
+                  </div>
+                  
+                  <div className="bg-white/5 p-3 rounded-lg">
+                    <div className="text-white/60 text-sm mb-1">Rating</div>
+                    <div className="font-semibold text-lg flex items-center">
+                      <span className="text-yellow-400 mr-1">★</span>
+                      {selectedItem.rating}
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="bg-white/5 p-4 rounded-lg mb-6">
+                  <h4 className="font-medium mb-2">Product Description</h4>
+                  <p className="text-white/80">
+                    {selectedItem.description || `${selectedItem.name} is a premium quality halal product, sourced from trusted suppliers. This product is certified halal and meets our strict quality standards.`}
+                  </p>
+                  
+                  <h4 className="font-medium mt-4 mb-2">Nutritional Information</h4>
+                  <div className="grid grid-cols-2 gap-2 text-sm">
+                    <div className="flex justify-between">
+                      <span className="text-white/60">Calories</span>
+                      <span>{selectedItem.nutritionalInfo?.calories || '120'} kcal</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-white/60">Protein</span>
+                      <span>{selectedItem.nutritionalInfo?.protein || '5'}g</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-white/60">Carbs</span>
+                      <span>{selectedItem.nutritionalInfo?.carbs || '22'}g</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span className="text-white/60">Fat</span>
+                      <span>{selectedItem.nutritionalInfo?.fat || '2'}g</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <DialogFooter className="flex flex-col sm:flex-row gap-2">
+                <Button 
+                  className="flex-1 bg-lavender hover:bg-lavender-dark"
+                  onClick={() => {
+                    addToCart(selectedItem);
+                    setSelectedItem(null);
+                  }}
+                >
+                  <ShoppingCart className="h-4 w-4 mr-2" />
+                  Add to Cart
+                </Button>
+                
+                <DialogClose asChild>
+                  <Button variant="outline" className="flex-1">
+                    Close
+                  </Button>
+                </DialogClose>
+              </DialogFooter>
+            </>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
