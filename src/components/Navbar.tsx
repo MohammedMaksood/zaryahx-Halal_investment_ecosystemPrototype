@@ -66,12 +66,6 @@ export const Navbar = () => {
             <Link to="/analysis" className="text-sm font-medium text-white/80 hover:text-lavender transition-colors">
               Analysis
             </Link>
-            <Link to="/academics" className="text-sm font-medium text-white/80 hover:text-lavender transition-colors">
-              Islamic Academics
-            </Link>
-            <Link to="/groceries" className="text-sm font-medium text-white/80 hover:text-lavender transition-colors">
-              Halal Groceries
-            </Link>
           </nav>
 
           {/* Desktop Right Actions - Search bar removed */}
@@ -173,20 +167,6 @@ export const Navbar = () => {
               onClick={toggleMobileMenu}
             >
               Analysis
-            </Link>
-            <Link 
-              to="/academics" 
-              className="block rounded-md px-3 py-2 text-base font-medium hover:bg-lavender/20"
-              onClick={toggleMobileMenu}
-            >
-              Islamic Academics
-            </Link>
-            <Link 
-              to="/groceries" 
-              className="block rounded-md px-3 py-2 text-base font-medium hover:bg-lavender/20"
-              onClick={toggleMobileMenu}
-            >
-              Halal Groceries
             </Link>
             
             <div className="pt-4 pb-2">
