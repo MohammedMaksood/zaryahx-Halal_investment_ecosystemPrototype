@@ -13,30 +13,24 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 
 interface StockTransactionDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
   stock: {
     name: string;
     symbol: string;
     currentPrice: number;
-  };
+  } | null;
   transactionType: 'buy' | 'sell';
-  onTransactionComplete: (details: {
-    symbol: string;
-    quantity: number;
-    price: number;
-    total: number;
-    type: 'buy' | 'sell';
-  }) => void;
+  onComplete: (success: boolean) => void;
   maxSellQuantity?: number;
 }
 
 const StockTransactionDialog: React.FC<StockTransactionDialogProps> = ({
-  isOpen,
-  onClose,
+  open,
+  onOpenChange,
   stock,
   transactionType,
-  onTransactionComplete,
+  onComplete,
   maxSellQuantity
 }) => {
   const [quantity, setQuantity] = useState<number>(1);
@@ -57,7 +51,7 @@ const StockTransactionDialog: React.FC<StockTransactionDialogProps> = ({
     }
   };
 
-  const totalAmount = quantity * stock.currentPrice;
+  const totalAmount = stock ? quantity * stock.currentPrice : 0;
 
   const handleSubmit = () => {
     setIsProcessing(true);
@@ -66,28 +60,24 @@ const StockTransactionDialog: React.FC<StockTransactionDialogProps> = ({
     setTimeout(() => {
       setIsProcessing(false);
       
-      // Call the completion handler with transaction details
-      onTransactionComplete({
-        symbol: stock.symbol,
-        quantity,
-        price: stock.currentPrice,
-        total: totalAmount,
-        type: transactionType
-      });
+      // Call the completion handler with success
+      onComplete(true);
       
       // Show success toast
       toast({
         title: `${transactionType === 'buy' ? 'Purchase' : 'Sale'} Successful`,
-        description: `${transactionType === 'buy' ? 'Bought' : 'Sold'} ${quantity} shares of ${stock.symbol} for $${totalAmount.toFixed(2)}`,
+        description: `${transactionType === 'buy' ? 'Bought' : 'Sold'} ${quantity} shares of ${stock?.symbol} for $${totalAmount.toFixed(2)}`,
       });
       
       // Close the dialog
-      onClose();
+      onOpenChange(false);
     }, 1500);
   };
 
+  if (!stock) return null;
+
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="bg-background/95 backdrop-blur-md border-white/10 sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle className="text-xl">
@@ -129,7 +119,7 @@ const StockTransactionDialog: React.FC<StockTransactionDialogProps> = ({
         </div>
         
         <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="outline" onClick={() => onOpenChange(false)}>
             Cancel
           </Button>
           <Button 

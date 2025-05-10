@@ -532,18 +532,30 @@ const Portfolio = () => {
       <Footer />
       
       {/* Stock Transaction Dialog */}
-      {selectedStock && (
-        <StockTransactionDialog
-          isOpen={transactionDialogOpen}
-          onClose={() => setTransactionDialogOpen(false)}
-          stock={{
-            name: selectedStock.name,
+      <StockTransactionDialog
+        open={transactionDialogOpen}
+        onOpenChange={setTransactionDialogOpen}
+        stock={selectedStock ? {
+          name: selectedStock.name,
+          symbol: selectedStock.symbol,
+          currentPrice: selectedStock.currentPrice
+        } : null}
+        transactionType={transactionType}
+        maxSellQuantity={transactionType === 'sell' && selectedStock ? selectedStock.quantity : undefined}
+        onComplete={(success) => {
+          if (!success || !selectedStock) return;
+          
+          // Create transaction details object
+          const details = {
             symbol: selectedStock.symbol,
-            currentPrice: selectedStock.currentPrice
-          }}
-          transactionType={transactionType}
-          maxSellQuantity={transactionType === 'sell' ? selectedStock.quantity : undefined}
-          onTransactionComplete={(details) => {
+            quantity: transactionType === 'sell' ? 
+              (selectedStock.quantity > 0 ? Math.min(selectedStock.quantity, 1) : 0) : 1,
+            price: selectedStock.currentPrice,
+            total: transactionType === 'sell' ? 
+              (selectedStock.quantity > 0 ? Math.min(selectedStock.quantity, 1) * selectedStock.currentPrice : 0) : 
+              selectedStock.currentPrice,
+            type: transactionType
+          };
             if (details.type === 'buy') {
               // Update holdings with new purchase
               const updatedHoldings = holdings.map(holding => {
@@ -627,7 +639,6 @@ const Portfolio = () => {
             }
           }}
         />
-      )}
     </div>
   );
 };
