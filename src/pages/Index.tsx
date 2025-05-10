@@ -1,74 +1,17 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Info, ShoppingCart } from "lucide-react";
+import { ArrowRight, Info } from "lucide-react";
 import { Link } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import FeaturedCard from "@/components/FeaturedCard";
 import StockCard from "@/components/StockCard";
-import GroceryCard from "@/components/GroceryCard";
 import { useAuth } from "@/contexts/AuthContext";
-import { useToast } from "@/hooks/use-toast";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-  DialogClose
-} from "@/components/ui/dialog";
 
 const Index = () => {
   const { isAuthenticated } = useAuth();
-  const { toast } = useToast();
-  const [selectedItem, setSelectedItem] = useState<typeof featuredGroceries[0] | null>(null);
   
-  const showItemDetails = (item: typeof featuredGroceries[0]) => {
-    setSelectedItem(item);
-  };
-  
-  const addToCart = (item: typeof featuredGroceries[0]) => {
-    // Get existing cart from localStorage
-    const existingCartJSON = localStorage.getItem('zaryah_cart');
-    let cart = [];
-    
-    if (existingCartJSON) {
-      try {
-        cart = JSON.parse(existingCartJSON);
-      } catch (error) {
-        console.error('Error parsing cart from localStorage:', error);
-      }
-    }
-    
-    // Check if item already exists in cart
-    const existingItemIndex = cart.findIndex((cartItem: any) => cartItem.id === item.id);
-    
-    if (existingItemIndex >= 0) {
-      // Item exists, update quantity
-      cart[existingItemIndex].quantity += 1;
-    } else {
-      // Item doesn't exist, add new item
-      cart.push({ 
-        id: item.id || Math.random(), 
-        name: item.name, 
-        price: item.price, 
-        quantity: 1,
-        image: item.imageSrc,
-        category: item.category
-      });
-    }
-    
-    // Save updated cart to localStorage
-    localStorage.setItem('zaryah_cart', JSON.stringify(cart));
-    
-    toast({
-      title: "Added to cart",
-      description: `${item.name} added to your cart`,
-    });
-  };
-  
-  // Mock data
+  // Mock data for featured stocks
   const featuredStocks = [
     {
       name: "Al Rajhi Bank",
@@ -96,72 +39,7 @@ const Index = () => {
     }
   ];
 
-  const featuredGroceries = [
-    {
-      id: 1,
-      name: "Premium Halal Beef Steak",
-      category: "Meat & Poultry",
-      price: 15.99,
-      rating: 4.8,
-      featured: true,
-      imageSrc: "https://images.unsplash.com/photo-1603360946369-dc9bb6258143?auto=format&fit=crop&q=80&w=200",
-      description: "Premium grass-fed halal beef steak, sourced from ethical farms with proper Islamic slaughter methods. High in protein and essential nutrients with no added hormones or antibiotics.",
-      nutritionalInfo: {
-        calories: 250,
-        protein: 26,
-        carbs: 0,
-        fat: 17
-      }
-    },
-    {
-      id: 2,
-      name: "Organic Basmati Rice",
-      category: "Grains",
-      price: 9.99,
-      rating: 4.7,
-      featured: true,
-      imageSrc: "https://images.unsplash.com/photo-1586201375761-83865001e8c7?auto=format&fit=crop&q=80&w=200",
-      description: "Premium aged basmati rice grown in the Himalayan foothills. Known for its distinctive aroma and long, fluffy grains. Perfect for biryani and pilaf dishes.",
-      nutritionalInfo: {
-        calories: 150,
-        protein: 3,
-        carbs: 34,
-        fat: 0.3
-      }
-    },
-    {
-      id: 11,
-      name: "Organic Honey",
-      category: "Condiments",
-      price: 9.49,
-      rating: 4.9,
-      featured: true,
-      imageSrc: "https://images.unsplash.com/photo-1558642891-54be180ea339?auto=format&fit=crop&q=80&w=200",
-      description: "Pure, raw organic honey harvested from sustainable apiaries. Rich in antioxidants and natural enzymes with a smooth, complex flavor profile. Never heated or filtered, preserving all natural benefits.",
-      nutritionalInfo: {
-        calories: 64,
-        protein: 0.1,
-        carbs: 17,
-        fat: 0
-      }
-    },
-    {
-      id: 18,
-      name: "Fresh Pomegranate",
-      category: "Fruits",
-      price: 4.99,
-      rating: 4.8,
-      featured: true,
-      imageSrc: "https://images.unsplash.com/photo-1541344999736-83eca272f6fc?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cG9tZWdyYW5hdGV8ZW58MHx8MHx8fDA%3D&auto=format&fit=crop&w=200&q=80",
-      description: "Juicy, ruby-red pomegranates packed with antioxidants and vitamin C. Each fruit contains hundreds of sweet-tart arils that are perfect for salads, desserts, or eating fresh.",
-      nutritionalInfo: {
-        calories: 83,
-        protein: 1.7,
-        carbs: 19,
-        fat: 1.2
-      }
-    }
-  ];
+
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
@@ -176,7 +54,7 @@ const Index = () => {
               Halal Investments for a Blessed Future
             </h1>
             <p className="text-xl text-white/70 mb-8">
-              ZaryahX provides a comprehensive ecosystem for halal investments, Islamic education, and halal groceries - all guided by Shariah principles.
+              ZaryahX provides a comprehensive platform for halal investments guided by Shariah principles.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               {isAuthenticated ? (
@@ -225,7 +103,7 @@ const Index = () => {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <FeaturedCard
               title="Halal Stocks"
               description="Invest in pre-vetted companies that comply with Shariah principles, free from interest, gambling, and other haram activities."
@@ -243,23 +121,7 @@ const Index = () => {
               </svg>}
               linkTo="/analysis"
             />
-            <FeaturedCard
-              title="Islamic Academics"
-              description="Find nearby Islamic schools, colleges, masjids, and coaching centers to nurture your spiritual and educational growth."
-              icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6 text-lavender">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-              </svg>}
-              linkTo="/academics"
-            />
-            <FeaturedCard
-              title="Halal Groceries"
-              description="Shop for halal-certified food products and groceries with our curated marketplace of trusted vendors."
-              icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6 text-lavender">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
-              </svg>}
-              linkTo="/groceries"
-              variant="accent"
-            />
+
           </div>
         </div>
       </section>
@@ -387,39 +249,7 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Featured Groceries */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-between items-center mb-10">
-            <h2 className="text-2xl font-bold text-gradient">Featured Halal Groceries</h2>
-            <Button 
-              variant="ghost"
-              className="text-lavender hover:bg-lavender/10 flex items-center"
-              asChild
-            >
-              <a href="/groceries">
-                Browse All <ArrowRight className="ml-2 h-4 w-4" />
-              </a>
-            </Button>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {featuredGroceries.map((grocery, index) => (
-              <GroceryCard
-                key={index}
-                name={grocery.name}
-                category={grocery.category}
-                price={grocery.price}
-                rating={grocery.rating}
-                featured={grocery.featured}
-                imageSrc={grocery.imageSrc}
-                onViewDetails={() => showItemDetails(grocery)}
-                onAddToCart={() => addToCart(grocery)}
-              />
-            ))}
-          </div>
-        </div>
-      </section>
 
       {/* CTA Section */}
       <section className="py-20 bg-lavender/10 relative overflow-hidden">
@@ -466,104 +296,7 @@ const Index = () => {
       </section>
 
       <Footer />
-      
-      {/* Product Details Dialog */}
-      <Dialog open={!!selectedItem} onOpenChange={(open) => !open && setSelectedItem(null)}>
-        <DialogContent className="sm:max-w-[500px] max-h-[90vh] bg-background border border-white/10 overflow-y-auto">
-          {selectedItem && (
-            <>
-              <div className="absolute right-4 top-4 z-10">
-                <button 
-                  onClick={() => setSelectedItem(null)} 
-                  className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground bg-background/80 p-1"
-                >
-                  <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg" className="h-4 w-4">
-                    <path d="M11.7816 4.03157C12.0062 3.80702 12.0062 3.44295 11.7816 3.2184C11.5571 2.99385 11.193 2.99385 10.9685 3.2184L7.50005 6.68682L4.03164 3.2184C3.80708 2.99385 3.44301 2.99385 3.21846 3.2184C2.99391 3.44295 2.99391 3.80702 3.21846 4.03157L6.68688 7.49999L3.21846 10.9684C2.99391 11.193 2.99391 11.557 3.21846 11.7816C3.44301 12.0061 3.80708 12.0061 4.03164 11.7816L7.50005 8.31316L10.9685 11.7816C11.193 12.0061 11.5571 12.0061 11.7816 11.7816C12.0062 11.557 12.0062 11.193 11.7816 10.9684L8.31322 7.49999L11.7816 4.03157Z" fill="currentColor" fillRule="evenodd" clipRule="evenodd"></path>
-                  </svg>
-                  <span className="sr-only">Close</span>
-                </button>
-              </div>
-              <DialogHeader>
-                <DialogTitle className="text-2xl">{selectedItem.name}</DialogTitle>
-                <DialogDescription>
-                  {selectedItem.category}
-                </DialogDescription>
-              </DialogHeader>
-              
-              <div className="mt-4">
-                <div className="rounded-lg overflow-hidden mb-4">
-                  <img 
-                    src={selectedItem.imageSrc} 
-                    alt={selectedItem.name} 
-                    className="w-full h-64 object-cover"
-                  />
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4 mb-4">
-                  <div className="bg-white/5 p-3 rounded-lg">
-                    <div className="text-white/60 text-sm mb-1">Price</div>
-                    <div className="font-semibold text-lg">${selectedItem.price.toFixed(2)}</div>
-                  </div>
-                  
-                  <div className="bg-white/5 p-3 rounded-lg">
-                    <div className="text-white/60 text-sm mb-1">Rating</div>
-                    <div className="font-semibold text-lg flex items-center">
-                      <span className="text-yellow-400 mr-1">★</span>
-                      {selectedItem.rating}
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="bg-white/5 p-4 rounded-lg mb-6">
-                  <h4 className="font-medium mb-2">Product Description</h4>
-                  <p className="text-white/80">
-                    {selectedItem.description || `${selectedItem.name} is a premium quality halal product, sourced from trusted suppliers. This product is certified halal and meets our strict quality standards.`}
-                  </p>
-                  
-                  <h4 className="font-medium mt-4 mb-2">Nutritional Information</h4>
-                  <div className="grid grid-cols-2 gap-2 text-sm">
-                    <div className="flex justify-between">
-                      <span className="text-white/60">Calories</span>
-                      <span>{selectedItem.nutritionalInfo?.calories || '120'} kcal</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-white/60">Protein</span>
-                      <span>{selectedItem.nutritionalInfo?.protein || '5'}g</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-white/60">Carbs</span>
-                      <span>{selectedItem.nutritionalInfo?.carbs || '22'}g</span>
-                    </div>
-                    <div className="flex justify-between">
-                      <span className="text-white/60">Fat</span>
-                      <span>{selectedItem.nutritionalInfo?.fat || '2'}g</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <DialogFooter className="flex flex-col sm:flex-row gap-2">
-                <Button 
-                  className="flex-1 bg-lavender hover:bg-lavender-dark"
-                  onClick={() => {
-                    addToCart(selectedItem);
-                    setSelectedItem(null);
-                  }}
-                >
-                  <ShoppingCart className="h-4 w-4 mr-2" />
-                  Add to Cart
-                </Button>
-                
-                <DialogClose asChild>
-                  <Button variant="outline" className="flex-1">
-                    Close
-                  </Button>
-                </DialogClose>
-              </DialogFooter>
-            </>
-          )}
-        </DialogContent>
-      </Dialog>
+
     </div>
   );
 };

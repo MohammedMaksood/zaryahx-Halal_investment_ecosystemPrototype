@@ -14,7 +14,7 @@ const Footer = () => {
               </span>
             </Link>
             <p className="text-sm text-white/60 max-w-xs">
-              A complete halal investment ecosystem that aligns with Islamic financial principles.
+              A comprehensive halal investment platform that aligns with Islamic financial principles.
             </p>
             <div className="flex space-x-4">
               <a href="#" className="h-8 w-8 rounded-full bg-lavender/20 flex items-center justify-center hover:bg-lavender/40 transition-colors">
@@ -47,10 +47,7 @@ const Footer = () => {
                 <Link to="/analysis" className="text-sm text-white/60 hover:text-lavender transition-colors">Stock Analysis</Link>
               </li>
               <li>
-                <Link to="/academics" className="text-sm text-white/60 hover:text-lavender transition-colors">Islamic Academics</Link>
-              </li>
-              <li>
-                <Link to="/groceries" className="text-sm text-white/60 hover:text-lavender transition-colors">Halal Groceries</Link>
+                <Link to="/portfolio" className="text-sm text-white/60 hover:text-lavender transition-colors">Portfolio Management</Link>
               </li>
             </ul>
           </div>
@@ -91,7 +88,7 @@ const Footer = () => {
         </div>
         <div className="mt-12 pt-8 border-t border-white/10">
           <p className="text-xs text-white/40 text-center">
-            &copy; {new Date().getFullYear()} ZaryahX Investment Ecosystem. All rights reserved.
+            &copy; {new Date().getFullYear()} ZaryahX Investment Platform. All rights reserved.
           </p>
         </div>
       </div>
