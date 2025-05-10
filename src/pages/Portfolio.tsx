@@ -118,10 +118,20 @@ const Portfolio = () => {
     }
   ]);
   
-  // Transaction dialog state
+  // State for transaction dialog
   const [transactionDialogOpen, setTransactionDialogOpen] = useState(false);
   const [selectedStock, setSelectedStock] = useState<StockHolding | null>(null);
   const [transactionType, setTransactionType] = useState<'buy' | 'sell'>('buy');
+  
+  // Debug function to log current holdings
+  const logHoldings = () => {
+    console.log('Current holdings:', holdings);
+  };
+  
+  // Effect to log holdings whenever they change
+  useEffect(() => {
+    console.log('Holdings updated:', holdings);
+  }, [holdings]);
   
   // Redirect to sign in if not authenticated
   useEffect(() => {
@@ -591,32 +601,51 @@ const Portfolio = () => {
               
               setOrders([newOrder, ...orders]);
             } else if (details.type === 'sell') {
-              // Update holdings with sale
-              const updatedHoldings = holdings.map(holding => {
-                if (holding.symbol === details.symbol) {
-                  const newQuantity = holding.quantity - details.quantity;
-                  
-                  // If all shares sold, remove from holdings
-                  if (newQuantity <= 0) {
-                    return null;
-                  }
-                  
+              console.log('Selling stock:', details.symbol);
+              console.log('Quantity to sell:', details.quantity);
+              console.log('Current holdings before update:', holdings);
+              
+              // Create a deep copy of the holdings array
+              const holdingsCopy = JSON.parse(JSON.stringify(holdings));
+              
+              // Find the index of the stock being sold
+              const stockIndex = holdingsCopy.findIndex(h => h.symbol === details.symbol);
+              
+              if (stockIndex !== -1) {
+                const holding = holdingsCopy[stockIndex];
+                console.log('Found matching holding at index', stockIndex, ':', holding);
+                
+                // Calculate new quantity after selling
+                const newQuantity = holding.quantity - details.quantity;
+                console.log('New quantity after sell:', newQuantity);
+                
+                // If all shares sold, remove from holdings
+                if (newQuantity <= 0) {
+                  console.log('All shares sold, removing from holdings');
+                  holdingsCopy.splice(stockIndex, 1);
+                } else {
+                  // Update the holding with new values
                   const newValue = newQuantity * holding.currentPrice;
                   const newProfitLoss = newValue - (newQuantity * holding.avgPrice);
                   const newProfitLossPercentage = (newProfitLoss / (newQuantity * holding.avgPrice)) * 100;
                   
-                  return {
+                  holdingsCopy[stockIndex] = {
                     ...holding,
                     quantity: newQuantity,
                     value: newValue,
                     profitLoss: newProfitLoss,
                     profitLossPercentage: newProfitLossPercentage
                   };
+                  
+                  console.log('Updated holding:', holdingsCopy[stockIndex]);
                 }
-                return holding;
-              }).filter(Boolean) as StockHolding[];
-              
-              setHoldings(updatedHoldings);
+                
+                // Update the state with the new holdings array
+                console.log('Updated holdings after sell:', holdingsCopy);
+                setHoldings(holdingsCopy);
+              } else {
+                console.error('Could not find stock with symbol', details.symbol, 'in holdings');
+              }
               
               // Add new order
               const newOrder: Order = {

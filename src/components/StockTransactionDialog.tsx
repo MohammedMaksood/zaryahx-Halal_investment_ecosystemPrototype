@@ -42,14 +42,22 @@ const StockTransactionDialog: React.FC<StockTransactionDialogProps> = ({
 
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
+    console.log('Quantity input changed to:', value);
+    console.log('Transaction type:', transactionType);
+    console.log('Max sell quantity:', maxSellQuantity);
+    
     if (!isNaN(value) && value > 0) {
       // If selling, limit to max quantity owned
       if (transactionType === 'sell' && maxSellQuantity) {
-        setQuantity(Math.min(value, maxSellQuantity));
+        const limitedValue = Math.min(value, maxSellQuantity);
+        console.log('Setting limited quantity for sell:', limitedValue);
+        setQuantity(limitedValue);
       } else {
+        console.log('Setting quantity for buy:', value);
         setQuantity(value);
       }
     } else {
+      console.log('Invalid input, defaulting to 1');
       setQuantity(1); // Default to 1 if invalid input
     }
   };
@@ -58,12 +66,17 @@ const StockTransactionDialog: React.FC<StockTransactionDialogProps> = ({
 
   const handleSubmit = () => {
     setIsProcessing(true);
+    console.log('Submitting transaction');
+    console.log('Transaction type:', transactionType);
+    console.log('Stock:', stock);
+    console.log('Quantity to submit:', quantity);
     
     // Simulate API call
     setTimeout(() => {
       setIsProcessing(false);
       
       // Call the completion handler with success and quantity
+      console.log('Calling onComplete with quantity:', quantity);
       onComplete(true, quantity);
       
       // Show success toast
