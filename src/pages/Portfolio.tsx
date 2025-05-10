@@ -542,18 +542,14 @@ const Portfolio = () => {
         } : null}
         transactionType={transactionType}
         maxSellQuantity={transactionType === 'sell' && selectedStock ? selectedStock.quantity : undefined}
-        onComplete={(success) => {
+        onComplete={(success, quantity) => {
           if (!success || !selectedStock) return;
           
-          // Create transaction details object
           const details = {
             symbol: selectedStock.symbol,
-            quantity: transactionType === 'sell' ? 
-              (selectedStock.quantity > 0 ? Math.min(selectedStock.quantity, 1) : 0) : 1,
+            quantity: quantity,
             price: selectedStock.currentPrice,
-            total: transactionType === 'sell' ? 
-              (selectedStock.quantity > 0 ? Math.min(selectedStock.quantity, 1) * selectedStock.currentPrice : 0) : 
-              selectedStock.currentPrice,
+            total: quantity * selectedStock.currentPrice,
             type: transactionType
           };
             if (details.type === 'buy') {

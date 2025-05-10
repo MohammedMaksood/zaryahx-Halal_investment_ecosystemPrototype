@@ -21,7 +21,7 @@ interface StockTransactionDialogProps {
     currentPrice: number;
   } | null;
   transactionType: 'buy' | 'sell';
-  onComplete: (success: boolean) => void;
+  onComplete: (success: boolean, quantity: number) => void;
   maxSellQuantity?: number;
 }
 
@@ -33,7 +33,10 @@ const StockTransactionDialog: React.FC<StockTransactionDialogProps> = ({
   onComplete,
   maxSellQuantity
 }) => {
-  const [quantity, setQuantity] = useState<number>(1);
+  // Initialize quantity to maxSellQuantity for sell transactions, 1 for buy
+  const [quantity, setQuantity] = useState<number>(
+    transactionType === 'sell' && maxSellQuantity ? maxSellQuantity : 1
+  );
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const { toast } = useToast();
 
@@ -60,8 +63,8 @@ const StockTransactionDialog: React.FC<StockTransactionDialogProps> = ({
     setTimeout(() => {
       setIsProcessing(false);
       
-      // Call the completion handler with success
-      onComplete(true);
+      // Call the completion handler with success and quantity
+      onComplete(true, quantity);
       
       // Show success toast
       toast({
