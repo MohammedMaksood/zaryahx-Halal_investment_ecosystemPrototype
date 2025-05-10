@@ -66,6 +66,9 @@ export const Navbar = () => {
             <Link to="/analysis" className="text-sm font-medium text-white/80 hover:text-lavender transition-colors">
               Analysis
             </Link>
+            <Link to="/portfolio" className="text-sm font-medium text-white/80 hover:text-lavender transition-colors">
+              Portfolio
+            </Link>
           </nav>
 
           {/* Desktop Right Actions - Search bar removed */}
@@ -167,6 +170,13 @@ export const Navbar = () => {
               onClick={toggleMobileMenu}
             >
               Analysis
+            </Link>
+            <Link 
+              to="/portfolio" 
+              className="block rounded-md px-3 py-2 text-base font-medium hover:bg-lavender/20"
+              onClick={toggleMobileMenu}
+            >
+              Portfolio
             </Link>
             
             <div className="pt-4 pb-2">
