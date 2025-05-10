@@ -123,22 +123,17 @@ const Portfolio = () => {
   const [selectedStock, setSelectedStock] = useState<StockHolding | null>(null);
   const [transactionType, setTransactionType] = useState<'buy' | 'sell'>('buy');
   
-  // Debug function to log current holdings
-  const logHoldings = () => {
-    console.log('Current holdings:', holdings);
-  };
-  
-  // Effect to log holdings whenever they change
-  useEffect(() => {
-    console.log('Holdings updated:', holdings);
-  }, [holdings]);
-  
   // Redirect to sign in if not authenticated
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
       navigate('/signin?redirect=/portfolio');
     }
   }, [isLoading, isAuthenticated, navigate]);
+
+  // Calculate total portfolio value
+  const totalPortfolioValue = holdings.reduce((total, stock) => total + stock.value, 0);
+  const totalProfitLoss = holdings.reduce((total, stock) => total + stock.profitLoss, 0);
+  const totalProfitLossPercentage = (totalProfitLoss / (totalPortfolioValue - totalProfitLoss)) * 100;
 
   if (isLoading) {
     return (
@@ -185,8 +180,10 @@ const Portfolio = () => {
                 <div className="space-y-6">
                   <div>
                     <div className="text-sm text-white/60">Total Portfolio Value</div>
-                    <div className="text-3xl font-bold">$4,630.40</div>
-                    <div className="text-sm text-green-400">+$133.25 (2.9%)</div>
+                    <div className="text-3xl font-bold">${totalPortfolioValue.toFixed(2)}</div>
+                    <div className={`text-sm ${totalProfitLoss >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                      {totalProfitLoss >= 0 ? '+' : ''}{totalProfitLoss.toFixed(2)} ({totalProfitLossPercentage.toFixed(1)}%)
+                    </div>
                   </div>
                   
                   <div className="space-y-4">
@@ -266,154 +263,70 @@ const Portfolio = () => {
                             </tr>
                           </thead>
                           <tbody>
-                            {/* Sample data - in a real app, this would come from an API */}
-                            <tr className="border-b border-white/10 hover:bg-secondary/30">
-                              <td className="py-3 px-4">
-                                <div className="flex items-center">
-                                  <div className="h-8 w-8 rounded-full bg-lavender/20 flex items-center justify-center mr-3">
-                                    <span className="text-xs font-medium">AAPL</span>
-                                  </div>
+                            {holdings.map((stock, index) => (
+                              <tr key={stock.id} className={index < holdings.length - 1 ? "border-b border-white/10 hover:bg-secondary/30" : "hover:bg-secondary/30"}>
+                                <td className="py-3 px-4">
                                   <div className="flex items-center">
-                                    <div>
-                                      <div className="font-medium">Apple Inc.</div>
-                                      <div className="text-xs text-white/60">AAPL</div>
+                                    <div className="h-8 w-8 rounded-full bg-lavender/20 flex items-center justify-center mr-3">
+                                      <span className="text-xs font-medium">{stock.symbol.substring(0, 4)}</span>
                                     </div>
-
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="py-3 px-4">10</td>
-                              <td className="py-3 px-4">$175.50</td>
-                              <td className="py-3 px-4">$182.63</td>
-                              <td className="py-3 px-4">$1,826.30</td>
-                              <td className="py-3 px-4 text-green-400">+$71.30 (4.1%)</td>
-                              <td className="py-3 px-4">
-                                <div className="flex space-x-2">
-                                  <Button 
-                                    variant="outline" 
-                                    size="sm" 
-                                    className="h-8 px-2 text-xs"
-                                    onClick={() => {
-                                      setSelectedStock(holdings[2]);
-                                      setTransactionType('buy');
-                                      setTransactionDialogOpen(true);
-                                    }}
-                                  >
-                                    Buy More
-                                  </Button>
-                                  <Button 
-                                    variant="outline" 
-                                    size="sm" 
-                                    className="h-8 px-2 text-xs text-red-400 border-red-400 hover:bg-red-400/10"
-                                    onClick={() => {
-                                      setSelectedStock(holdings[2]);
-                                      setTransactionType('sell');
-                                      setTransactionDialogOpen(true);
-                                    }}
-                                  >
-                                    Sell
-                                  </Button>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr className="border-b border-white/10 hover:bg-secondary/30">
-                              <td className="py-3 px-4">
-                                <div className="flex items-center">
-                                  <div className="h-8 w-8 rounded-full bg-lavender/20 flex items-center justify-center mr-3">
-                                    <span className="text-xs font-medium">MSFT</span>
-                                  </div>
-                                  <div className="flex items-center">
                                     <div>
-                                      <div className="font-medium">Microsoft Corporation</div>
-                                      <div className="text-xs text-white/60">MSFT</div>
+                                      <div className="font-medium">{stock.name}</div>
+                                      <div className="text-xs text-white/60">{stock.symbol}</div>
                                     </div>
-
                                   </div>
-                                </div>
-                              </td>
-                              <td className="py-3 px-4">5</td>
-                              <td className="py-3 px-4">$320.75</td>
-                              <td className="py-3 px-4">$337.22</td>
-                              <td className="py-3 px-4">$1,686.10</td>
-                              <td className="py-3 px-4 text-green-400">+$82.35 (5.1%)</td>
-                              <td className="py-3 px-4">
-                                <div className="flex space-x-2">
-                                  <Button 
-                                    variant="outline" 
-                                    size="sm" 
-                                    className="h-8 px-2 text-xs"
-                                    onClick={() => {
-                                      setSelectedStock(holdings[2]);
-                                      setTransactionType('buy');
-                                      setTransactionDialogOpen(true);
-                                    }}
-                                  >
-                                    Buy More
-                                  </Button>
-                                  <Button 
-                                    variant="outline" 
-                                    size="sm" 
-                                    className="h-8 px-2 text-xs text-red-400 border-red-400 hover:bg-red-400/10"
-                                    onClick={() => {
-                                      setSelectedStock(holdings[2]);
-                                      setTransactionType('sell');
-                                      setTransactionDialogOpen(true);
-                                    }}
-                                  >
-                                    Sell
-                                  </Button>
-                                </div>
-                              </td>
-                            </tr>
-                            <tr className="hover:bg-secondary/30">
-                              <td className="py-3 px-4">
-                                <div className="flex items-center">
-                                  <div className="h-8 w-8 rounded-full bg-lavender/20 flex items-center justify-center mr-3">
-                                    <span className="text-xs font-medium">GOOGL</span>
+                                </td>
+                                <td className="py-3 px-4">{stock.quantity}</td>
+                                <td className="py-3 px-4">${stock.avgPrice.toFixed(2)}</td>
+                                <td className="py-3 px-4">${stock.currentPrice.toFixed(2)}</td>
+                                <td className="py-3 px-4">${stock.value.toFixed(2)}</td>
+                                <td className={`py-3 px-4 ${stock.profitLoss >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                                  {stock.profitLoss >= 0 ? '+' : ''}{stock.profitLoss.toFixed(2)} ({stock.profitLossPercentage.toFixed(1)}%)
+                                </td>
+                                <td className="py-3 px-4">
+                                  <div className="flex space-x-2">
+                                    <Button 
+                                      variant="outline" 
+                                      size="sm" 
+                                      className="h-8 px-2 text-xs"
+                                      onClick={() => {
+                                        setSelectedStock(stock);
+                                        setTransactionType('buy');
+                                        setTransactionDialogOpen(true);
+                                      }}
+                                    >
+                                      Buy More
+                                    </Button>
+                                    <Button 
+                                      variant="outline" 
+                                      size="sm" 
+                                      className="h-8 px-2 text-xs text-red-400 border-red-400 hover:bg-red-400/10"
+                                      onClick={() => {
+                                        setSelectedStock(stock);
+                                        setTransactionType('sell');
+                                        setTransactionDialogOpen(true);
+                                      }}
+                                    >
+                                      Sell
+                                    </Button>
                                   </div>
-                                  <div className="flex items-center">
-                                    <div>
-                                      <div className="font-medium">Alphabet Inc.</div>
-                                      <div className="text-xs text-white/60">GOOGL</div>
-                                    </div>
-
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="py-3 px-4">8</td>
-                              <td className="py-3 px-4">$142.30</td>
-                              <td className="py-3 px-4">$139.75</td>
-                              <td className="py-3 px-4">$1,118.00</td>
-                              <td className="py-3 px-4 text-red-400">-$20.40 (1.8%)</td>
-                              <td className="py-3 px-4">
-                                <div className="flex space-x-2">
+                                </td>
+                              </tr>
+                            ))}
+                            {holdings.length === 0 && (
+                              <tr>
+                                <td colSpan={7} className="py-8 text-center text-white/60">
+                                  You don't have any stock holdings yet. 
                                   <Button 
-                                    variant="outline" 
-                                    size="sm" 
-                                    className="h-8 px-2 text-xs"
-                                    onClick={() => {
-                                      setSelectedStock(holdings[2]);
-                                      setTransactionType('buy');
-                                      setTransactionDialogOpen(true);
-                                    }}
+                                    variant="link" 
+                                    className="text-lavender"
+                                    onClick={() => navigate('/stocks')}
                                   >
-                                    Buy More
+                                    Invest in your first stock
                                   </Button>
-                                  <Button 
-                                    variant="outline" 
-                                    size="sm" 
-                                    className="h-8 px-2 text-xs text-red-400 border-red-400 hover:bg-red-400/10"
-                                    onClick={() => {
-                                      setSelectedStock(holdings[2]);
-                                      setTransactionType('sell');
-                                      setTransactionDialogOpen(true);
-                                    }}
-                                  >
-                                    Sell
-                                  </Button>
-                                </div>
-                              </td>
-                            </tr>
+                                </td>
+                              </tr>
+                            )}
                           </tbody>
                         </table>
                       </div>
@@ -421,7 +334,7 @@ const Portfolio = () => {
                   </TabsContent>
                   
                   <TabsContent value="orders">
-                    {/* Placed Orders Table */}
+                    {/* Orders Table */}
                     <div className="rounded-md border border-white/10 overflow-hidden">
                       <div className="overflow-x-auto">
                         <table className="w-full text-sm">
@@ -435,98 +348,56 @@ const Portfolio = () => {
                               <th className="py-3 px-4 text-left">Total</th>
                               <th className="py-3 px-4 text-left">Status</th>
                               <th className="py-3 px-4 text-left">Date</th>
-                              <th className="py-3 px-4 text-left">Actions</th>
+                              <th className="py-3 px-4 text-left">Action</th>
                             </tr>
                           </thead>
                           <tbody>
-                            {/* Sample data - in a real app, this would come from an API */}
-                            <tr className="border-b border-white/10 hover:bg-secondary/30">
-                              <td className="py-3 px-4">ORD-7829</td>
-                              <td className="py-3 px-4">
-                                <div className="flex items-center">
-                                  <div>
-                                    <div className="font-medium">Apple Inc.</div>
-                                    <div className="text-xs text-white/60">AAPL</div>
+                            {orders.map((order, index) => (
+                              <tr key={order.id} className={index < orders.length - 1 ? "border-b border-white/10 hover:bg-secondary/30" : "hover:bg-secondary/30"}>
+                                <td className="py-3 px-4">{order.id}</td>
+                                <td className="py-3 px-4">
+                                  <div className="flex items-center">
+                                    <div className="h-8 w-8 rounded-full bg-lavender/20 flex items-center justify-center mr-3">
+                                      <span className="text-xs font-medium">{order.stockSymbol.substring(0, 4)}</span>
+                                    </div>
+                                    <div>
+                                      <div className="font-medium">{order.stockName}</div>
+                                      <div className="text-xs text-white/60">{order.stockSymbol}</div>
+                                    </div>
                                   </div>
-                                </div>
-                              </td>
-                              <td className="py-3 px-4 text-green-400">Buy</td>
-                              <td className="py-3 px-4">2</td>
-                              <td className="py-3 px-4">$182.50</td>
-                              <td className="py-3 px-4">$365.00</td>
-                              <td className="py-3 px-4">
-                                <span className="px-2 py-1 rounded-full text-xs bg-yellow-500/20 text-yellow-400">Pending</span>
-                              </td>
-                              <td className="py-3 px-4">May 9, 2025</td>
-                              <td className="py-3 px-4">
-                                <Button 
-                                  variant="outline" 
-                                  size="sm" 
-                                  className="h-8 px-2 text-xs text-red-400 border-red-400 hover:bg-red-400/10"
-                                  onClick={() => {
-                                    // Cancel the order
-                                    const updatedOrders = orders.map(order => 
-                                      order.id === 'ORD-7829' ? {...order, status: 'cancelled' as const} : order
-                                    );
-                                    setOrders(updatedOrders);
-                                    toast({
-                                      title: "Order Cancelled",
-                                      description: "Your order has been cancelled successfully.",
-                                    });
-                                  }}
-                                >
-                                  Cancel
-                                </Button>
-                              </td>
-                            </tr>
-                            <tr className="border-b border-white/10 hover:bg-secondary/30">
-                              <td className="py-3 px-4">ORD-7825</td>
-                              <td className="py-3 px-4">
-                                <div className="flex items-center">
-                                  <div>
-                                    <div className="font-medium">Microsoft Corporation</div>
-                                    <div className="text-xs text-white/60">MSFT</div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="py-3 px-4 text-red-400">Sell</td>
-                              <td className="py-3 px-4">1</td>
-                              <td className="py-3 px-4">$340.00</td>
-                              <td className="py-3 px-4">$340.00</td>
-                              <td className="py-3 px-4">
-                                <span className="px-2 py-1 rounded-full text-xs bg-green-500/20 text-green-400">Completed</span>
-                              </td>
-                              <td className="py-3 px-4">May 8, 2025</td>
-                              <td className="py-3 px-4">
-                                <Button variant="outline" size="sm" className="h-8 px-2 text-xs">
-                                  View
-                                </Button>
-                              </td>
-                            </tr>
-                            <tr className="hover:bg-secondary/30">
-                              <td className="py-3 px-4">ORD-7820</td>
-                              <td className="py-3 px-4">
-                                <div className="flex items-center">
-                                  <div>
-                                    <div className="font-medium">Tesla, Inc.</div>
-                                    <div className="text-xs text-white/60">TSLA</div>
-                                  </div>
-                                </div>
-                              </td>
-                              <td className="py-3 px-4 text-green-400">Buy</td>
-                              <td className="py-3 px-4">3</td>
-                              <td className="py-3 px-4">$175.25</td>
-                              <td className="py-3 px-4">$525.75</td>
-                              <td className="py-3 px-4">
-                                <span className="px-2 py-1 rounded-full text-xs bg-green-500/20 text-green-400">Completed</span>
-                              </td>
-                              <td className="py-3 px-4">May 7, 2025</td>
-                              <td className="py-3 px-4">
-                                <Button variant="outline" size="sm" className="h-8 px-2 text-xs">
-                                  View
-                                </Button>
-                              </td>
-                            </tr>
+                                </td>
+                                <td className={`py-3 px-4 ${order.type === 'buy' ? 'text-green-400' : 'text-red-400'}`}>
+                                  {order.type === 'buy' ? 'Buy' : 'Sell'}
+                                </td>
+                                <td className="py-3 px-4">{order.quantity}</td>
+                                <td className="py-3 px-4">${order.price.toFixed(2)}</td>
+                                <td className="py-3 px-4">${order.total.toFixed(2)}</td>
+                                <td className="py-3 px-4">
+                                  <span className={`px-2 py-1 rounded-full text-xs ${
+                                    order.status === 'completed' 
+                                      ? 'bg-green-500/20 text-green-400' 
+                                      : order.status === 'pending' 
+                                        ? 'bg-yellow-500/20 text-yellow-400'
+                                        : 'bg-red-500/20 text-red-400'
+                                  }`}>
+                                    {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
+                                  </span>
+                                </td>
+                                <td className="py-3 px-4">{order.date}</td>
+                                <td className="py-3 px-4">
+                                  <Button variant="outline" size="sm" className="h-8 px-2 text-xs">
+                                    View
+                                  </Button>
+                                </td>
+                              </tr>
+                            ))}
+                            {orders.length === 0 && (
+                              <tr>
+                                <td colSpan={9} className="py-8 text-center text-white/60">
+                                  You haven't placed any orders yet.
+                                </td>
+                              </tr>
+                            )}
                           </tbody>
                         </table>
                       </div>
@@ -601,10 +472,6 @@ const Portfolio = () => {
               
               setOrders([newOrder, ...orders]);
             } else if (details.type === 'sell') {
-              console.log('Selling stock:', details.symbol);
-              console.log('Quantity to sell:', details.quantity);
-              console.log('Current holdings before update:', holdings);
-              
               // Create a deep copy of the holdings array
               const holdingsCopy = JSON.parse(JSON.stringify(holdings));
               
@@ -613,15 +480,12 @@ const Portfolio = () => {
               
               if (stockIndex !== -1) {
                 const holding = holdingsCopy[stockIndex];
-                console.log('Found matching holding at index', stockIndex, ':', holding);
                 
                 // Calculate new quantity after selling
                 const newQuantity = holding.quantity - details.quantity;
-                console.log('New quantity after sell:', newQuantity);
                 
                 // If all shares sold, remove from holdings
                 if (newQuantity <= 0) {
-                  console.log('All shares sold, removing from holdings');
                   holdingsCopy.splice(stockIndex, 1);
                 } else {
                   // Update the holding with new values
@@ -636,15 +500,10 @@ const Portfolio = () => {
                     profitLoss: newProfitLoss,
                     profitLossPercentage: newProfitLossPercentage
                   };
-                  
-                  console.log('Updated holding:', holdingsCopy[stockIndex]);
                 }
                 
                 // Update the state with the new holdings array
-                console.log('Updated holdings after sell:', holdingsCopy);
                 setHoldings(holdingsCopy);
-              } else {
-                console.error('Could not find stock with symbol', details.symbol, 'in holdings');
               }
               
               // Add new order
