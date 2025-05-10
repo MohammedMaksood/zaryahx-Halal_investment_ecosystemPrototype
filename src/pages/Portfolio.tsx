@@ -8,7 +8,6 @@ import Footer from "@/components/Footer";
 import { useAuth } from "@/contexts/AuthContext";
 import LoadingAnimation from "@/components/LoadingAnimation";
 import StockTransactionDialog from "@/components/StockTransactionDialog";
-import LearnMoreButton from "@/components/LearnMoreButton";
 import { useToast } from "@/hooks/use-toast";
 
 // Define interfaces for our data
@@ -155,7 +154,6 @@ const Portfolio = () => {
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold text-gradient">My Investment Portfolio</h1>
           <div className="flex items-center gap-3">
-            <LearnMoreButton />
             <Button 
               className="bg-lavender hover:bg-lavender-dark"
               onClick={() => navigate('/stocks')}
@@ -270,12 +268,7 @@ const Portfolio = () => {
                                       <div className="font-medium">Apple Inc.</div>
                                       <div className="text-xs text-white/60">AAPL</div>
                                     </div>
-                                    <div className="ml-2">
-                                      <LearnMoreButton 
-                                        stockSymbol="AAPL"
-                                        stockName="Apple Inc."
-                                      />
-                                    </div>
+
                                   </div>
                                 </div>
                               </td>
@@ -291,7 +284,7 @@ const Portfolio = () => {
                                     size="sm" 
                                     className="h-8 px-2 text-xs"
                                     onClick={() => {
-                                      setSelectedStock(holdings[0]);
+                                      setSelectedStock(holdings[2]);
                                       setTransactionType('buy');
                                       setTransactionDialogOpen(true);
                                     }}
@@ -303,7 +296,7 @@ const Portfolio = () => {
                                     size="sm" 
                                     className="h-8 px-2 text-xs text-red-400 border-red-400 hover:bg-red-400/10"
                                     onClick={() => {
-                                      setSelectedStock(holdings[0]);
+                                      setSelectedStock(holdings[2]);
                                       setTransactionType('sell');
                                       setTransactionDialogOpen(true);
                                     }}
@@ -324,12 +317,7 @@ const Portfolio = () => {
                                       <div className="font-medium">Microsoft Corporation</div>
                                       <div className="text-xs text-white/60">MSFT</div>
                                     </div>
-                                    <div className="ml-2">
-                                      <LearnMoreButton 
-                                        stockSymbol="MSFT"
-                                        stockName="Microsoft Corporation"
-                                      />
-                                    </div>
+
                                   </div>
                                 </div>
                               </td>
@@ -345,7 +333,7 @@ const Portfolio = () => {
                                     size="sm" 
                                     className="h-8 px-2 text-xs"
                                     onClick={() => {
-                                      setSelectedStock(holdings[0]);
+                                      setSelectedStock(holdings[2]);
                                       setTransactionType('buy');
                                       setTransactionDialogOpen(true);
                                     }}
@@ -357,7 +345,7 @@ const Portfolio = () => {
                                     size="sm" 
                                     className="h-8 px-2 text-xs text-red-400 border-red-400 hover:bg-red-400/10"
                                     onClick={() => {
-                                      setSelectedStock(holdings[0]);
+                                      setSelectedStock(holdings[2]);
                                       setTransactionType('sell');
                                       setTransactionDialogOpen(true);
                                     }}
@@ -378,12 +366,7 @@ const Portfolio = () => {
                                       <div className="font-medium">Alphabet Inc.</div>
                                       <div className="text-xs text-white/60">GOOGL</div>
                                     </div>
-                                    <div className="ml-2">
-                                      <LearnMoreButton 
-                                        stockSymbol="GOOGL"
-                                        stockName="Alphabet Inc."
-                                      />
-                                    </div>
+
                                   </div>
                                 </div>
                               </td>
@@ -399,7 +382,7 @@ const Portfolio = () => {
                                     size="sm" 
                                     className="h-8 px-2 text-xs"
                                     onClick={() => {
-                                      setSelectedStock(holdings[0]);
+                                      setSelectedStock(holdings[2]);
                                       setTransactionType('buy');
                                       setTransactionDialogOpen(true);
                                     }}
@@ -411,7 +394,7 @@ const Portfolio = () => {
                                     size="sm" 
                                     className="h-8 px-2 text-xs text-red-400 border-red-400 hover:bg-red-400/10"
                                     onClick={() => {
-                                      setSelectedStock(holdings[0]);
+                                      setSelectedStock(holdings[2]);
                                       setTransactionType('sell');
                                       setTransactionDialogOpen(true);
                                     }}
