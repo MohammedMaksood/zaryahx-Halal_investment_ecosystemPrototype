@@ -120,6 +120,10 @@ export default {
 				'shimmer': {
 					'0%': { backgroundPosition: '-200% 0' },
 					'100%': { backgroundPosition: '200% 0' }
+				},
+				'twinkle': {
+					'0%, 100%': { opacity: '0.3', transform: 'scale(0.8)' },
+					'50%': { opacity: '1', transform: 'scale(1)' }
 				}
 			},
 			animation: {
@@ -130,7 +134,8 @@ export default {
 				'slide-in': 'slide-in 0.5s ease-out forwards',
 				'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
 				'rotate-cw': 'rotate-cw 1s linear infinite',
-				'shimmer': 'shimmer 2s infinite linear'
+				'shimmer': 'shimmer 2s infinite linear',
+				'twinkle': 'twinkle 3s ease-in-out infinite'
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

@@ -48,6 +48,24 @@ const Index = () => {
       {/* Hero Section */}
       <section className="relative py-20 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-lavender/20 via-background to-background z-0"></div>
+        {/* Starry background */}
+        <div className="absolute inset-0 z-0 overflow-hidden">
+          {[...Array(50)].map((_, i) => (
+            <div 
+              key={i}
+              className="absolute rounded-full bg-white animate-twinkle"
+              style={{
+                top: `${Math.random() * 100}%`,
+                left: `${Math.random() * 100}%`,
+                width: `${Math.random() * 3 + 1}px`,
+                height: `${Math.random() * 3 + 1}px`,
+                opacity: Math.random() * 0.7 + 0.3,
+                animationDelay: `${Math.random() * 5}s`,
+                animationDuration: `${Math.random() * 5 + 3}s`
+              }}
+            />
+          ))}
+        </div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 text-gradient">
@@ -89,9 +107,11 @@ const Index = () => {
         </div>
         
         {/* Animated Background Elements */}
-        <div className="absolute top-20 left-10 w-20 h-20 rounded-full bg-lavender/10 animate-pulse-glow"></div>
-        <div className="absolute bottom-10 right-[10%] w-32 h-32 rounded-full bg-lavender/5 animate-pulse-glow" style={{ animationDelay: "1s" }}></div>
-        <div className="absolute top-[30%] right-[5%] w-16 h-16 rounded-full bg-lavender/10 animate-pulse-glow" style={{ animationDelay: "1.5s" }}></div>
+        <div className="absolute top-20 left-10 w-24 h-24 rounded-full bg-lavender/10 animate-pulse-glow blur-xl"></div>
+        <div className="absolute bottom-10 right-[10%] w-40 h-40 rounded-full bg-lavender/5 animate-pulse-glow blur-xl" style={{ animationDelay: "1s" }}></div>
+        <div className="absolute top-[30%] right-[5%] w-32 h-32 rounded-full bg-lavender/10 animate-pulse-glow blur-xl" style={{ animationDelay: "1.5s" }}></div>
+        <div className="absolute bottom-[20%] left-[15%] w-36 h-36 rounded-full bg-lavender/8 animate-pulse-glow blur-xl" style={{ animationDelay: "2s" }}></div>
+        <div className="absolute top-[15%] left-[30%] w-20 h-20 rounded-full bg-lavender/5 animate-pulse-glow blur-xl" style={{ animationDelay: "0.5s" }}></div>
       </section>
 
       {/* Features Section */}
