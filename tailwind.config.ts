@@ -124,6 +124,45 @@ export default {
 				'twinkle': {
 					'0%, 100%': { opacity: '0.3', transform: 'scale(0.8)' },
 					'50%': { opacity: '1', transform: 'scale(1)' }
+				},
+				'float-slow': {
+					'0%, 100%': { transform: 'translateY(0) translateX(0)' },
+					'25%': { transform: 'translateY(-10px) translateX(5px)' },
+					'50%': { transform: 'translateY(0) translateX(10px)' },
+					'75%': { transform: 'translateY(10px) translateX(5px)' }
+				},
+				'float-medium': {
+					'0%, 100%': { transform: 'translateY(0) translateX(0)' },
+					'25%': { transform: 'translateY(-8px) translateX(4px)' },
+					'50%': { transform: 'translateY(0) translateX(8px)' },
+					'75%': { transform: 'translateY(8px) translateX(4px)' }
+				},
+				'float-fast': {
+					'0%, 100%': { transform: 'translateY(0) translateX(0)' },
+					'25%': { transform: 'translateY(-6px) translateX(3px)' },
+					'50%': { transform: 'translateY(0) translateX(6px)' },
+					'75%': { transform: 'translateY(6px) translateX(3px)' }
+				},
+				'bar-chart': {
+					'0%': { height: '10px', opacity: '0.5' },
+					'50%': { height: '40px', opacity: '1' },
+					'100%': { height: '10px', opacity: '0.5' }
+				},
+				'pulse-slow': {
+					'0%, 100%': { transform: 'scale(1)', opacity: '0.6' },
+					'50%': { transform: 'scale(1.05)', opacity: '1' }
+				},
+				'draw-line': {
+					'0%': { strokeDasharray: '300', strokeDashoffset: '300' },
+					'100%': { strokeDasharray: '300', strokeDashoffset: '0' }
+				},
+				'float-coin': {
+					'0%, 100%': { transform: 'translateY(0) translateX(-50%)' },
+					'50%': { transform: 'translateY(-5px) translateX(-50%)' }
+				},
+				'draw-check': {
+					'0%': { strokeDasharray: '20', strokeDashoffset: '20' },
+					'100%': { strokeDasharray: '20', strokeDashoffset: '0' }
 				}
 			},
 			animation: {
@@ -135,7 +174,15 @@ export default {
 				'pulse-glow': 'pulse-glow 2s ease-in-out infinite',
 				'rotate-cw': 'rotate-cw 1s linear infinite',
 				'shimmer': 'shimmer 2s infinite linear',
-				'twinkle': 'twinkle 3s ease-in-out infinite'
+				'twinkle': 'twinkle 3s ease-in-out infinite',
+				'float-slow': 'float-slow 8s ease-in-out infinite',
+				'float-medium': 'float-medium 6s ease-in-out infinite',
+				'float-fast': 'float-fast 4s ease-in-out infinite',
+				'bar-chart': 'bar-chart 4s ease-in-out infinite',
+				'pulse-slow': 'pulse-slow 4s ease-in-out infinite',
+				'draw-line': 'draw-line 3s ease-in-out forwards',
+				'float-coin': 'float-coin 3s ease-in-out infinite',
+				'draw-check': 'draw-check 1.5s ease-in-out forwards 0.5s'
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',

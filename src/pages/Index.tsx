@@ -50,9 +50,10 @@ const Index = () => {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-lavender/20 via-background to-background z-0"></div>
         {/* Starry background */}
         <div className="absolute inset-0 z-0 overflow-hidden">
+          {/* Stars */}
           {[...Array(50)].map((_, i) => (
             <div 
-              key={i}
+              key={`star-${i}`}
               className="absolute rounded-full bg-white animate-twinkle"
               style={{
                 top: `${Math.random() * 100}%`,
@@ -65,6 +66,112 @@ const Index = () => {
               }}
             />
           ))}
+          
+          {/* Animated investment icons */}
+          <div className="absolute top-[15%] left-[20%] animate-float-slow opacity-30">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 22H22" stroke="#9b87f5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M12 6L7 11L10 14L4 20" stroke="#9b87f5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M12 6L17 11L14 14L20 20" stroke="#9b87f5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M12 6V2" stroke="#9b87f5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          
+          <div className="absolute top-[25%] right-[25%] animate-float-medium opacity-30" style={{ animationDelay: '1.5s' }}>
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#9b87f5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M2 17L12 22L22 17" stroke="#9b87f5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M2 12L12 17L22 12" stroke="#9b87f5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          
+          <div className="absolute bottom-[30%] left-[30%] animate-float-fast opacity-30" style={{ animationDelay: '0.7s' }}>
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" stroke="#9b87f5" strokeWidth="2"/>
+              <path d="M12 6V12L16 14" stroke="#9b87f5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          
+          <div className="absolute bottom-[20%] right-[15%] animate-float-medium opacity-30" style={{ animationDelay: '2s' }}>
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 6H21" stroke="#9b87f5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M8 12H21" stroke="#9b87f5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M8 18H21" stroke="#9b87f5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M3 6H3.01" stroke="#9b87f5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M3 12H3.01" stroke="#9b87f5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M3 18H3.01" stroke="#9b87f5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          
+          {/* AI/Data visualization elements */}
+          <div className="absolute top-[40%] left-[10%] opacity-20">
+            <div className="w-[100px] h-[60px] flex items-end justify-around">
+              {[...Array(5)].map((_, i) => (
+                <div 
+                  key={`bar-${i}`}
+                  className="w-3 bg-lavender rounded-t-sm animate-bar-chart"
+                  style={{ 
+                    height: `${Math.random() * 30 + 10}px`,
+                    animationDelay: `${i * 0.2}s`
+                  }}
+                />
+              ))}
+            </div>
+          </div>
+          
+          <div className="absolute top-[60%] right-[20%] opacity-20">
+            <div className="w-[80px] h-[80px] rounded-full border-2 border-lavender/50 flex items-center justify-center">
+              <div className="w-[60px] h-[60px] rounded-full border-2 border-lavender/70 flex items-center justify-center animate-pulse-slow">
+                <div className="w-[40px] h-[40px] rounded-full border-2 border-lavender animate-pulse-slow" style={{ animationDelay: '0.5s' }}></div>
+              </div>
+            </div>
+          </div>
+          
+          {/* Stock chart line */}
+          <div className="absolute bottom-[40%] left-[40%] opacity-30">
+            <svg width="150" height="60" viewBox="0 0 150 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path 
+                d="M0,40 C10,35 20,45 30,30 C40,15 50,10 60,25 C70,40 80,45 90,35 C100,25 110,15 120,10 C130,5 140,15 150,5" 
+                stroke="#9b87f5" 
+                strokeWidth="2" 
+                strokeLinecap="round" 
+                strokeLinejoin="round"
+                className="animate-draw-line"
+              />
+              <circle cx="30" cy="30" r="3" fill="#9b87f5" className="animate-pulse-slow" style={{ animationDelay: '1s' }} />
+              <circle cx="90" cy="35" r="3" fill="#9b87f5" className="animate-pulse-slow" style={{ animationDelay: '2s' }} />
+              <circle cx="120" cy="10" r="3" fill="#9b87f5" className="animate-pulse-slow" style={{ animationDelay: '3s' }} />
+            </svg>
+          </div>
+          
+          {/* Coin stack animation */}
+          <div className="absolute top-[70%] right-[40%] opacity-30">
+            <div className="relative w-[40px] h-[60px]">
+              {[...Array(5)].map((_, i) => (
+                <div 
+                  key={`coin-${i}`}
+                  className="absolute w-[30px] h-[30px] rounded-full border-2 border-lavender bg-lavender/10 left-1/2 -translate-x-1/2 animate-float-coin"
+                  style={{ 
+                    bottom: `${i * 6}px`,
+                    animationDelay: `${i * 0.2}s`,
+                    zIndex: 5 - i
+                  }}
+                >
+                  <div className="absolute inset-0 flex items-center justify-center text-xs font-bold text-lavender">$</div>
+                </div>
+              ))}
+            </div>
+          </div>
+          
+          {/* AI brain visualization */}
+          <div className="absolute top-[20%] left-[40%] opacity-20">
+            <svg width="80" height="80" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2Z" stroke="#9b87f5" strokeWidth="1" opacity="0.3" />
+              <path className="animate-pulse-glow" d="M12 17C14.7614 17 17 14.7614 17 12C17 9.23858 14.7614 7 12 7C9.23858 7 7 9.23858 7 12C7 14.7614 9.23858 17 12 17Z" stroke="#9b87f5" strokeWidth="1" />
+              <path className="animate-rotate-cw" d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2" stroke="#9b87f5" strokeWidth="1" strokeLinecap="round" strokeDasharray="2 2" />
+              <path d="M8 12L10 14L14 10" stroke="#9b87f5" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round" className="animate-draw-check" />
+            </svg>
+          </div>
         </div>
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
