@@ -163,6 +163,18 @@ export default {
 				'draw-check': {
 					'0%': { strokeDasharray: '20', strokeDashoffset: '20' },
 					'100%': { strokeDasharray: '20', strokeDashoffset: '0' }
+				},
+				'fade-in-out': {
+					'0%, 100%': { opacity: '0.2' },
+					'50%': { opacity: '1' }
+				},
+				'typing': {
+					'0%': { width: '0' },
+					'100%': { width: '100%' }
+				},
+				'pulse-fast': {
+					'0%, 100%': { transform: 'scale(0.8)', opacity: '0.5' },
+					'50%': { transform: 'scale(1.2)', opacity: '1' }
 				}
 			},
 			animation: {
@@ -182,7 +194,10 @@ export default {
 				'pulse-slow': 'pulse-slow 4s ease-in-out infinite',
 				'draw-line': 'draw-line 3s ease-in-out forwards',
 				'float-coin': 'float-coin 3s ease-in-out infinite',
-				'draw-check': 'draw-check 1.5s ease-in-out forwards 0.5s'
+				'draw-check': 'draw-check 1.5s ease-in-out forwards 0.5s',
+				'fade-in-out': 'fade-in-out 2s ease-in-out infinite',
+				'typing': 'typing 2.5s steps(40, end)',
+				'pulse-fast': 'pulse-fast 1.5s ease-in-out infinite'
 			},
 			backgroundImage: {
 				'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
