@@ -51,10 +51,11 @@ const Index = () => {
         <div className="container mx-auto px-4 relative z-10">
           <div className="max-w-3xl mx-auto text-center">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 text-gradient">
-              Halal Investments for a Blessed Future
+              Ethical Investments
+              <span className="block text-lavender">Powered by AI</span>
             </h1>
             <p className="text-xl text-white/70 mb-8">
-              ZaryahX provides a comprehensive platform for halal investments guided by Shariah principles.
+              Experience the future of Shariah-compliant investing with our AI-powered platform. Make informed decisions while staying true to your values.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
               {isAuthenticated ? (
@@ -97,9 +98,9 @@ const Index = () => {
       <section className="py-20 bg-secondary/30">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4 text-gradient">Our Islamic Investment Ecosystem</h2>
+            <h2 className="text-3xl font-bold mb-4 text-gradient">Our Ethical Investment Ecosystem</h2>
             <p className="text-white/70 max-w-2xl mx-auto">
-              ZaryahX provides a complete halal ecosystem for Muslims seeking to align their finances and lifestyle with Islamic principles.
+              ZaryahX leverages AI technology to provide a comprehensive ethical investment platform aligned with Shariah principles, helping you make financially sound and morally conscious decisions.
             </p>
           </div>
 
