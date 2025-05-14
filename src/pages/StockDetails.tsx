@@ -89,6 +89,12 @@ const StockDetails = () => {
   const [shares, setShares] = useState('1');
   const [showInvestModal, setShowInvestModal] = useState(false);
   
+  // AI Stop-Loss feature state
+  const [enableAiStopLoss, setEnableAiStopLoss] = useState(false);
+  const [showAiAgreement, setShowAiAgreement] = useState(false);
+  const [aiRiskTolerance, setAiRiskTolerance] = useState<'conservative' | 'moderate' | 'aggressive'>('moderate');
+  const [aiAgreementAccepted, setAiAgreementAccepted] = useState(false);
+  
   useEffect(() => {
     // Simulate API call to fetch stock details
     setLoading(true);
@@ -1017,19 +1023,19 @@ const StockDetails = () => {
                     </div>
                   </div>
                   
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                  <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
                     {/* Left column - Chart and Stock Info */}
                     <div className="space-y-6">
-                      <Card className="bg-secondary/20 border-white/10">
+                      <Card className="bg-secondary/20 border-white/10 w-full">
                         <CardHeader>
                           <CardTitle className="text-xl">Price Chart</CardTitle>
                         </CardHeader>
-                        <CardContent>
+                        <CardContent className="w-full overflow-hidden">
                           {stockData.candlestickData && (
                             <CandlestickChart 
                               data={stockData.candlestickData} 
-                              width={600}
-                              height={300}
+                              width={1000}
+                              height={350}
                             />
                           )}
                         </CardContent>
@@ -1148,6 +1154,118 @@ const StockDetails = () => {
                               </div>
                             </div>
                             
+                            <div>
+                              <Label>Investment Type</Label>
+                              <div className="mt-1 flex space-x-4">
+                                <div className="flex items-center space-x-2">
+                                  <input 
+                                    type="radio" 
+                                    id="delivery" 
+                                    name="investmentType" 
+                                    value="long-term" 
+                                    checked={investmentType === 'long-term'}
+                                    onChange={() => setInvestmentType('long-term')}
+                                    className="h-4 w-4 text-lavender" 
+                                  />
+                                  <Label htmlFor="delivery">Delivery</Label>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                  <input 
+                                    type="radio" 
+                                    id="intraday" 
+                                    name="investmentType" 
+                                    value="intraday" 
+                                    checked={investmentType === 'intraday'}
+                                    onChange={() => setInvestmentType('intraday')}
+                                    className="h-4 w-4 text-lavender" 
+                                  />
+                                  <Label htmlFor="intraday">Intraday</Label>
+                                </div>
+                              </div>
+                              <p className="text-xs text-white/60 mt-1">
+                                {investmentType === 'intraday' 
+                                  ? 'Intraday: Positions are squared off at the end of the trading day' 
+                                  : 'Delivery: Stocks are transferred to your demat account'}
+                              </p>
+                            </div>
+                            
+                            <div className="pt-4">
+                              <div className="flex items-center space-x-2">
+                                <input 
+                                  type="checkbox" 
+                                  id="ai-stoploss" 
+                                  checked={enableAiStopLoss}
+                                  onChange={(e) => {
+                                    if (e.target.checked && !aiAgreementAccepted) {
+                                      setShowAiAgreement(true);
+                                    } else {
+                                      setEnableAiStopLoss(e.target.checked);
+                                    }
+                                  }}
+                                  className="h-4 w-4 text-lavender rounded" 
+                                />
+                                <Label htmlFor="ai-stoploss" className="font-medium">Enable AI-Powered Stop-Loss Protection</Label>
+                              </div>
+                              
+                              {enableAiStopLoss && (
+                                <div className="mt-3 ml-6 space-y-3">
+                                  <p className="text-sm text-white/80">
+                                    Our AI will monitor this position and automatically sell if it predicts a significant price drop.
+                                  </p>
+                                  
+                                  <div>
+                                    <Label className="text-xs text-white/60">Risk Tolerance</Label>
+                                    <div className="mt-1 flex space-x-4">
+                                      <div className="flex items-center space-x-2">
+                                        <input 
+                                          type="radio" 
+                                          id="conservative" 
+                                          name="riskTolerance" 
+                                          value="conservative" 
+                                          checked={aiRiskTolerance === 'conservative'}
+                                          onChange={() => setAiRiskTolerance('conservative')}
+                                          className="h-4 w-4 text-lavender" 
+                                        />
+                                        <Label htmlFor="conservative" className="text-sm">Conservative (2%)</Label>
+                                      </div>
+                                      <div className="flex items-center space-x-2">
+                                        <input 
+                                          type="radio" 
+                                          id="moderate" 
+                                          name="riskTolerance" 
+                                          value="moderate" 
+                                          checked={aiRiskTolerance === 'moderate'}
+                                          onChange={() => setAiRiskTolerance('moderate')}
+                                          className="h-4 w-4 text-lavender" 
+                                        />
+                                        <Label htmlFor="moderate" className="text-sm">Moderate (5%)</Label>
+                                      </div>
+                                      <div className="flex items-center space-x-2">
+                                        <input 
+                                          type="radio" 
+                                          id="aggressive" 
+                                          name="riskTolerance" 
+                                          value="aggressive" 
+                                          checked={aiRiskTolerance === 'aggressive'}
+                                          onChange={() => setAiRiskTolerance('aggressive')}
+                                          className="h-4 w-4 text-lavender" 
+                                        />
+                                        <Label htmlFor="aggressive" className="text-sm">Aggressive (10%)</Label>
+                                      </div>
+                                    </div>
+                                  </div>
+                                  
+                                  <p className="text-xs text-white/60 italic">
+                                    {aiRiskTolerance === 'conservative' 
+                                      ? 'Conservative: AI will sell if it predicts a 2% or greater drop' 
+                                      : aiRiskTolerance === 'moderate'
+                                        ? 'Moderate: AI will sell if it predicts a 5% or greater drop'
+                                        : 'Aggressive: AI will sell if it predicts a 10% or greater drop'}
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                            
                             <div className="pt-6 border-t border-white/10">
                               <div className="flex justify-between items-center mb-2">
                                 <Label>Estimated Total</Label>
@@ -1179,6 +1297,72 @@ const StockDetails = () => {
       </main>
       
       <Footer />
+      
+      {/* AI Stop-Loss Agreement Dialog */}
+      {showAiAgreement && (
+        <Dialog open={true} onOpenChange={(open) => {
+          if (!open) setShowAiAgreement(false);
+        }}>
+          <DialogContent className="bg-background border border-white/10 text-white max-w-md">
+            <DialogHeader>
+              <DialogTitle className="text-xl">AI-Powered Stop-Loss Agreement</DialogTitle>
+              <DialogDescription className="text-white/60">
+                Please review and accept the terms before enabling this feature.
+              </DialogDescription>
+            </DialogHeader>
+            
+            <div className="space-y-4 my-2">
+              <p className="text-sm text-white/80">By enabling the AI-powered Stop-Loss feature, you acknowledge and agree to the following:</p>
+              
+              <ul className="list-disc pl-5 space-y-2 text-sm text-white/80">
+                <li>The AI system will monitor your positions and may automatically sell your holdings if it predicts a significant price decline.</li>
+                <li>While our AI uses advanced algorithms to predict market movements, predictions are not guaranteed and the system may make errors.</li>
+                <li>You may experience losses if the AI incorrectly predicts market movements or fails to execute trades at optimal times.</li>
+                <li>Market conditions can change rapidly, and the AI may not always react in time to prevent losses.</li>
+                <li>You remain responsible for monitoring your investments, and this feature is provided as a supplementary tool only.</li>
+                <li>This feature complies with Shariah principles but may involve trade-offs between risk management and potential returns.</li>
+              </ul>
+              
+              <div className="flex items-center space-x-2 pt-2">
+                <input 
+                  type="checkbox" 
+                  id="agreement-checkbox" 
+                  className="h-4 w-4 text-lavender rounded"
+                  onChange={(e) => setAiAgreementAccepted(e.target.checked)}
+                  checked={aiAgreementAccepted}
+                />
+                <Label htmlFor="agreement-checkbox" className="text-sm cursor-pointer">
+                  I understand and accept the risks associated with the AI-powered Stop-Loss feature
+                </Label>
+              </div>
+            </div>
+            
+            <DialogFooter className="flex justify-end space-x-2 pt-4">
+              <Button 
+                variant="outline" 
+                onClick={() => {
+                  setShowAiAgreement(false);
+                  setEnableAiStopLoss(false);
+                  setAiAgreementAccepted(false);
+                }}
+                className="border-white/20 hover:bg-white/10"
+              >
+                Decline
+              </Button>
+              <Button 
+                disabled={!aiAgreementAccepted} 
+                onClick={() => {
+                  setShowAiAgreement(false);
+                  setEnableAiStopLoss(true);
+                }}
+                className="bg-lavender hover:bg-lavender/80 text-white"
+              >
+                Enable AI Stop-Loss
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };

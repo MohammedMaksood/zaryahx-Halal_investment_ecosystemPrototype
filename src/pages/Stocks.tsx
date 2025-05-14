@@ -15,24 +15,7 @@ const Stocks = () => {
   
   // Mock data
   const halalStocks = [
-    {
-      name: "Al Rajhi Bank",
-      symbol: "RJHI.SR",
-      price: 89.25,
-      change: 1.2,
-      status: "halal" as const,
-      description: "Islamic banking and investment products",
-      category: "finance"
-    },
-    {
-      name: "Jabal Omar Development",
-      symbol: "JOMAR.SR",
-      price: 27.65,
-      change: 0.8,
-      status: "halal" as const,
-      description: "Real estate development in Makkah",
-      category: "realestate"
-    },
+    // Technology Stocks (7)
     {
       name: "Alibaba Group",
       symbol: "BABA",
@@ -52,14 +35,108 @@ const Stocks = () => {
       category: "technology"
     },
     {
-      name: "Malaysia Airports",
-      symbol: "MAHB.KL",
-      price: 6.84,
+      name: "Microsoft Corp.",
+      symbol: "MSFT",
+      price: 337.18,
+      change: 1.7,
+      status: "halal" as const,
+      description: "Software, cloud computing, and hardware",
+      category: "technology"
+    },
+    {
+      name: "Salesforce Inc.",
+      symbol: "CRM",
+      price: 242.65,
+      change: 2.1,
+      status: "halal" as const,
+      description: "Cloud-based software services",
+      category: "technology"
+    },
+    {
+      name: "SAP SE",
+      symbol: "SAP",
+      price: 178.32,
+      change: 0.9,
+      status: "halal" as const,
+      description: "Enterprise software and solutions",
+      category: "technology"
+    },
+    {
+      name: "ASML Holding",
+      symbol: "ASML",
+      price: 892.45,
+      change: 3.2,
+      status: "halal" as const,
+      description: "Semiconductor equipment manufacturing",
+      category: "technology"
+    },
+    {
+      name: "Taiwan Semiconductor",
+      symbol: "TSM",
+      price: 142.78,
+      change: 1.5,
+      status: "halal" as const,
+      description: "Semiconductor manufacturing",
+      category: "technology"
+    },
+    
+    // Finance Stocks (6)
+    {
+      name: "Al Rajhi Bank",
+      symbol: "RJHI.SR",
+      price: 89.25,
+      change: 1.2,
+      status: "halal" as const,
+      description: "Islamic banking and investment products",
+      category: "finance"
+    },
+    {
+      name: "Qatar National Bank",
+      symbol: "QNBK.QA",
+      price: 18.90,
+      change: 0.6,
+      status: "halal" as const,
+      description: "Banking and financial services",
+      category: "finance"
+    },
+    {
+      name: "Dubai Islamic Bank",
+      symbol: "DIB.DU",
+      price: 5.42,
       change: 0.3,
       status: "halal" as const,
-      description: "Airport management and operations",
-      category: "infrastructure"
+      description: "Islamic banking and financial services",
+      category: "finance"
     },
+    {
+      name: "Bank Nizwa",
+      symbol: "BKNZ.OM",
+      price: 0.098,
+      change: 0.5,
+      status: "halal" as const,
+      description: "Shariah-compliant banking services",
+      category: "finance"
+    },
+    {
+      name: "Amanah Leasing",
+      symbol: "AMANAH.BK",
+      price: 22.45,
+      change: -0.2,
+      status: "halal" as const,
+      description: "Islamic leasing and financing",
+      category: "finance"
+    },
+    {
+      name: "Maybank Islamic",
+      symbol: "MAYBANK.KL",
+      price: 8.75,
+      change: 0.4,
+      status: "halal" as const,
+      description: "Islamic banking arm of Maybank",
+      category: "finance"
+    },
+    
+    // Consumer Stocks (6)
     {
       name: "Nestlé S.A.",
       symbol: "NESN.SW",
@@ -70,14 +147,146 @@ const Stocks = () => {
       category: "consumer"
     },
     {
-      name: "Microsoft Corp.",
-      symbol: "MSFT",
-      price: 337.18,
-      change: 1.7,
+      name: "Unilever PLC",
+      symbol: "UL",
+      price: 52.18,
+      change: 0.7,
       status: "halal" as const,
-      description: "Software, cloud computing, and hardware",
-      category: "technology"
+      description: "Consumer goods and personal care",
+      category: "consumer"
     },
+    {
+      name: "Savola Group",
+      symbol: "SAVOLA.SR",
+      price: 24.86,
+      change: -0.3,
+      status: "halal" as const,
+      description: "Food products and retail",
+      category: "consumer"
+    },
+    {
+      name: "Almarai Co.",
+      symbol: "ALMARAI.SR",
+      price: 56.90,
+      change: 1.1,
+      status: "halal" as const,
+      description: "Dairy and food products",
+      category: "consumer"
+    },
+    {
+      name: "BRF S.A.",
+      symbol: "BRFS",
+      price: 3.25,
+      change: -0.1,
+      status: "halal" as const,
+      description: "Halal-certified poultry and processed foods",
+      category: "consumer"
+    },
+    {
+      name: "Carrefour SA",
+      symbol: "CA.PA",
+      price: 16.78,
+      change: 0.2,
+      status: "halal" as const,
+      description: "Retail and supermarkets",
+      category: "consumer"
+    },
+    
+    // Real Estate Stocks (5)
+    {
+      name: "Jabal Omar Development",
+      symbol: "JOMAR.SR",
+      price: 27.65,
+      change: 0.8,
+      status: "halal" as const,
+      description: "Real estate development in Makkah",
+      category: "realestate"
+    },
+    {
+      name: "Emaar Properties",
+      symbol: "EMAAR.DU",
+      price: 6.78,
+      change: 1.3,
+      status: "halal" as const,
+      description: "Real estate development and management",
+      category: "realestate"
+    },
+    {
+      name: "Dar Al Arkan",
+      symbol: "ALARKAN.SR",
+      price: 8.92,
+      change: -0.5,
+      status: "halal" as const,
+      description: "Real estate development in Saudi Arabia",
+      category: "realestate"
+    },
+    {
+      name: "IGB REIT",
+      symbol: "IGBREIT.KL",
+      price: 1.65,
+      change: 0.1,
+      status: "halal" as const,
+      description: "Shariah-compliant real estate investment trust",
+      category: "realestate"
+    },
+    {
+      name: "Capitaland Investment",
+      symbol: "CLI.SI",
+      price: 3.42,
+      change: 0.2,
+      status: "halal" as const,
+      description: "Real estate investment and management",
+      category: "realestate"
+    },
+    
+    // Infrastructure Stocks (5)
+    {
+      name: "Malaysia Airports",
+      symbol: "MAHB.KL",
+      price: 6.84,
+      change: 0.3,
+      status: "halal" as const,
+      description: "Airport management and operations",
+      category: "infrastructure"
+    },
+    {
+      name: "Saudi Electricity",
+      symbol: "SECO.SR",
+      price: 25.35,
+      change: 0.6,
+      status: "halal" as const,
+      description: "Electricity generation and distribution",
+      category: "infrastructure"
+    },
+    {
+      name: "Tenaga Nasional",
+      symbol: "TENAGA.KL",
+      price: 9.75,
+      change: 0.4,
+      status: "halal" as const,
+      description: "Electricity generation and distribution",
+      category: "infrastructure"
+    },
+    {
+      name: "TAQA",
+      symbol: "TAQA.AD",
+      price: 1.52,
+      change: -0.1,
+      status: "halal" as const,
+      description: "Energy and water utilities",
+      category: "infrastructure"
+    },
+    {
+      name: "Indus Towers",
+      symbol: "INDUSTOWER.NS",
+      price: 182.45,
+      change: 1.2,
+      status: "halal" as const,
+      description: "Telecom infrastructure provider",
+      category: "infrastructure"
+    },
+    
+    // Agriculture Stocks (5)
     {
       name: "Sime Darby Plantation",
       symbol: "SDPL.KL",
@@ -88,13 +297,40 @@ const Stocks = () => {
       category: "agriculture"
     },
     {
-      name: "Qatar National Bank",
-      symbol: "QNBK.QA",
-      price: 18.90,
-      change: 0.6,
+      name: "FGV Holdings",
+      symbol: "FGV.KL",
+      price: 1.38,
+      change: 0.2,
       status: "halal" as const,
-      description: "Banking and financial services",
-      category: "finance"
+      description: "Palm oil and rubber plantations",
+      category: "agriculture"
+    },
+    {
+      name: "IOI Corporation",
+      symbol: "IOICORP.KL",
+      price: 3.95,
+      change: 0.3,
+      status: "halal" as const,
+      description: "Palm oil plantations and oleochemicals",
+      category: "agriculture"
+    },
+    {
+      name: "Kuala Lumpur Kepong",
+      symbol: "KLK.KL",
+      price: 21.86,
+      change: -0.2,
+      status: "halal" as const,
+      description: "Palm oil and rubber plantations",
+      category: "agriculture"
+    },
+    {
+      name: "Bunge Limited",
+      symbol: "BG",
+      price: 92.35,
+      change: 0.8,
+      status: "halal" as const,
+      description: "Agribusiness and food production",
+      category: "agriculture"
     }
   ];
 
