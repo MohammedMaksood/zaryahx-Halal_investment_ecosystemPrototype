@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -11,6 +11,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { useWallet } from "@/contexts/WalletContext";
+import { AlertCircle, Check } from "lucide-react";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 interface StockTransactionDialogProps {
   open: boolean;
@@ -38,7 +41,10 @@ const StockTransactionDialog: React.FC<StockTransactionDialogProps> = ({
     transactionType === 'sell' && maxSellQuantity ? maxSellQuantity : 1
   );
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [insufficientFunds, setInsufficientFunds] = useState<boolean>(false);
+  const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
   const { toast } = useToast();
+  const { balance, withdrawFunds, addPendingTransaction, completePendingTransaction } = useWallet();
 
   const handleQuantityChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = parseInt(e.target.value);
@@ -64,35 +70,112 @@ const StockTransactionDialog: React.FC<StockTransactionDialogProps> = ({
 
   const totalAmount = stock ? quantity * stock.currentPrice : 0;
 
+  // Check if user has enough funds whenever quantity changes
+  useEffect(() => {
+    if (transactionType === 'buy' && stock) {
+      setInsufficientFunds(totalAmount > balance);
+    } else {
+      setInsufficientFunds(false);
+    }
+  }, [quantity, stock, transactionType, balance, totalAmount]);
+
+  // Auto-hide confirmation after 2 seconds
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (showConfirmation) {
+      timer = setTimeout(() => {
+        setShowConfirmation(false);
+      }, 2000);
+    }
+    return () => {
+      if (timer) clearTimeout(timer);
+    };
+  }, [showConfirmation]);
+
   const handleSubmit = () => {
     setIsProcessing(true);
-    console.log('Submitting transaction');
-    console.log('Transaction type:', transactionType);
-    console.log('Stock:', stock);
-    console.log('Quantity to submit:', quantity);
     
-    // Simulate API call
-    setTimeout(() => {
-      setIsProcessing(false);
+    // For buy orders, check wallet balance and deduct funds
+    if (transactionType === 'buy') {
+      if (totalAmount > balance) {
+        setIsProcessing(false);
+        setInsufficientFunds(true);
+        return;
+      }
       
-      // Call the completion handler with success and quantity
-      console.log('Calling onComplete with quantity:', quantity);
-      onComplete(true, quantity);
+      // Withdraw funds and create pending transaction
+      const success = withdrawFunds(totalAmount);
+      if (!success) {
+        setIsProcessing(false);
+        setInsufficientFunds(true);
+        return;
+      }
       
-      // Show success toast
-      toast({
-        title: `${transactionType === 'buy' ? 'Purchase' : 'Sale'} Successful`,
-        description: `${transactionType === 'buy' ? 'Bought' : 'Sold'} ${quantity} shares of ${stock?.symbol} for $${totalAmount.toFixed(2)}`,
+      // Add transaction to pending list
+      const txnId = addPendingTransaction({
+        type: 'purchase',
+        amount: totalAmount,
+        details: `Purchased ${quantity} shares of ${stock?.symbol} @ $${stock?.currentPrice.toFixed(2)}`,
+        status: 'pending'
       });
       
-      // Close the dialog
-      onOpenChange(false);
-    }, 1500);
+      // Simulate API call to process the order
+      setTimeout(() => {
+        setIsProcessing(false);
+        completePendingTransaction(txnId);
+        
+        // Call the completion handler with success and quantity
+        onComplete(true, quantity);
+        
+        // Show success notification in toast
+        toast({
+          title: `Order Placed Successfully`,
+          description: `Bought ${quantity} shares of ${stock?.symbol} for $${totalAmount.toFixed(2)}`,
+          variant: "default",
+        });
+        
+        // Show confirmation popup
+        setShowConfirmation(true);
+        
+        // Close the dialog
+        onOpenChange(false);
+      }, 1500);
+    } else {
+      // Handle sell orders
+      setTimeout(() => {
+        setIsProcessing(false);
+        
+        // Call the completion handler with success and quantity
+        onComplete(true, quantity);
+        
+        // Show success toast
+        toast({
+          title: `Sale Successful`,
+          description: `Sold ${quantity} shares of ${stock?.symbol} for $${totalAmount.toFixed(2)}`,
+        });
+        
+        // Close the dialog
+        onOpenChange(false);
+      }, 1500);
+    }
   };
 
   if (!stock) return null;
 
   return (
+    <>
+      {showConfirmation && (
+        <div className="fixed top-4 right-4 z-50 transition-opacity duration-300 ease-in-out">
+          <Alert variant="default" className="bg-green-600 text-white border-none">
+            <Check className="h-4 w-4" />
+            <AlertTitle>Success</AlertTitle>
+            <AlertDescription>
+              Your order for {quantity} shares of {stock.symbol} has been placed successfully!
+            </AlertDescription>
+          </Alert>
+        </div>
+      )}
+    
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="bg-background/95 backdrop-blur-md border-white/10 sm:max-w-[425px]">
         <DialogHeader>
@@ -132,6 +215,25 @@ const StockTransactionDialog: React.FC<StockTransactionDialogProps> = ({
               You currently own {maxSellQuantity} shares of {stock.symbol}.
             </div>
           )}
+
+          {transactionType === 'buy' && (
+            <div className="text-sm mt-2 flex justify-between">
+              <span className="text-white/60">Wallet Balance:</span>
+              <span className={balance < totalAmount ? "text-red-400" : "text-green-400"}>
+                ${balance.toFixed(2)}
+              </span>
+            </div>
+          )}
+
+          {insufficientFunds && (
+            <Alert variant="destructive" className="mt-2">
+              <AlertCircle className="h-4 w-4" />
+              <AlertTitle>Insufficient funds</AlertTitle>
+              <AlertDescription>
+                You don't have enough balance to complete this purchase. Please add funds to your wallet.
+              </AlertDescription>
+            </Alert>
+          )}
         </div>
         
         <DialogFooter>
@@ -140,7 +242,7 @@ const StockTransactionDialog: React.FC<StockTransactionDialogProps> = ({
           </Button>
           <Button 
             onClick={handleSubmit} 
-            disabled={isProcessing}
+            disabled={isProcessing || (transactionType === 'buy' && insufficientFunds)}
             className={transactionType === 'buy' ? 'bg-lavender hover:bg-lavender-dark' : 'bg-red-500 hover:bg-red-600'}
           >
             {isProcessing ? 'Processing...' : transactionType === 'buy' ? 'Buy Shares' : 'Sell Shares'}
@@ -148,6 +250,7 @@ const StockTransactionDialog: React.FC<StockTransactionDialogProps> = ({
         </DialogFooter>
       </DialogContent>
     </Dialog>
+    </>
   );
 };
 
