@@ -119,44 +119,36 @@ const StockTransactionDialog: React.FC<StockTransactionDialogProps> = ({
         status: 'pending'
       });
       
-      // Simulate API call to process the order
-      setTimeout(() => {
-        setIsProcessing(false);
-        completePendingTransaction(txnId);
-        
-        // Call the completion handler with success and quantity
-        onComplete(true, quantity);
-        
-        // Show success notification in toast
-        toast({
-          title: `Order Placed Successfully`,
-          description: `Bought ${quantity} shares of ${stock?.symbol} for $${totalAmount.toFixed(2)}`,
-          variant: "default",
-        });
-        
-        // Show confirmation popup
-        setShowConfirmation(true);
-        
-        // Close the dialog
-        onOpenChange(false);
-      }, 1500);
+      // Process the order immediately
+      setIsProcessing(false);
+      completePendingTransaction(txnId);
+      
+      // Call the completion handler with success and quantity
+      onComplete(true, quantity);
+      
+      // Show success toast
+      toast({
+        title: `Purchase Successful`,
+        description: `Purchased ${quantity} shares of ${stock?.symbol} for $${totalAmount.toFixed(2)}`,
+      });
+      
+      // Close the dialog
+      onOpenChange(false);
     } else {
-      // Handle sell orders
-      setTimeout(() => {
-        setIsProcessing(false);
-        
-        // Call the completion handler with success and quantity
-        onComplete(true, quantity);
-        
-        // Show success toast
-        toast({
-          title: `Sale Successful`,
-          description: `Sold ${quantity} shares of ${stock?.symbol} for $${totalAmount.toFixed(2)}`,
-        });
-        
-        // Close the dialog
-        onOpenChange(false);
-      }, 1500);
+      // Handle sell orders immediately
+      setIsProcessing(false);
+      
+      // Call the completion handler with success and quantity
+      onComplete(true, quantity);
+      
+      // Show success toast
+      toast({
+        title: `Sale Successful`,
+        description: `Sold ${quantity} shares of ${stock?.symbol} for $${totalAmount.toFixed(2)}`,
+      });
+      
+      // Close the dialog
+      onOpenChange(false);
     }
   };
 
