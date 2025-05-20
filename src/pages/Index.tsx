@@ -48,47 +48,87 @@ const Index = () => {
       {/* Hero Section */}
       <section className="relative py-20 overflow-hidden">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-lavender/20 via-background to-background z-0"></div>
-        {/* Starry background */}
+        {/* AI Neural Network Background */}
         <div className="absolute inset-0 z-0 overflow-hidden">
-          {/* Stars */}
-          {[...Array(50)].map((_, i) => (
+          {/* Data Points */}
+          {[...Array(30)].map((_, i) => (
             <div 
-              key={`star-${i}`}
-              className="absolute rounded-full bg-white animate-twinkle"
+              key={`node-${i}`}
+              className="absolute rounded-full bg-lavender/40 animate-pulse-slow"
               style={{
                 top: `${Math.random() * 100}%`,
                 left: `${Math.random() * 100}%`,
-                width: `${Math.random() * 3 + 1}px`,
-                height: `${Math.random() * 3 + 1}px`,
-                opacity: Math.random() * 0.7 + 0.3,
-                animationDelay: `${Math.random() * 5}s`,
-                animationDuration: `${Math.random() * 5 + 3}s`
+                width: `${Math.random() * 4 + 2}px`,
+                height: `${Math.random() * 4 + 2}px`,
+                opacity: Math.random() * 0.5 + 0.2,
+                animationDelay: `${Math.random() * 4}s`,
+                animationDuration: `${Math.random() * 3 + 2}s`
               }}
             />
           ))}
           
-          {/* Animated investment icons */}
-          <div className="absolute top-[15%] left-[20%] animate-float-slow opacity-30">
+          {/* Neural Connections */}
+          <svg className="absolute inset-0 w-full h-full opacity-20" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="connection-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#9b87f5" stopOpacity="0.1" />
+                <stop offset="50%" stopColor="#9b87f5" stopOpacity="0.5" />
+                <stop offset="100%" stopColor="#9b87f5" stopOpacity="0.1" />
+              </linearGradient>
+            </defs>
+            {[...Array(15)].map((_, i) => {
+              const x1 = Math.random() * 100;
+              const y1 = Math.random() * 100;
+              const x2 = Math.random() * 100;
+              const y2 = Math.random() * 100;
+              return (
+                <line 
+                  key={`connection-${i}`}
+                  x1={`${x1}%`} 
+                  y1={`${y1}%`} 
+                  x2={`${x2}%`} 
+                  y2={`${y2}%`} 
+                  stroke="url(#connection-gradient)"
+                  strokeWidth="1"
+                  className="animate-draw-line"
+                  style={{ animationDelay: `${i * 0.2}s` }}
+                />
+              );
+            })}
+          </svg>
+          
+          {/* AI-Powered Investment Symbols */}
+          <div className="absolute top-[15%] left-[20%] animate-float-slow opacity-40">
             <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M2 22H22" stroke="#9b87f5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M12 6L7 11L10 14L4 20" stroke="#9b87f5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M12 6L17 11L14 14L20 20" stroke="#9b87f5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M12 6V2" stroke="#9b87f5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M2 22H22" stroke="#9b87f5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="animate-draw-line" style={{ animationDelay: '0.2s' }}/>
+              <path d="M12 6L7 11L10 14L4 20" stroke="#9b87f5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="animate-draw-line" style={{ animationDelay: '0.4s' }}/>
+              <path d="M12 6L17 11L14 14L20 20" stroke="#9b87f5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="animate-draw-line" style={{ animationDelay: '0.6s' }}/>
+              <path d="M12 6V2" stroke="#9b87f5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="animate-draw-line" style={{ animationDelay: '0.8s' }}/>
             </svg>
           </div>
           
-          <div className="absolute top-[25%] right-[25%] animate-float-medium opacity-30" style={{ animationDelay: '1.5s' }}>
+          <div className="absolute top-[25%] right-[25%] animate-float-medium opacity-40" style={{ animationDelay: '1.5s' }}>
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#9b87f5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M2 17L12 22L22 17" stroke="#9b87f5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M2 12L12 17L22 12" stroke="#9b87f5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M12 2L2 7L12 12L22 7L12 2Z" stroke="#9b87f5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="animate-draw-line" style={{ animationDelay: '0.3s' }}/>
+              <path d="M2 17L12 22L22 17" stroke="#9b87f5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="animate-draw-line" style={{ animationDelay: '0.6s' }}/>
+              <path d="M2 12L12 17L22 12" stroke="#9b87f5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="animate-draw-line" style={{ animationDelay: '0.9s' }}/>
             </svg>
           </div>
           
-          <div className="absolute bottom-[30%] left-[30%] animate-float-fast opacity-30" style={{ animationDelay: '0.7s' }}>
+          <div className="absolute bottom-[30%] left-[30%] animate-float-fast opacity-40" style={{ animationDelay: '0.7s' }}>
             <svg width="36" height="36" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="12" cy="12" r="10" stroke="#9b87f5" strokeWidth="2"/>
-              <path d="M12 6V12L16 14" stroke="#9b87f5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <circle cx="12" cy="12" r="10" stroke="#9b87f5" strokeWidth="1.5" className="animate-draw-line" style={{ animationDelay: '0.2s' }}/>
+              <path d="M12 6V12L16 14" stroke="#9b87f5" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="animate-draw-line" style={{ animationDelay: '1s' }}/>
+            </svg>
+          </div>
+          
+          {/* AI Processing Elements */}
+          <div className="absolute bottom-[20%] right-[20%] opacity-40">
+            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="2" y="2" width="20" height="20" rx="2" stroke="#9b87f5" strokeWidth="1.5" className="animate-draw-line" style={{ animationDelay: '0.5s' }}/>
+              <path d="M7 7L17 17" stroke="#9b87f5" strokeWidth="1.5" strokeLinecap="round" className="animate-draw-line" style={{ animationDelay: '1s' }}/>
+              <path d="M17 7L7 17" stroke="#9b87f5" strokeWidth="1.5" strokeLinecap="round" className="animate-draw-line" style={{ animationDelay: '1.5s' }}/>
+              <circle cx="12" cy="12" r="4" stroke="#9b87f5" strokeWidth="1.5" className="animate-pulse-slow"/>
             </svg>
           </div>
           

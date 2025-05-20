@@ -143,3 +143,30 @@
   border: 1px solid rgba(155, 135, 245, 0.2);
   box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
+
+/* Custom scrollbar for scroll containers */
+.scroll-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scroll-container::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb {
+  background: rgba(155, 135, 245, 0.3);
+  border-radius: 10px;
+}
+
+.scroll-container::-webkit-scrollbar-thumb:hover {
+  background: rgba(155, 135, 245, 0.5);
+}
+
+/* Prevent page scroll when interacting with scroll containers */
+.scroll-container {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(155, 135, 245, 0.3) rgba(0, 0, 0, 0.1);
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+}

@@ -12,11 +12,16 @@ import Wallet from "./pages/Wallet";
 import Orders from "./pages/Orders";
 import NotFound from "./pages/NotFound";
 import { AuthProvider } from "./contexts/AuthContext";
+import { WalletProvider } from "./contexts/WalletContext";
+import { CopilotProvider } from "./contexts/CopilotContext";
+import { ShariahComplianceProvider } from "./contexts/ShariahComplianceContext";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Account from "./pages/Account";
 import PaymentMethods from "./pages/PaymentMethods";
 import Portfolio from "./pages/Portfolio";
+import IslamicFinanceAdvisor from "./pages/AIFeatures";
+import FinancialMuftiPage from "./pages/FinancialMufti";
 import React from "react";
 import ChatBot from "./components/ChatBot";
 
@@ -28,29 +33,37 @@ const App = () => {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <TooltipProvider>
-          <Toaster />
-          <Sonner />
-          <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/stocks" element={<Stocks />} />
-              <Route path="/stocks/:symbol" element={<StockDetails />} />
-              <Route path="/analysis" element={<Analysis />} />
-              <Route path="/wallet" element={<Wallet />} />
-              <Route path="/orders" element={<Orders />} />
-              <Route path="/signin" element={<SignIn />} />
-              <Route path="/signup" element={<SignUp />} />
-              <Route path="/account" element={<Account />} />
-              <Route path="/payment-methods" element={<PaymentMethods />} />
-              <Route path="/portfolio" element={<Portfolio />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-            {/* Global ChatBot that appears on all pages */}
-            <ChatBot />
-          </BrowserRouter>
-        </TooltipProvider>
+        <WalletProvider>
+          <CopilotProvider>
+            <ShariahComplianceProvider>
+              <TooltipProvider>
+              <Toaster />
+              <Sonner />
+              <BrowserRouter>
+                <Routes>
+                  <Route path="/" element={<Index />} />
+                  <Route path="/stocks" element={<Stocks />} />
+                  <Route path="/stocks/:symbol" element={<StockDetails />} />
+                  <Route path="/analysis" element={<Analysis />} />
+                  <Route path="/wallet" element={<Wallet />} />
+                  <Route path="/orders" element={<Orders />} />
+                  <Route path="/signin" element={<SignIn />} />
+                  <Route path="/signup" element={<SignUp />} />
+                  <Route path="/account" element={<Account />} />
+                  <Route path="/payment-methods" element={<PaymentMethods />} />
+                  <Route path="/portfolio" element={<Portfolio />} />
+                  <Route path="/islamic-finance-advisor" element={<IslamicFinanceAdvisor />} />
+                  <Route path="/financial-mufti" element={<FinancialMuftiPage />} />
+                  {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+                {/* Global ChatBot that appears on all pages */}
+                <ChatBot />
+              </BrowserRouter>
+              </TooltipProvider>
+            </ShariahComplianceProvider>
+          </CopilotProvider>
+        </WalletProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

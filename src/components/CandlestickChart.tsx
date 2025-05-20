@@ -15,6 +15,7 @@ interface CandlestickChartProps {
 // Fallback chart component that displays a simple price chart
 const CandlestickChart: React.FC<CandlestickChartProps> = ({ 
   data, 
+  width = 800,
   height = 300 
 }) => {
   // If no data is provided, show a message
@@ -35,9 +36,9 @@ const CandlestickChart: React.FC<CandlestickChartProps> = ({
   
   // Calculate chart dimensions
   const chartHeight = height - 40; // Leave space for labels
-  const barWidth = 10;
-  const spacing = 5;
-  const totalWidth = (barWidth + spacing) * data.length;
+  const barWidth = 12; // Wider bars for better visibility
+  const spacing = 6; // More spacing between bars
+  const totalWidth = Math.max(width, (barWidth + spacing) * data.length); // Ensure minimum width
   
   // Function to scale a price to a y-coordinate
   const scaleY = (price: number) => {
@@ -53,8 +54,8 @@ const CandlestickChart: React.FC<CandlestickChartProps> = ({
         </span>
       </div>
       
-      <div style={{ height: `${chartHeight}px`, position: 'relative', overflowX: 'auto' }}>
-        <svg width={totalWidth} height={chartHeight} className="block">
+      <div style={{ height: `${chartHeight}px`, position: 'relative', overflowX: 'auto', width: '100%' }}>
+        <svg width={totalWidth} height={chartHeight} className="block min-w-full" preserveAspectRatio="xMidYMid meet">
           {/* Draw price lines */}
           <line 
             x1="0" 

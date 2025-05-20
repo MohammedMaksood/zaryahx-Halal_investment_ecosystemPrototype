@@ -56,7 +56,14 @@ export const getShariahCompliance = async (
       // Tobacco companies
       'altria', 'philip morris', 'british american tobacco', 'imperial brands', 
       'japan tobacco', 'marlboro', 'newport', 'camel', 'tobacco', 'cigarette', 
-      'smoking', 'vape', 'cigar', 'nicotine',
+      'smoking', 'vape', 'cigar', 'nicotine', 'itc', 'indian tobacco', 'godfrey phillips',
+      'vst industries', 'golden tobacco', 'npi', 'national tobacco', 'universal corporation',
+      'turning point brands', 'vector group', 'swedish match', 'eastern tobacco', 'gudang garam',
+      'hm sampoerna', 'kt&g', 'iqos', 'juul', 'pall mall', 'winston', 'lucky strike', 'dunhill',
+      'kent', 'kool', 'benson & hedges', 'rothmans', 'parliament', 'chesterfield', 'l&m',
+      'djarum', 'nat sherman', 'american spirit', 'davidoff', 'virginia slims',
+      'e-cigarette', 'vaping', 'hookah', 'shisha', 'snuff', 'snus', 'chewing tobacco',
+      'rolling tobacco', 'pipe tobacco', 'bidis', 'kretek',
       
       // Gambling companies
       'las vegas sands', 'mgm resorts', 'wynn', 'caesars', 'flutter', 'draftkings',
@@ -72,34 +79,75 @@ export const getShariahCompliance = async (
       'adult entertainment', 'pornography'
     ];
     
-    // Check if the query matches any non-compliant company
-    const isNonCompliant = nonCompliantCompanies.some(company => 
+    // Define specific company overrides for more accurate screening
+    const companyOverrides: Record<string, { isCompliant: boolean, industry: string, reason?: string }> = {
+      'itc': { 
+        isCompliant: false, 
+        industry: 'Tobacco', 
+        reason: 'Primary business includes tobacco products which are prohibited in Islam'
+      },
+      'diageo': { 
+        isCompliant: false, 
+        industry: 'Alcoholic Beverages',
+        reason: 'Primary business is alcoholic beverages which are prohibited in Islam'
+      },
+      'mgm': { 
+        isCompliant: false, 
+        industry: 'Gambling',
+        reason: 'Primary business includes gambling which is prohibited in Islam'
+      },
+      'jpmorgan': { 
+        isCompliant: false, 
+        industry: 'Conventional Banking',
+        reason: 'Conventional banking involves interest (riba) which is prohibited in Islam'
+      },
+      'british american tobacco': { 
+        isCompliant: false, 
+        industry: 'Tobacco',
+        reason: 'Primary business is tobacco products which are prohibited in Islam'
+      }
+    };
+    
+    // Check if we have a specific override for this company
+    const override = Object.entries(companyOverrides).find(([key]) => 
+      normalizedQuery.includes(key) || key.includes(normalizedQuery)
+    );
+    
+    // If we have an override, use it; otherwise check against the non-compliant list
+    const isNonCompliant = override ? override[1].isCompliant === false : nonCompliantCompanies.some(company => 
       normalizedQuery.includes(company) || company.includes(normalizedQuery)
     );
     
-    // Determine industry based on query
-    let industry = 'Technology'; // Default
+    // Get the industry from the override if available
+    let overrideIndustry = override ? override[1].industry : null;
+    let overrideReason = override ? override[1].reason : null;
     
-    if (/alcohol|beer|wine|liquor|spirits|brewery|distillery|winery|vodka|whiskey|rum|tequila|gin|brandy|cognac/.test(normalizedQuery)) {
-      industry = 'Alcoholic Beverages';
-    } else if (/tobacco|cigarette|smoking|vape|cigar|nicotine|marlboro|newport|camel/.test(normalizedQuery)) {
-      industry = 'Tobacco';
-    } else if (/gambling|casino|betting|lottery|poker|slots/.test(normalizedQuery)) {
-      industry = 'Gambling';
-    } else if (/bank|interest|riba|mortgage|loan|lending/.test(normalizedQuery)) {
-      industry = 'Conventional Banking';
-    } else if (/pork|pig|swine|bacon|ham/.test(normalizedQuery)) {
-      industry = 'Pork Processing';
-    } else if (/weapon|defense|missile|gun|firearm|ammunition|military|arms/.test(normalizedQuery)) {
-      industry = 'Weapons Manufacturing';
-    } else if (/adult|entertainment|pornography/.test(normalizedQuery)) {
-      industry = 'Adult Entertainment';
-    } else if (/apple|msft|microsoft|googl|google|tech|software|hardware/.test(normalizedQuery)) {
-      industry = 'Technology';
-    } else if (/healthcare|medical|pharma|biotech|drug/.test(normalizedQuery)) {
-      industry = 'Healthcare';
-    } else if (/retail|consumer|goods/.test(normalizedQuery)) {
-      industry = 'Consumer Goods';
+    // Determine industry based on query (use override if available)
+    let industry = overrideIndustry || 'Technology'; // Default to Technology if no override
+    
+    // Only determine industry from query if no override exists
+    if (!overrideIndustry) {
+      if (/alcohol|beer|wine|liquor|spirits|brewery|distillery|winery|vodka|whiskey|rum|tequila|gin|brandy|cognac/.test(normalizedQuery)) {
+        industry = 'Alcoholic Beverages';
+      } else if (/tobacco|cigarette|smoking|vape|cigar|nicotine|marlboro|newport|camel/.test(normalizedQuery)) {
+        industry = 'Tobacco';
+      } else if (/gambling|casino|betting|lottery|poker|slots/.test(normalizedQuery)) {
+        industry = 'Gambling';
+      } else if (/bank|interest|riba|mortgage|loan|lending/.test(normalizedQuery)) {
+        industry = 'Conventional Banking';
+      } else if (/pork|pig|swine|bacon|ham/.test(normalizedQuery)) {
+        industry = 'Pork Processing';
+      } else if (/weapon|defense|missile|gun|firearm|ammunition|military|arms/.test(normalizedQuery)) {
+        industry = 'Weapons Manufacturing';
+      } else if (/adult|entertainment|pornography/.test(normalizedQuery)) {
+        industry = 'Adult Entertainment';
+      } else if (/apple|msft|microsoft|googl|google|tech|software|hardware/.test(normalizedQuery)) {
+        industry = 'Technology';
+      } else if (/healthcare|medical|pharma|biotech|drug/.test(normalizedQuery)) {
+        industry = 'Healthcare';
+      } else if (/retail|consumer|goods/.test(normalizedQuery)) {
+        industry = 'Consumer Goods';
+      }
     }
     
     // Generate appropriate financial ratios based on compliance
@@ -125,6 +173,8 @@ export const getShariahCompliance = async (
     // Generate reasons for compliance/non-compliance
     const reasons = isNonCompliant 
       ? [
+          // If we have an override reason, use it as the first reason
+          ...(overrideReason ? [overrideReason] : []),
           `Debt-to-asset ratio is ${financialRatios.debtRatio.toFixed(2)}% (exceeds 33% threshold)`,
           `Interest income is ${financialRatios.interestIncome.toFixed(2)}% of revenue (exceeds 5% threshold)`,
           `Illiquid assets ratio is ${financialRatios.illiquidAssets.toFixed(2)}% (below 51% threshold)`,
@@ -153,6 +203,17 @@ export const getShariahCompliance = async (
       else if (query.toUpperCase() === 'DEO') name = 'Diageo plc';
       else if (query.toUpperCase() === 'BUD') name = 'Anheuser-Busch InBev';
       else if (query.toUpperCase() === 'HEINY') name = 'Heineken N.V.';
+      else if (query.toUpperCase() === 'ITC') name = 'ITC Limited (Indian Tobacco Company)';
+      else if (query.toUpperCase() === 'BTI') name = 'British American Tobacco';
+      else if (query.toUpperCase() === 'MO') name = 'Altria Group';
+      else if (query.toUpperCase() === 'PM') name = 'Philip Morris International';
+      else if (query.toUpperCase() === 'JPM') name = 'JPMorgan Chase & Co.';
+      else if (query.toUpperCase() === 'BAC') name = 'Bank of America Corporation';
+      else if (query.toUpperCase() === 'WFC') name = 'Wells Fargo & Company';
+      else if (query.toUpperCase() === 'C') name = 'Citigroup Inc.';
+      else if (query.toUpperCase() === 'MGM') name = 'MGM Resorts International';
+      else if (query.toUpperCase() === 'WYNN') name = 'Wynn Resorts, Limited';
+      else if (query.toUpperCase() === 'LVS') name = 'Las Vegas Sands Corp.';
       else name = `${query.toUpperCase()} Corporation`;
     } else {
       name = query.charAt(0).toUpperCase() + query.slice(1);
