@@ -47,6 +47,7 @@ const AIFeatures = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [savedMessages, setSavedMessages] = useState<Message[]>([]);
+  const [showLoadingAnimation, setShowLoadingAnimation] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   // Predefined topics for Islamic finance questions
@@ -374,10 +375,94 @@ const AIFeatures = () => {
     scrollToBottom();
   }, [messages]);
 
+  // Show loading animation on component mount
+  useEffect(() => {
+    setShowLoadingAnimation(true);
+    
+    // Simulate AI processing time
+    setTimeout(() => {
+      setShowLoadingAnimation(false);
+    }, 3000); // Show for 3 seconds
+  }, []);
+  
+  // Loading animation component
+  const AILoadingAnimation = () => {
+    return (
+      <div className="ai-loading-overlay">
+        <div className="ai-loading-container">
+          <div className="ai-loading-circle" style={{ width: '100%', height: '100%', opacity: 0.2 }}></div>
+          <div className="ai-loading-circle" style={{ width: '80%', height: '80%', top: '10%', left: '10%', opacity: 0.4 }}></div>
+          <div className="ai-loading-circle" style={{ width: '60%', height: '60%', top: '20%', left: '20%', opacity: 0.6 }}></div>
+          <div className="ai-loading-ring"></div>
+          <div className="ai-loading-ring"></div>
+          <div className="ai-loading-ring"></div>
+          
+          {/* Neural network nodes */}
+          <svg width="200" height="200" viewBox="0 0 200 200" className="absolute top-0 left-0">
+            <defs>
+              <linearGradient id="connection-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="#9b87f5" stopOpacity="0.1" />
+                <stop offset="50%" stopColor="#9b87f5" stopOpacity="0.5" />
+                <stop offset="100%" stopColor="#9b87f5" stopOpacity="0.1" />
+              </linearGradient>
+            </defs>
+            
+            {/* Nodes */}
+            {[...Array(10)].map((_, i) => {
+              const angle = (i / 10) * Math.PI * 2;
+              const radius = 80;
+              const x = 100 + radius * Math.cos(angle);
+              const y = 100 + radius * Math.sin(angle);
+              return (
+                <circle 
+                  key={`node-${i}`}
+                  cx={x}
+                  cy={y}
+                  r="3"
+                  fill="#9b87f5"
+                  style={{ animation: `ai-thinking-pulse 1.5s infinite ${i * 0.2}s` }}
+                />
+              );
+            })}
+            
+            {/* Connections */}
+            {[...Array(15)].map((_, i) => {
+              const startAngle = (i / 15) * Math.PI * 2;
+              const endAngle = ((i + 5) / 15) * Math.PI * 2;
+              const radius = 80;
+              const x1 = 100 + radius * Math.cos(startAngle);
+              const y1 = 100 + radius * Math.sin(startAngle);
+              const x2 = 100 + radius * Math.cos(endAngle);
+              const y2 = 100 + radius * Math.sin(endAngle);
+              return (
+                <line 
+                  key={`connection-${i}`}
+                  x1={x1}
+                  y1={y1}
+                  x2={x2}
+                  y2={y2}
+                  stroke="url(#connection-gradient)"
+                  strokeWidth="1"
+                  strokeDasharray="5,5"
+                  style={{ 
+                    animation: `ai-data-flow 3s infinite linear ${i * 0.1}s`,
+                    opacity: 0.7
+                  }}
+                />
+              );
+            })}
+          </svg>
+        </div>
+        <div className="ai-loading-text">Initializing Islamic Finance Advisor</div>
+        <div className="ai-loading-subtext">Activating on-device Small Language Models for Shariah-compliant guidance</div>
+      </div>
+    );
+  };
+  
   return (
     <div className="min-h-screen flex flex-col bg-background" style={{ overscrollBehavior: 'none' }}>
       <Navbar />
-      
+      {showLoadingAnimation && <AILoadingAnimation />}
       <div className="flex-1 flex overflow-hidden">
         {/* Sidebar */}
         <div className={`w-80 border-r bg-muted/30 flex-shrink-0 flex flex-col transition-all duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0 md:w-16'}`}>

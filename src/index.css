@@ -3,6 +3,95 @@
 @tailwind components;
 @tailwind utilities;
 
+/* AI Loading Animation */
+@keyframes ai-thinking-pulse {
+  0%, 100% { opacity: 0.3; transform: scale(0.95); }
+  50% { opacity: 0.8; transform: scale(1); }
+}
+
+@keyframes ai-data-flow {
+  0% { stroke-dashoffset: 1000; }
+  100% { stroke-dashoffset: 0; }
+}
+
+@keyframes ai-rotate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes ai-fade-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.ai-loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  animation: ai-fade-in 0.3s ease-in-out;
+}
+
+.ai-loading-container {
+  position: relative;
+  width: 200px;
+  height: 200px;
+}
+
+.ai-loading-circle {
+  position: absolute;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(155, 135, 245, 0.8) 0%, rgba(155, 135, 245, 0.1) 70%);
+  animation: ai-thinking-pulse 2s infinite;
+}
+
+.ai-loading-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  border-top-color: var(--primary);
+  animation: ai-rotate 2s linear infinite;
+}
+
+.ai-loading-ring:nth-child(2) {
+  border-top-color: transparent;
+  border-right-color: var(--primary);
+  animation-duration: 3s;
+}
+
+.ai-loading-ring:nth-child(3) {
+  border-top-color: transparent;
+  border-left-color: var(--primary);
+  animation-duration: 1.5s;
+  animation-direction: reverse;
+}
+
+.ai-loading-text {
+  margin-top: 2rem;
+  font-size: 1.2rem;
+  color: var(--foreground);
+  text-align: center;
+}
+
+.ai-loading-subtext {
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-align: center;
+  max-width: 300px;
+}
+
 @layer base {
   :root {
     --background: 240 10% 3.9%;
