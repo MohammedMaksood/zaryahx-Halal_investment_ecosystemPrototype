@@ -464,8 +464,10 @@ const AIFeatures = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background" style={{ overscrollBehavior: 'none' }}>
       <Navbar />
-      {showAdvisorLoading && <AILoadingAnimation />}
-      <div className="flex-1 flex overflow-hidden">
+      {showAdvisorLoading ? (
+        <AILoadingAnimation />
+      ) : (
+        <div className="flex-1 flex overflow-hidden">
         {/* Sidebar */}
         <div className={`w-80 border-r bg-muted/30 flex-shrink-0 flex flex-col transition-all duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0 md:w-16'}`}>
           {/* Sidebar Header */}
@@ -745,6 +747,7 @@ const AIFeatures = () => {
           </div>
         </div>
       </div>
+      )}
     </div>
   );
 };
