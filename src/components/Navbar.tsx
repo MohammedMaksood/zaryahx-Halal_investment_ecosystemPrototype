@@ -156,6 +156,19 @@ export const Navbar = () => {
             >
               Islamic Finance Advisor
             </Link>
+            <button 
+              className="text-sm font-medium text-white/80 hover:text-lavender transition-colors"
+              onClick={() => {
+                toggleMobileMenu();
+                // Force a full navigation to reset the component state
+                window.location.href = '/unified-dashboard';
+              }}
+            >
+              <span className="flex items-center">
+                Unified Lifestyle
+                <span className="ml-1 px-1.5 py-0.5 text-xs font-medium bg-lavender text-white rounded-full">New</span>
+              </span>
+            </button>
           </nav>
 
           {/* Desktop Right Actions - Search bar removed */}
@@ -281,6 +294,19 @@ export const Navbar = () => {
             >
               Islamic Finance Advisor
             </Link>
+            <button 
+              className="w-full text-left block rounded-md px-3 py-2 text-base font-medium hover:bg-lavender/20"
+              onClick={() => {
+                toggleMobileMenu();
+                // Force a full navigation to reset the component state
+                window.location.href = '/unified-dashboard';
+              }}
+            >
+              <span className="flex items-center">
+                Unified Lifestyle
+                <span className="ml-1 px-1.5 py-0.5 text-xs font-medium bg-lavender text-white rounded-full">New</span>
+              </span>
+            </button>
             
             <div className="pt-4 pb-2">
               <div className="flex items-center space-x-4">
