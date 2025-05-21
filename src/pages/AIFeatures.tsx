@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Bot, MessageSquare, Send, BookOpen, ThumbsUp, ThumbsDown, Bookmark, Shield, AlertTriangle, CheckCircle, Info, User, Menu, X, Settings, LogOut, HelpCircle } from "lucide-react";
 import Navbar from "@/components/Navbar";
 import { useAuth } from "@/contexts/AuthContext";
+import { useLoading } from "@/contexts/LoadingContext";
 
 // Define interfaces for our chat functionality
 interface Message {
@@ -47,7 +48,7 @@ const AIFeatures = () => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [savedMessages, setSavedMessages] = useState<Message[]>([]);
-  const [showLoadingAnimation, setShowLoadingAnimation] = useState(false);
+  const { showAdvisorLoading, setShowAdvisorLoading } = useLoading();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   // Predefined topics for Islamic finance questions
@@ -375,15 +376,16 @@ const AIFeatures = () => {
     scrollToBottom();
   }, [messages]);
 
-  // Show loading animation on component mount
+  // Hide loading animation after component mount if it was triggered by navigation
   useEffect(() => {
-    setShowLoadingAnimation(true);
-    
-    // Simulate AI processing time
-    setTimeout(() => {
-      setShowLoadingAnimation(false);
-    }, 3000); // Show for 3 seconds
-  }, []);
+    // If the loading animation is showing (triggered by navbar click)
+    if (showAdvisorLoading) {
+      // Simulate AI processing time
+      setTimeout(() => {
+        setShowAdvisorLoading(false);
+      }, 3000); // Show for 3 seconds
+    }
+  }, [showAdvisorLoading, setShowAdvisorLoading]);
   
   // Loading animation component
   const AILoadingAnimation = () => {
@@ -462,7 +464,7 @@ const AIFeatures = () => {
   return (
     <div className="min-h-screen flex flex-col bg-background" style={{ overscrollBehavior: 'none' }}>
       <Navbar />
-      {showLoadingAnimation && <AILoadingAnimation />}
+      {showAdvisorLoading && <AILoadingAnimation />}
       <div className="flex-1 flex overflow-hidden">
         {/* Sidebar */}
         <div className={`w-80 border-r bg-muted/30 flex-shrink-0 flex flex-col transition-all duration-300 ease-in-out ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0 md:w-16'}`}>

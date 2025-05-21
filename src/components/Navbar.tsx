@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
 import { useWallet } from '@/contexts/WalletContext';
+import { useLoading } from '@/contexts/LoadingContext';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,6 +34,7 @@ export const Navbar = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuth();
   const { pendingTransactions } = useWallet();
+  const { setShowAdvisorLoading } = useLoading();
 
   // Watch for new pending transactions and create notifications
   useEffect(() => {
@@ -144,7 +146,14 @@ export const Navbar = () => {
             <Link to="/portfolio" className="text-sm font-medium text-white/80 hover:text-lavender transition-colors">
               Portfolio
             </Link>
-            <Link to="/islamic-finance-advisor" className="text-sm font-medium text-white/80 hover:text-lavender transition-colors">
+            <Link 
+              to="/islamic-finance-advisor" 
+              className="text-sm font-medium text-white/80 hover:text-lavender transition-colors"
+              onClick={() => {
+                setShowAdvisorLoading(true);
+                // The animation will be hidden by the AIFeatures component after loading
+              }}
+            >
               Islamic Finance Advisor
             </Link>
           </nav>
@@ -264,7 +273,11 @@ export const Navbar = () => {
             <Link 
               to="/islamic-finance-advisor" 
               className="block rounded-md px-3 py-2 text-base font-medium hover:bg-lavender/20"
-              onClick={toggleMobileMenu}
+              onClick={() => {
+                toggleMobileMenu();
+                setShowAdvisorLoading(true);
+                // The animation will be hidden by the AIFeatures component after loading
+              }}
             >
               Islamic Finance Advisor
             </Link>

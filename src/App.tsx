@@ -15,6 +15,7 @@ import { AuthProvider } from "./contexts/AuthContext";
 import { WalletProvider } from "./contexts/WalletContext";
 import { CopilotProvider } from "./contexts/CopilotContext";
 import { ShariahComplianceProvider } from "./contexts/ShariahComplianceContext";
+import { LoadingProvider } from "./contexts/LoadingContext";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Account from "./pages/Account";
@@ -36,10 +37,11 @@ const App = () => {
         <WalletProvider>
           <CopilotProvider>
             <ShariahComplianceProvider>
-              <TooltipProvider>
-              <Toaster />
-              <Sonner />
-              <BrowserRouter>
+              <LoadingProvider>
+                <TooltipProvider>
+                <Toaster />
+                <Sonner />
+                <BrowserRouter>
                 <Routes>
                   <Route path="/" element={<Index />} />
                   <Route path="/stocks" element={<Stocks />} />
@@ -61,6 +63,7 @@ const App = () => {
                 <ChatBot />
               </BrowserRouter>
               </TooltipProvider>
+              </LoadingProvider>
             </ShariahComplianceProvider>
           </CopilotProvider>
         </WalletProvider>
