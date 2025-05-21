@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Bot, MessageSquare, Send, BookOpen, ThumbsUp, ThumbsDown, Bookmark, Shield, AlertTriangle, CheckCircle, Info, User, Menu, X, Settings, LogOut, HelpCircle } from "lucide-react";
 import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
 import { useAuth } from "@/contexts/AuthContext";
 
 // Define interfaces for our chat functionality
@@ -659,8 +658,6 @@ const AIFeatures = () => {
           </div>
         </div>
       </div>
-
-      <Footer />
     </div>
   );
 };
