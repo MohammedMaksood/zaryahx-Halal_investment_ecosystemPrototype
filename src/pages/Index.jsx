@@ -1,0 +1,293 @@
+import React from 'react';
+import { Button } from "@/components/ui/button";
+import { ArrowRight, Info } from "lucide-react";
+import { Link } from "react-router-dom";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import FeaturedCard from "@/components/FeaturedCard";
+import StockCard from "@/components/StockCard";
+import { useAuth } from "@/contexts/AuthContext";
+
+const Index = () => {
+  const { isAuthenticated } = useAuth();
+  
+  // Mock data for featured stocks
+  const featuredStocks = [
+    {
+      name: "Al Rajhi Bank",
+      symbol: "RJHI.SR",
+      price: 89.25,
+      change: 1.2,
+      status: "halal" ,
+      description: "Islamic banking and investment products"
+    },
+    {
+      name: "Apple Inc.",
+      symbol: "AAPL",
+      price: 172.50,
+      change: -0.8,
+      status: "halal" ,
+      description: "Technology and consumer electronics"
+    },
+    {
+      name: "Nestlé S.A.",
+      symbol: "NESN.SW",
+      price: 104.32,
+      change: 0.5,
+      status: "halal" ,
+      description: "Food and beverage products"
+    }
+  ];
+
+  return (
+    <div className="min-h-screen flex flex-col bg-background">
+      <Navbar />
+      
+      {/* Hero Section */}
+      <section className="relative py-20 overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-lavender/20 via-background to-background z-0"></div>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-3xl mx-auto text-center">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight mb-6 text-black">
+              Shariah-Compliant Finance
+              
+            </h1>
+            <p className="text-xl text-black mb-8">
+              Experience the future of Shariah-compliant investing with our AI-powered platform. Make informed decisions while staying true to your values.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              {isAuthenticated ? (
+                <Link to="/account">
+                  <Button 
+                    size="lg"
+                    className="bg-lavender hover:bg-lavender-dark text-white font-medium" 
+                  >
+                    My Account
+                  </Button>
+                </Link>
+              ) : (
+                <Link to="/signup">
+                  <Button 
+                    size="lg"
+                    className="bg-lavender hover:bg-lavender-dark text-white font-medium" 
+                  >
+                    Create Account
+                  </Button>
+                </Link>
+              )}
+              <Button 
+                size="lg"
+                variant="outline" 
+                className="border-lavender text-lavender hover:bg-lavender/20 font-medium"
+              >
+                Learn More
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-20 bg-secondary/30">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-4 text-black">Our Ethical Investment Ecosystem</h2>
+            <p className="text-black max-w-2xl mx-auto">
+              Zaryah leverages AI technology to provide a comprehensive ethical investment platform aligned with Shariah principles, helping you make financially sound and morally conscious decisions.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <FeaturedCard
+              title="Halal Stocks"
+              description="Invest in pre-vetted companies that comply with Shariah principles, free from interest, gambling, and other haram activities."
+              icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6 text-lavender">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>}
+              linkTo="/stocks"
+              variant="primary"
+            />
+            <FeaturedCard
+              title="Stock Analysis"
+              description="Search for any stock to analyze its Shariah compliance through our advanced AI-powered screening technology."
+              icon={<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6 text-lavender">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>}
+              linkTo="/analysis"
+            />
+
+          </div>
+        </div>
+      </section>
+
+      {/* Trending Stocks Section */}
+      <section className="py-20">
+        <div className="container mx-auto px-4">
+          <div className="flex justify-between items-center mb-10">
+            <h2 className="text-2xl font-bold text-black">Trending Halal Stocks</h2>
+            <Button 
+              variant="ghost"
+              className="text-lavender hover:bg-lavender/10 flex items-center"
+              asChild
+            >
+              <a href="/stocks">
+                View All <ArrowRight className="ml-2 h-4 w-4" />
+              </a>
+            </Button>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {featuredStocks.map((stock, index) => (
+              <StockCard
+                key={index}
+                name={stock.name}
+                symbol={stock.symbol}
+                price={stock.price}
+                change={stock.change}
+                status={stock.status}
+                description={stock.description}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Halal Certification Benefits */}
+      <section className="py-20 bg-secondary/30 overflow-hidden relative">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-lavender/10 via-transparent to-transparent z-0"></div>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-3xl font-bold mb-6 text-black">Why Choose Halal Investments?</h2>
+              <div className="space-y-6">
+                <div className="flex items-start">
+                  <div className="mt-1 bg-lavender/20 p-2 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-lavender" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <div className="ml-4">
+                    <h3 className="font-semibold text-lg mb-1">Shariah Compliance</h3>
+                    <p className="text-black">All investments are rigorously screened for adherence to Islamic principles, avoiding interest (riba), gambling (maysir), and other haram activities.</p>
+                  </div>
+                </div>
+                <div className="flex items-start">
+                  <div className="mt-1 bg-lavender/20 p-2 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-lavender" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <div className="ml-4">
+                    <h3 className="font-semibold text-lg mb-1">Ethical Considerations</h3>
+                    <p className="text-black">Investments exclude companies dealing with alcohol, tobacco, adult entertainment, and other prohibited industries.</p>
+                  </div>
+                </div>
+                <div className="flex items-start">
+                  <div className="mt-1 bg-lavender/20 p-2 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-lavender" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                  </div>
+                  <div className="ml-4">
+                    <h3 className="font-semibold text-lg mb-1">Financial Purification</h3>
+                    <p className="text-black">Regular zakat calculations and purification processes ensure that your investments remain halal over time. <Link to="/zakat-calculator" className="text-lavender hover:underline">Use our Zakat Calculator</Link> to calculate your obligations.</p>
+                  </div>
+                </div>
+              </div>
+              <Button 
+                className="mt-8 bg-lavender hover:bg-lavender-dark text-black"
+                asChild
+              >
+                <a href="/analysis">Analyze Your Portfolio</a>
+              </Button>
+            </div>
+            <div className="lg:pl-12 relative">
+              <div className="p-6 glassy-card rounded-2xl">
+                <div className="rounded-lg overflow-hidden">
+                  <div className="bg-lavender/10 h-64 w-full flex items-center justify-center">
+                    <div className="text-black">
+                      <div className="text-6xl font-bold text-lavender mb-4">100%</div>
+                      <div className="text-xl font-medium">Shariah Compliant</div>
+                    </div>
+                  </div>
+                </div>
+                <div className="mt-6 space-y-4">
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-black">Interest-free</span>
+                    <span className="text-sm font-medium">100%</span>
+                  </div>
+                  <div className="w-full h-2 bg-white/10 rounded-full">
+                    <div className="h-2 bg-gradient-to-r from-lavender to-lavender-light rounded-full w-full"></div>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-black">No prohibited industries</span>
+                    <span className="text-sm font-medium">100%</span>
+                  </div>
+                  <div className="w-full h-2 bg-white/10 rounded-full">
+                    <div className="h-2 bg-gradient-to-r from-lavender to-lavender-light rounded-full w-full"></div>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-black">Financial transparency</span>
+                    <span className="text-sm font-medium">100%</span>
+                  </div>
+                  <div className="w-full h-2 bg-white/10 rounded-full">
+                    <div className="h-2 bg-gradient-to-r from-lavender to-lavender-light rounded-full w-full"></div>
+                  </div>
+                </div>
+              </div>
+              {/* Decorative elements removed */}
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+
+      {/* CTA Section */}
+      <section className="py-20 bg-lavender/10 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-lavender/20 via-transparent to-transparent z-0"></div>
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="text-3xl font-bold mb-6 text-black">Join the Zaryah Community</h2>
+            <p className="text-xl text-black mb-8">
+              Start your halal investment journey today and align your finances with your faith.
+            </p>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              {isAuthenticated ? (
+                <Link to="/account">
+                  <Button 
+                    size="lg"
+                    className="bg-lavender hover:bg-lavender-dark text-white font-medium" 
+                  >
+                    My Account
+                  </Button>
+                </Link>
+              ) : (
+                <Link to="/signup">
+                  <Button 
+                    size="lg"
+                    className="bg-lavender hover:bg-lavender-dark text-white font-medium" 
+                  >
+                    Create Account
+                  </Button>
+                </Link>
+              )}
+              <Button 
+                size="lg"
+                variant="outline" 
+                className="border-lavender text-lavender hover:bg-lavender/20 font-medium"
+              >
+                Contact Support
+              </Button>
+            </div>
+          </div>
+        </div>
+        {/* Background animation removed */}
+      </section>
+
+      <Footer />
+
+    </div>
+  );
+};
+export default Index;
